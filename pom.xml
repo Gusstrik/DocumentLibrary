@@ -6,11 +6,35 @@
 
     <groupId>com.strelnikov.doclib</groupId>
     <artifactId>doclib</artifactId>
+    <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>doclib-service</module>
+    </modules>
 
     <properties>
         <maven.compiler.source>16</maven.compiler.source>
         <maven.compiler.target>16</maven.compiler.target>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>1.18.20</version>
+                <scope>provided</scope>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub Gusstrik Maven Packages</name>
+            <url>https://maven.pkg.github.com/Gusstrik/DocumentLibrary</url>
+        </repository>
+    </distributionManagement>
 
 </project>
