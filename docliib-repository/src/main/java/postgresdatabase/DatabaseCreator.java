@@ -2,21 +2,28 @@ package postgresdatabase;
 
 
 import org.apache.ibatis.jdbc.ScriptRunner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class DatabseCreator {
+public class DatabaseCreator {
+    private static final Logger log;
+    static {
+        log = LoggerFactory.getLogger(DatabaseCreator.class);
+    }
     public void createDatabse()  {
+        System.out.println(DatabaseCreator.class.getPackageName());
         try {
             Connection connection = DatabaseConnector.getConnectionFromPool();
             ScriptRunner sr = new ScriptRunner(connection);
             Reader reader = new FileReader
-                    ("C:\\Users\\istre\\DocumentLibrary\\docliib-repository\\src\\main\\resources\\createdb.sql");
+                    ("/docliib-repository/src/main/resources/createdb.sql");
             sr.runScript(reader);
         }catch (SQLException | FileNotFoundException e){
-            e.printStackTrace();
+            log.error(e.getMessage(),e);
         }
     }
 }

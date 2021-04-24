@@ -57,3 +57,5 @@ create table if not exists document_client
     foreign key (document_id) references document (id) on update cascade on delete cascade,
     foreign key (client_id) references clients (id) on update cascade on delete cascade
 );
+
+INSERT INTO catalog VALUES (nextval('catalog_id_seq'),'/');
