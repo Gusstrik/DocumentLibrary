@@ -1,4 +1,4 @@
-package postgresdatabase;
+package com.strelnikov.doclib.postgresdatabase;
 
 
 import org.apache.ibatis.jdbc.ScriptRunner;
@@ -20,7 +20,7 @@ public class DatabaseCreator {
             Connection connection = DatabaseConnector.getConnectionFromPool();
             ScriptRunner sr = new ScriptRunner(connection);
             Reader reader = new FileReader
-                    ("/docliib-repository/src/main/resources/createdb.sql");
+                    ("src/main/resources/createdb.sql");
             sr.runScript(reader);
         }catch (SQLException | FileNotFoundException e){
             log.error(e.getMessage(),e);

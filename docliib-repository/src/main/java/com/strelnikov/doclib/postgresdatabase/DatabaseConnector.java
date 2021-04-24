@@ -1,4 +1,4 @@
-package postgresdatabase;
+package com.strelnikov.doclib.postgresdatabase;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 

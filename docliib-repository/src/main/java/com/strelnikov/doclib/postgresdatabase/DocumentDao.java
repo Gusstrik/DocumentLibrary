@@ -1,12 +1,9 @@
-package postgresdatabase;
+package com.strelnikov.doclib.postgresdatabase;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class DocumentDao {
     private static final Logger log;
@@ -41,17 +38,18 @@ public class DocumentDao {
         addNewDocument(name,type,version,"",1);
     }
 
-    private final String DOCUMENT_GET_ID_QUERY="SELECT id FROM document WHERE name= ? AND" +
-            "version= ? AND type= ?";
+    private final String DOCUMENT_GET_ID_QUERY="SELECT id FROM document WHERE name=? AND version=? AND type=?;";
 
     public int getDocumentId(String name, String type, int version){
         int id=-1;
         try {
             Connection connection = DatabaseConnector.getConnectionFromPool();
-            PreparedStatement statement = connection.prepareStatement(DOCUMENT_DELETE_QUERY);
+//            Statement statement = connection.createStatement();
+            PreparedStatement statement = connection.prepareStatement("SELECT id FROM document WHERE name=? AND version=? AND type=?;");
             statement.setString(1, name);
             statement.setInt(2,version);
             statement.setString(3,type);
+//            ResultSet rs = statement.executeQuery("SELECT id FROM document WHERE name='"+name+"' AND version="+version+" AND type='"+type+"';");
             ResultSet rs = statement.executeQuery();
             if (rs.next()){
                 id=rs.getInt(1);

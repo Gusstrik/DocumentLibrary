@@ -19,7 +19,7 @@
         <appender-ref ref="postgresdatabase-test-log"/>
     </logger>
 
-    <logger name="postgresdatabase" level="debug">
+    <logger name="com.strelnikov.doclib.postgresdatabase" level="debug">
         <appender-ref ref="postgresdatabase-log"/>
     </logger>
 </configuration>
