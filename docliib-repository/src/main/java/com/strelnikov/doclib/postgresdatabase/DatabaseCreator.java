@@ -15,7 +15,6 @@ public class DatabaseCreator {
         log = LoggerFactory.getLogger(DatabaseCreator.class);
     }
     public void createDatabse()  {
-        System.out.println(DatabaseCreator.class.getPackageName());
         try {
             Connection connection = DatabaseConnector.getConnectionFromPool();
             ScriptRunner sr = new ScriptRunner(connection);
@@ -23,6 +22,7 @@ public class DatabaseCreator {
                     ("src/main/resources/createdb.sql");
             sr.runScript(reader);
         }catch (SQLException | FileNotFoundException e){
+            System.out.println(e.getMessage());
             log.error(e.getMessage(),e);
         }
     }

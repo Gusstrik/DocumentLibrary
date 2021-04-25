@@ -58,4 +58,9 @@ create table if not exists document_client
     foreign key (client_id) references clients (id) on update cascade on delete cascade
 );
 
-INSERT INTO catalog VALUES (nextval('catalog_id_seq'),'/');
+
+INSERT INTO catalog(id, name)
+    SELECT nextval('catalog_id_seq'), '/'
+WHERE NOT EXISTS (
+    SELECT 1 FROM catalog WHERE name='/'
+);

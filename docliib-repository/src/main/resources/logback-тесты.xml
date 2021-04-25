@@ -9,7 +9,7 @@
         </encoder>
     </appender>
 
-    <logger name="PostgresTest" level="debug">
+    <logger name="PostgresTypeDaoTest" level="debug">
         <appender-ref ref="postgresdatabase-test-log"/>
     </logger>
 </configuration>

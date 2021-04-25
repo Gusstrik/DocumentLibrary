@@ -42,8 +42,11 @@ public class FileDao {
             statement.setString(1,name);
             statement.executeUpdate();
         } catch (SQLException e) {
+
             log.error(e.getMessage(), e);
+
         }
+
     }
 
     private final String FILE_CHANGE_NAME_QUERY = "UPDATE file SET name=? where name = ?";
