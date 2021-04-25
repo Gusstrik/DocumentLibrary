@@ -25,7 +25,7 @@ public class TestServlet extends HttpServlet {
         System.out.println(request.getMethod());
         response.setContentType("text/html");
         PrintWriter printWriter=response.getWriter();
-        printWriter.write("Нюхай бебру");
+        printWriter.write("Test");
         printWriter.close();
     }
 
