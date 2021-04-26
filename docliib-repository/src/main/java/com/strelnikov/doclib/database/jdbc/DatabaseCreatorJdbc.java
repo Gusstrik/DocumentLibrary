@@ -14,13 +14,10 @@ import java.sql.SQLException;
 public class DatabaseCreatorJdbc {
 
     public void createDatabse() {
-        try {
-            Connection connection = DatabaseConnectorJdbc.getConnectionFromPool();
+        try (Connection connection = DatabaseConnectorJdbc.getConnectionFromPool();
+             Reader reader = new FileReader("src/main/resources/createdb.sql");){
             ScriptRunner sr = new ScriptRunner(connection);
-            Reader reader = new FileReader
-                    ("src/main/resources/createdb.sql");
             sr.runScript(reader);
-            reader.close();
         } catch (SQLException | IOException e) {
             System.out.println(e.getMessage());
             log.error(e.getMessage(), e);
