@@ -7,9 +7,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public abstract class Entity {
+public abstract class Unit {
 
-    public Entity(String name, Type type) {
+    public Unit(String name, Type type) {
         this.name = name;
         this.type = type;
     }

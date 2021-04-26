@@ -1,19 +1,16 @@
 import com.strelnikov.doclib.database.jdbc.DocumentDaoJdbc;
 import com.strelnikov.doclib.database.jdbc.FileDaoJdbc;
 import com.strelnikov.doclib.database.jdbc.TypeDaoJdbc;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.List;
 
+@Slf4j
 public class PostgresFileDaoJdbcTest {
-    private static final Logger log;
-
-    static {
-        log = LoggerFactory.getLogger("PostgresTest");
-    }
-
     private static int document_id;
 
     @BeforeClass
@@ -33,7 +30,7 @@ public class PostgresFileDaoJdbcTest {
         documentDaoJdbc.deleteDocument(document_id);
     }
 
-    private ArrayList<String> expected;
+    private List<String> expected;
 
     @Before
     public void beforeEachFileDaoTest() {
@@ -51,7 +48,7 @@ public class PostgresFileDaoJdbcTest {
     @Test
     public void getFileListTest() {
         FileDaoJdbc fileDaoJdbc = new FileDaoJdbc();
-        ArrayList<String> actual = fileDaoJdbc.getFilesList(document_id);
+        List<String> actual = fileDaoJdbc.getFilesList(document_id);
         Assert.assertEquals(expected, actual);
     }
 
@@ -60,7 +57,7 @@ public class PostgresFileDaoJdbcTest {
         FileDaoJdbc fileDaoJdbc = new FileDaoJdbc();
         expected.add("test_adding_file");
         fileDaoJdbc.addNewFile("test_adding_file", document_id, "path_test");
-        ArrayList<String> actual = fileDaoJdbc.getFilesList(document_id);
+        List<String> actual = fileDaoJdbc.getFilesList(document_id);
         fileDaoJdbc.deleteFile("testing_adding_file");
         Assert.assertEquals(expected, actual);
     }
@@ -70,7 +67,7 @@ public class PostgresFileDaoJdbcTest {
         FileDaoJdbc fileDaoJdbc = new FileDaoJdbc();
         expected.remove("test_file");
         fileDaoJdbc.deleteFile("test_file");
-        ArrayList<String> actual = fileDaoJdbc.getFilesList(document_id);
+        List<String> actual = fileDaoJdbc.getFilesList(document_id);
         fileDaoJdbc.addNewFile("test_file", document_id, "test_path");
         Assert.assertEquals(expected, actual);
     }

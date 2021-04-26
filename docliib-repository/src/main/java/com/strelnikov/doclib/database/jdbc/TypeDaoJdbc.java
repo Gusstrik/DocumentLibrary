@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 public class TypeDaoJdbc implements TypeDao {
@@ -42,7 +43,7 @@ public class TypeDaoJdbc implements TypeDao {
 
     private final String TYPE_GET_LIST_QUERY = "SELECT* FROM types";
 
-    public ArrayList<String> getTypesList() {
+    public List<String> getTypesList() {
         ArrayList<String> list = new ArrayList();
         try {
             Connection connection = DatabaseConnectorJdbc.getConnectionFromPool();

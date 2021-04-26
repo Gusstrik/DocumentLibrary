@@ -1,8 +1,8 @@
 package com.strelnikov.doclib.database.Interface;
 
-import com.strelnikov.doclib.model.conception.Entity;
+import com.strelnikov.doclib.model.conception.Unit;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public interface CatalogDao {
 
@@ -10,5 +10,5 @@ public interface CatalogDao {
 
     void deleteCatalog(String name);
 
-    ArrayList<Entity> getContentList(String catalogName);
+    List<Unit> getContentList(String catalogName);
 }

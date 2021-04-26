@@ -1,18 +1,17 @@
 package com.strelnikov.doclib.database.jdbc;
 
 import com.strelnikov.doclib.database.Interface.CatalogDao;
-import com.strelnikov.doclib.model.conception.Entity;
+import com.strelnikov.doclib.model.conception.Unit;
 import com.strelnikov.doclib.model.catalogs.Catalog;
 import com.strelnikov.doclib.model.documnets.Documnet;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 public class CatalogDaoJdbc implements CatalogDao {
@@ -57,8 +56,8 @@ public class CatalogDaoJdbc implements CatalogDao {
     private final String CATALOG_SHOW_CATALOGS =
             "SELECT name from catalog where parent =?";
 
-    private ArrayList<Entity> getListCatalogs(String curentCatalog) {
-        ArrayList<Entity> list = new ArrayList();
+    private List<Unit> getListCatalogs(String curentCatalog) {
+        List<Unit> list = new ArrayList();
         try {
             Connection connection = DatabaseConnectorJdbc.getConnectionFromPool();
             PreparedStatement statement = connection.prepareStatement(CATALOG_SHOW_CATALOGS);
@@ -77,8 +76,8 @@ public class CatalogDaoJdbc implements CatalogDao {
     private final String CATALOG_SHOW_DOCUMENTS =
             "SELECT name from document where catalog =?";
 
-    private ArrayList<Entity> getListDocuments(int catalog_id) {
-        ArrayList<Entity> list = new ArrayList();
+    private List<Unit> getListDocuments(int catalog_id) {
+        List<Unit> list = new ArrayList();
         try {
             Connection connection = DatabaseConnectorJdbc.getConnectionFromPool();
             PreparedStatement statement = connection.prepareStatement(CATALOG_SHOW_DOCUMENTS);
@@ -95,8 +94,8 @@ public class CatalogDaoJdbc implements CatalogDao {
     }
 
     @Override
-    public ArrayList<Entity> getContentList(String currentCatalog) {
-        ArrayList<Entity> list = getListCatalogs(currentCatalog);
+    public List<Unit> getContentList(String currentCatalog) {
+        List<Unit> list = getListCatalogs(currentCatalog);
         list.addAll(getListDocuments(getCatalogId(currentCatalog)));
         return list;
     }

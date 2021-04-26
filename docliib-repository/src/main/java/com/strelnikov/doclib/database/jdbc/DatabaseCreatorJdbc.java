@@ -20,7 +20,8 @@ public class DatabaseCreatorJdbc {
             Reader reader = new FileReader
                     ("src/main/resources/createdb.sql");
             sr.runScript(reader);
-        } catch (SQLException | FileNotFoundException e) {
+            reader.close();
+        } catch (SQLException | IOException e) {
             System.out.println(e.getMessage());
             log.error(e.getMessage(), e);
         }

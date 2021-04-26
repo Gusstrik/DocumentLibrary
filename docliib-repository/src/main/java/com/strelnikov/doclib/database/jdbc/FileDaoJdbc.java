@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 public class FileDaoJdbc implements FileDao {
@@ -65,8 +66,8 @@ public class FileDaoJdbc implements FileDao {
 
     private final String FILE_GET_DOCUMNET_LIST_QUERY = "SELECT name from file where document_id=?";
 
-    public ArrayList<String> getFilesList(int document_id) {
-        ArrayList<String> list = new ArrayList();
+    public List<String> getFilesList(int document_id) {
+        List<String> list = new ArrayList();
         try {
             Connection connection = DatabaseConnectorJdbc.getConnectionFromPool();
             PreparedStatement statement = connection.prepareStatement(FILE_GET_DOCUMNET_LIST_QUERY);

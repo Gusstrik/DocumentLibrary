@@ -1,20 +1,18 @@
 
 import com.strelnikov.doclib.database.jdbc.TypeDaoJdbc;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.List;
 
-
+@Slf4j
 public class PostgresTypeDaoJdbcTest {
-    private static final Logger log;
 
-    static {
-        log = LoggerFactory.getLogger("PostgresTest");
-    }
 
-    private ArrayList<String> expected;
+    private List<String> expected;
 
     @Before
     public void beforeEachTypeDaoTest() {
@@ -32,7 +30,7 @@ public class PostgresTypeDaoJdbcTest {
     @Test
     public void getTypeListTest() {
         TypeDaoJdbc typeDaoJdbc = new TypeDaoJdbc();
-        ArrayList<String> actual = typeDaoJdbc.getTypesList();
+        List<String> actual = typeDaoJdbc.getTypesList();
         Assert.assertEquals(expected, actual);
     }
 
@@ -41,7 +39,7 @@ public class PostgresTypeDaoJdbcTest {
         TypeDaoJdbc typeDaoJdbc = new TypeDaoJdbc();
         typeDaoJdbc.addType("test_adding_type");
         expected.add("test_adding_type");
-        ArrayList<String> actual = typeDaoJdbc.getTypesList();
+        List<String> actual = typeDaoJdbc.getTypesList();
         typeDaoJdbc.deleteType("test_adding_type");
         Assert.assertEquals(expected, actual);
     }
@@ -50,7 +48,7 @@ public class PostgresTypeDaoJdbcTest {
     public void deleteTypeTest() {
         TypeDaoJdbc typeDaoJdbc = new TypeDaoJdbc();
         typeDaoJdbc.deleteType("test_type");
-        ArrayList<String> actual = typeDaoJdbc.getTypesList();
+        List<String> actual = typeDaoJdbc.getTypesList();
         expected.remove("test_type");
         typeDaoJdbc.addType("test_type");
         Assert.assertEquals(expected, actual);

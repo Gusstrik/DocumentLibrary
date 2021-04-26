@@ -1,7 +1,7 @@
 import com.strelnikov.doclib.database.jdbc.TypeDaoJdbc;
 import com.strelnikov.doclib.database.jdbc.CatalogDaoJdbc;
 import com.strelnikov.doclib.database.jdbc.DocumentDaoJdbc;
-import com.strelnikov.doclib.model.conception.Entity;
+import com.strelnikov.doclib.model.conception.Unit;
 import org.junit.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +52,7 @@ public class PostrgresCatalogDaoJdbcTest {
     private ArrayList<String> getNamesFromContentList() {
         CatalogDaoJdbc catalogDaoJdbc = new CatalogDaoJdbc();
         ArrayList<String> list = new ArrayList();
-        for (Entity e : catalogDaoJdbc.getContentList("test_1")) {
+        for (Unit e : catalogDaoJdbc.getContentList("test_1")) {
             list.add(e.getName());
         }
         return list;
@@ -99,10 +99,10 @@ public class PostrgresCatalogDaoJdbcTest {
 //        catalogDao.addNewCatalog("test4", "test1");
 //        catalogDao.deleteCatalog("test3");
 //        documentDao.addNewDocuemnt("testing_doc", 1, "test_type", catalogDao.getCatalogId("test1"));
-//        ArrayList<Entity> entities = catalogDao.getContentList("test1");
+//        ArrayList<Unit> entities = catalogDao.getContentList("test1");
 //        System.out.println(entities.get(0).getName());
 //        ArrayList<String> actual = new ArrayList();
-//        for (Entity e : entities) {
+//        for (Unit e : entities) {
 //            actual.add(e.getName());
 //        }
 //        ArrayList<String> expected = new ArrayList();
