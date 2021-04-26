@@ -14,8 +14,7 @@ public class DocumentDaoJdbc implements DocumentDao {
             "(nextval('document_id_seq'),?,?,?,?,?,false);";
 
     public void addNewDocument(String name, String type, int version, String description, int catalogId) {
-        try {
-            Connection connection = DatabaseConnectorJdbc.getConnectionFromPool();
+        try (Connection connection = DatabaseConnectorJdbc.getConnectionFromPool();){
             PreparedStatement statement = connection.prepareStatement(DOCUMENT_ADD_QUERY);
             statement.setString(1, name);
             statement.setString(2, type);
@@ -41,19 +40,17 @@ public class DocumentDaoJdbc implements DocumentDao {
 
     public int getDocumentId(String name, String type, int version){
         int id=-1;
-        try {
-            Connection connection = DatabaseConnectorJdbc.getConnectionFromPool();
-//            Statement statement = connection.createStatement();
+        try (Connection connection = DatabaseConnectorJdbc.getConnectionFromPool()){
+//          Statement statement = connection.createStatement();
             PreparedStatement statement = connection.prepareStatement("SELECT id FROM document WHERE name=? AND version=? AND type=?;");
             statement.setString(1, name);
             statement.setInt(2,version);
             statement.setString(3,type);
-//            ResultSet rs = statement.executeQuery("SELECT id FROM document WHERE name='"+name+"' AND version="+version+" AND type='"+type+"';");
+//          ResultSet rs = statement.executeQuery("SELECT id FROM document WHERE name='"+name+"' AND version="+version+" AND type='"+type+"';");
             ResultSet rs = statement.executeQuery();
             if (rs.next()){
                 id=rs.getInt(1);
             }
-            connection.close();
         } catch (SQLException e) {
             log.error(e.getMessage(), e);
         }
@@ -63,8 +60,7 @@ public class DocumentDaoJdbc implements DocumentDao {
     private final String DOCUMENT_DELETE_QUERY="DELETE FROM document WHERE id=?";
 
     public void deleteDocument(int id){
-        try {
-            Connection connection = DatabaseConnectorJdbc.getConnectionFromPool();
+        try (Connection connection = DatabaseConnectorJdbc.getConnectionFromPool()){
             PreparedStatement statement = connection.prepareStatement(DOCUMENT_DELETE_QUERY);
             statement.setInt(1, id);
             statement.executeUpdate();
