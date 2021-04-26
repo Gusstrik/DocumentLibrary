@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import lombok.Getter;
 import lombok.Setter;
 
+@Getter
+@Setter
 public abstract class Entity {
 
     public Entity(String name, Type type) {
@@ -12,12 +14,9 @@ public abstract class Entity {
         this.type = type;
     }
 
-    @Getter
-    @Setter
+
     private String name;
 
-    @Getter
-    @Setter
     private Type type;
 
     private ArrayList<Permission> permissions = new ArrayList();

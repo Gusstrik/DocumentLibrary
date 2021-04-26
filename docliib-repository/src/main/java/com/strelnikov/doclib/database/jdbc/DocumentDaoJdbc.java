@@ -1,16 +1,14 @@
 package com.strelnikov.doclib.database.jdbc;
 
 import com.strelnikov.doclib.database.Interface.DocumentDao;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 
+@Slf4j
 public class DocumentDaoJdbc implements DocumentDao {
-    private static final Logger log;
-    static {
-        log=LoggerFactory.getLogger(DocumentDaoJdbc.class);
-    }
 
     private final String DOCUMENT_ADD_QUERY = "INSERT INTO document VALUES" +
             "(nextval('document_id_seq'),?,?,?,?,?,false);";

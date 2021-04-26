@@ -1,17 +1,16 @@
 package com.strelnikov.doclib.database.jdbc;
 
 import com.strelnikov.doclib.database.Interface.TypeDao;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 import java.util.ArrayList;
 
+@Slf4j
 public class TypeDaoJdbc implements TypeDao {
-    private static Logger log ;
-    static {
-        log= LoggerFactory.getLogger(TypeDaoJdbc.class);
-    }
+
 
     private static final String TYPE_ADD_QUERY = "INSERT INTO types VALUES (nextval('types_id_seq'),?)";
 

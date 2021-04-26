@@ -5,12 +5,13 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 
+@Getter
+@Setter
 public class Permission {
-    @Getter
-    @Setter
+
     private String login;
 
-    public ArrayList<Credentials> credentials;
+    private ArrayList<Credentials> credentials;
 
     public Permission(String login, Credentials... credentials) {
         this.login = login;
@@ -24,6 +25,13 @@ public class Permission {
         for (Credentials cred : credentials) {
             if (!this.credentials.contains(cred)) {
                 this.credentials.add(cred);
+            }
+        }
+    }
+    public void removeCredentials(Credentials... credentials) {
+        for (Credentials cred : credentials) {
+            if (!this.credentials.contains(cred)) {
+                this.credentials.remove(cred);
             }
         }
     }

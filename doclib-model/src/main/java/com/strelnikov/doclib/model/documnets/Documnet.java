@@ -7,15 +7,13 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 
+@Setter
+@Getter
 public class Documnet extends Entity {
     public ArrayList<DocumentVersion> versionsList = new ArrayList();
 
-    @Setter
-    @Getter
     private int ActualVersion;
 
-    @Setter
-    @Getter
     private DocumentType documentType;
 
     public Documnet(String name) {

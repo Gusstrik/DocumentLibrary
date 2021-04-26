@@ -4,6 +4,7 @@ import com.strelnikov.doclib.database.Interface.CatalogDao;
 import com.strelnikov.doclib.model.conception.Entity;
 import com.strelnikov.doclib.model.catalogs.Catalog;
 import com.strelnikov.doclib.model.documnets.Documnet;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,12 +14,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+@Slf4j
 public class CatalogDaoJdbc implements CatalogDao {
-    private static final Logger log;
-
-    static {
-        log = LoggerFactory.getLogger(CatalogDaoJdbc.class);
-    }
 
     private final String CATALOG_ADD_QUERY = "INSERT INTO catalog VALUES" +
             "(nextval('catalog_id_seq'),?,?)";

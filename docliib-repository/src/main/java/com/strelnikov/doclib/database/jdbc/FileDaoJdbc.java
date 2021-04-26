@@ -1,6 +1,7 @@
 package com.strelnikov.doclib.database.jdbc;
 
 import com.strelnikov.doclib.database.Interface.FileDao;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,11 +11,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+@Slf4j
 public class FileDaoJdbc implements FileDao {
-    private static final Logger log;
-    static {
-        log = LoggerFactory.getLogger(FileDaoJdbc.class);
-    }
+
 
     private final String FILE_ADD_QUERY = "INSERT INTO file VALUES" +
             "(nextval('file_id_seq'),?,?,?)";
