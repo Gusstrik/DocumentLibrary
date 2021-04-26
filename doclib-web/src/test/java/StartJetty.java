@@ -3,6 +3,8 @@ import org.eclipse.jetty.webapp.WebAppContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.FileReader;
+import java.io.Reader;
 import java.sql.SQLOutput;
 
 public class StartJetty {
@@ -13,16 +15,14 @@ public class StartJetty {
     }
 
     public static void main(String[] args) throws Exception {
-
-        Server server = init("doclib-web/src/main/webapp");
+        Server server = init("C:\\Users\\istre\\DocumentLibrary\\test\\src\\main\\webapp");
         server.start();
-        System.out.println(server.getURI());
-        System.out.println(server.getAttribute("descriptor"));
+        server.join();
 
     }
 
     public static Server init(String webDir) throws Exception {
-        Server server = new Server(8080);
+        Server server = new Server(12135);
         WebAppContext wcon = new WebAppContext();
 
 
@@ -31,8 +31,8 @@ public class StartJetty {
         wcon.setResourceBase(webDir);
         wcon.setConfigurationDiscovered(true);
 
-        wcon.setAttribute("org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern", ".*/classes/.*");
-        wcon.setParentLoaderPriority(true);
+        wcon.setAttribute("org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern",".*/[^/]*jstl.*\\.jar$");
+        //wcon.setParentLoaderPriority(true);
 
         server.setHandler(wcon);
         return server;

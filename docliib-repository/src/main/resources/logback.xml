@@ -15,11 +15,11 @@
         </encoder>
     </appender>
 
-    <logger name="PostgresTypeDaoTest" level="debug">
+    <logger name="PostgresTypeDaoJdbcTest" level="debug">
         <appender-ref ref="postgresdatabase-test-log"/>
     </logger>
 
-    <logger name="com.strelnikov.doclib.postgresdatabase" level="debug">
+    <logger name="com.strelnikov.doclib.database" level="debug">
         <appender-ref ref="postgresdatabase-log"/>
     </logger>
 </configuration>

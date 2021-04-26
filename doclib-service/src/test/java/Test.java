@@ -1,4 +1,4 @@
-import com.strelnikov.doclib.service.catalogs.Catalog;
+import service.catalogs.Catalog;
 
 public class Test {
     public static void main(String[] args) {

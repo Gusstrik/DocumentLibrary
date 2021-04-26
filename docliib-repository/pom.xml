@@ -14,7 +14,7 @@
     <properties>
         <maven.compiler.source>16</maven.compiler.source>
         <maven.compiler.target>16</maven.compiler.target>
-        <doclib-service.version>1.0-SNAPSHOT</doclib-service.version>
+        <doclib-model.version>1.0-SNAPSHOT</doclib-model.version>
     </properties>
 
     <dependencies>
@@ -44,8 +44,8 @@
         </dependency>
         <dependency>
             <groupId>com.strelnikov.doclib</groupId>
-            <artifactId>doclib-service</artifactId>
-            <version>${doclib-service.version}</version>
+            <artifactId>doclib-model</artifactId>
+            <version>${doclib-model.version}</version>
         </dependency>
     </dependencies>
     <build>

@@ -12,6 +12,7 @@
         <module>doclib-service</module>
         <module>docliib-repository</module>
         <module>doclib-web</module>
+        <module>doclib-model</module>
     </modules>
 
     <properties>
@@ -26,7 +27,7 @@
         <logback.version>1.2.3</logback.version>
         <junit.version>4.13.2</junit.version>
         <javaxservlet.version>4.0.1</javaxservlet.version>
-        <jetty.version>11.0.2</jetty.version>
+        <jetty.version>10.0.2</jetty.version>
     </properties>
 
     <dependencyManagement>
@@ -89,6 +90,7 @@
                 <artifactId>jetty-annotations</artifactId>
                 <version>${jetty.version}</version>
             </dependency>
+
         </dependencies>
     </dependencyManagement>
 
