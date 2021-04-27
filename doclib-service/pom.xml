@@ -10,18 +10,34 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>doclib-service</artifactId>
+    <packaging>pom</packaging>
+
+    <properties>
+        <maven.compiler.source>16</maven.compiler.source>
+        <maven.compiler.target>16</maven.compiler.target>
+        <doclib.version>1.0-SNAPSHOT</doclib.version>
+    </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>com.strelnikov.doclib</groupId>
+            <artifactId>doclib-model</artifactId>
+            <version>${doclib.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.strelnikov.doclib</groupId>
+            <artifactId>doclib-repository</artifactId>
+            <version>${doclib.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
-
-    <properties>
-        <maven.compiler.source>16</maven.compiler.source>
-        <maven.compiler.target>16</maven.compiler.target>
-    </properties>
 
 </project>

@@ -1,4 +1,4 @@
-package com.strelnikov.doclib.database.Interface;
+package com.strelnikov.doclib.database;
 
 import com.strelnikov.doclib.model.conception.Unit;
 

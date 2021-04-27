@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-public class PostgresTypeDaoJdbcTest {
+public class PostgresUnitTypeDaoJdbcTest {
 
 
     private List<String> expected;

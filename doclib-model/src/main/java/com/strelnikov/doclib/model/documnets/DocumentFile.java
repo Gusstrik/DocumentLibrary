@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class File {
+public class DocumentFile {
 
     private String fileName;
 

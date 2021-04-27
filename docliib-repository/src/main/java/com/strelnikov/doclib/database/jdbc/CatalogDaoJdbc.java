@@ -1,6 +1,6 @@
 package com.strelnikov.doclib.database.jdbc;
 
-import com.strelnikov.doclib.database.Interface.CatalogDao;
+import com.strelnikov.doclib.database.CatalogDao;
 import com.strelnikov.doclib.model.conception.Unit;
 import com.strelnikov.doclib.model.catalogs.Catalog;
 import com.strelnikov.doclib.model.documnets.Documnet;

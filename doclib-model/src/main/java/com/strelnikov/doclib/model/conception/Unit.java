@@ -9,15 +9,15 @@ import lombok.Setter;
 @Setter
 public abstract class Unit {
 
-    public Unit(String name, Type type) {
+    public Unit(String name, UnitType unitType) {
         this.name = name;
-        this.type = type;
+        this.unitType = unitType;
     }
 
 
     private String name;
 
-    private Type type;
+    private UnitType unitType;
 
     private ArrayList<Permission> permissions = new ArrayList();
 

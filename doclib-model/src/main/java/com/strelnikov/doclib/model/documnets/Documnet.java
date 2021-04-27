@@ -1,7 +1,7 @@
 package com.strelnikov.doclib.model.documnets;
 
 import com.strelnikov.doclib.model.conception.Unit;
-import com.strelnikov.doclib.model.conception.Type;
+import com.strelnikov.doclib.model.conception.UnitType;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,6 +17,6 @@ public class Documnet extends Unit {
     private DocumentType documentType;
 
     public Documnet(String name) {
-        super(name, Type.DOCUMENT);
+        super(name, UnitType.DOCUMENT);
     }
 }

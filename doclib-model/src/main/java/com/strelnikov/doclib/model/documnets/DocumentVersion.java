@@ -14,7 +14,7 @@ public class DocumentVersion {
 
     private Importance importance;
 
-    public ArrayList<File> filesList = new ArrayList();
+    public ArrayList<DocumentFile> filesList = new ArrayList();
 
     private boolean isModerated;
 

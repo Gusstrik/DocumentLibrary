@@ -1,3 +1,4 @@
+import com.strelnikov.doclib.database.jdbc.DatabaseCreatorJdbc;
 import com.strelnikov.doclib.database.jdbc.DocumentDaoJdbc;
 import com.strelnikov.doclib.database.jdbc.FileDaoJdbc;
 import com.strelnikov.doclib.database.jdbc.TypeDaoJdbc;
@@ -10,24 +11,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-public class PostgresFileDaoJdbcTest {
+public class PostgresDocumentFileDaoJdbcTest {
     private static int document_id;
 
     @BeforeClass
     public static void beforeFileDaoTest() {
-        TypeDaoJdbc typeDaoJdbc = new TypeDaoJdbc();
-        typeDaoJdbc.addType("test_type");
+        DatabaseCreatorJdbc creator = new DatabaseCreatorJdbc();
+        creator.runScript("src/test/resources/insertestdb.sql");
         DocumentDaoJdbc documentDaoJdbc = new DocumentDaoJdbc();
-        documentDaoJdbc.addNewDocuemnt("test_doc", "test_type", 1);
         document_id = documentDaoJdbc.getDocumentId("test_doc", "test_type", 1);
     }
 
     @AfterClass
     public static void afterFileDaoTest() {
-        TypeDaoJdbc typeDaoJdbc = new TypeDaoJdbc();
-        typeDaoJdbc.deleteType("test_type");
-        DocumentDaoJdbc documentDaoJdbc = new DocumentDaoJdbc();
-        documentDaoJdbc.deleteDocument(document_id);
+        DatabaseCreatorJdbc creator = new DatabaseCreatorJdbc();
+        creator.runScript("src/test/resources/deletedb.sql");
     }
 
     private List<String> expected;
