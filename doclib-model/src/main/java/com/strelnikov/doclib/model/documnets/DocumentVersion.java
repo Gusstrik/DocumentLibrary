@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -14,8 +15,17 @@ public class DocumentVersion {
 
     private Importance importance;
 
-    public ArrayList<DocumentFile> filesList = new ArrayList();
+    private List<DocumentFile> filesList = new ArrayList();
 
     private boolean isModerated;
+
+    public DocumentVersion() {
+
+    }
+
+    public DocumentVersion(String description, boolean isModerated) {
+        this.description = description;
+        this.isModerated = isModerated;
+    }
 
 }

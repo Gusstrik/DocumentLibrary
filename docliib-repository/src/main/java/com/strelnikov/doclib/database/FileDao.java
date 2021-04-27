@@ -1,5 +1,7 @@
 package com.strelnikov.doclib.database;
 
+import com.strelnikov.doclib.model.documnets.DocumentFile;
+
 import java.util.List;
 
 public interface FileDao {
@@ -7,7 +9,9 @@ public interface FileDao {
 
     void deleteFile(String name);
 
-    void renameFile(String newName, String oldName);
+    DocumentFile loadFile(String Name);
 
-    List<String> getFilesList(int document_id);
+    List<DocumentFile> getFilesList(int document_id);
+
+    void copyFilesToNewDoc(List<DocumentFile> fileList, int docId);
 }

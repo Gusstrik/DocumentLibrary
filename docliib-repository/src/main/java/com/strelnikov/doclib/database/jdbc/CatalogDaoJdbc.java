@@ -3,7 +3,7 @@ package com.strelnikov.doclib.database.jdbc;
 import com.strelnikov.doclib.database.CatalogDao;
 import com.strelnikov.doclib.model.conception.Unit;
 import com.strelnikov.doclib.model.catalogs.Catalog;
-import com.strelnikov.doclib.model.documnets.Documnet;
+import com.strelnikov.doclib.model.documnets.Document;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Connection;
@@ -31,6 +31,29 @@ public class CatalogDaoJdbc implements CatalogDao {
         }
     }
 
+
+    private final String CATALOG_LOAD_QUERY = "SELECT name, parent FROM catalog WHERE name=?";
+
+    @Override
+    public Catalog loadCatalog(String name) {
+        Catalog catalog=null;
+        try (Connection connection = DatabaseConnectorJdbc.getConnectionFromPool()){
+            PreparedStatement statement = connection.prepareStatement(CATALOG_LOAD_QUERY);
+            statement.setString(1,name);
+            ResultSet rs = statement.executeQuery();
+
+            if(rs.next()){
+                catalog = new Catalog(rs.getString(1));
+            }
+            return catalog;
+        }catch (SQLException e){
+            log.error(e.getMessage(),e);
+            System.out.println("Ohw shit");
+        }
+       return null;
+    }
+
+
     public void addNewCatalog(String name) {
         addNewCatalog(name, "/");
     }
@@ -49,6 +72,7 @@ public class CatalogDaoJdbc implements CatalogDao {
             log.error(e.getMessage(), e);
         }
     }
+
 
     private final String CATALOG_SHOW_CATALOGS =
             "SELECT name from catalog where parent =?";
@@ -78,7 +102,7 @@ public class CatalogDaoJdbc implements CatalogDao {
             statement.setInt(1, catalog_id);
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
-                list.add(new Documnet(rs.getString(1)));
+                list.add(new Document(rs.getString(1)));
             }
         } catch (SQLException e) {
             log.error(e.getMessage(), e);
@@ -93,8 +117,10 @@ public class CatalogDaoJdbc implements CatalogDao {
         return list;
     }
 
+
     private final String CATALOG_GET_ID =
             "SELECT id from catalog where name =?";
+    @Override
     public int getCatalogId(String name){
         int id=-1;
         try (Connection connection = DatabaseConnectorJdbc.getConnectionFromPool()){

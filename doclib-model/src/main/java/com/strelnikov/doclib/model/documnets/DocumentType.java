@@ -1,7 +1,22 @@
 package com.strelnikov.doclib.model.documnets;
 
-import java.util.ArrayList;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.util.List;
+
+@Getter
+@Setter
 public class DocumentType {
-    static ArrayList<String> documentTypeList = new ArrayList();
+    public static List<String> documentTypeList;
+
+    private String curentType;
+
+    public  DocumentType(){
+
+    }
+
+    public DocumentType(String type){
+        curentType=type;
+    }
 }

@@ -1,20 +1,22 @@
+import com.strelnikov.doclib.database.CatalogDao;
 import com.strelnikov.doclib.database.jdbc.DatabaseCreatorJdbc;
-import com.strelnikov.doclib.database.jdbc.TypeDaoJdbc;
+
 import com.strelnikov.doclib.database.jdbc.CatalogDaoJdbc;
 import com.strelnikov.doclib.database.jdbc.DocumentDaoJdbc;
+import com.strelnikov.doclib.model.catalogs.Catalog;
 import com.strelnikov.doclib.model.conception.Unit;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
-public class PostrgresCatalogDaoJdbcTest {
+public class CatalogDaoJdbcTest {
 
     private ArrayList<String> expected;
-    private static int catalog_id;
+    private CatalogDao catalogDao = new CatalogDaoJdbc();
 
     @BeforeClass
     public static void beforeFileDaoTest() {
@@ -31,22 +33,13 @@ public class PostrgresCatalogDaoJdbcTest {
 
     @Before
     public void beforeEachTypeDaoTest() {
-        CatalogDaoJdbc catalogDaoJdbc = new CatalogDaoJdbc();
-        catalogDaoJdbc.addNewCatalog("test_2", "test_1");
-        catalog_id = catalogDaoJdbc.getCatalogId("test_2");
         expected = getNamesFromContentList();
     }
 
-    @After
-    public void afterEachCatalogDaoTest() {
-        CatalogDaoJdbc catalogDaoJdbc = new CatalogDaoJdbc();
-        catalogDaoJdbc.deleteCatalog("test_2");
-    }
 
     private ArrayList<String> getNamesFromContentList() {
-        CatalogDaoJdbc catalogDaoJdbc = new CatalogDaoJdbc();
         ArrayList<String> list = new ArrayList();
-        for (Unit e : catalogDaoJdbc.getContentList("test_1")) {
+        for (Unit e : catalogDao.getContentList("test_parent")) {
             list.add(e.getName());
         }
         return list;
@@ -55,30 +48,43 @@ public class PostrgresCatalogDaoJdbcTest {
 
     @Test
     public void addCatalogTest() {
-        CatalogDaoJdbc catalogDaoJdbc = new CatalogDaoJdbc();
-        catalogDaoJdbc.addNewCatalog("test_3", "test_1");
-        expected.add(1, "test_3");
+        catalogDao.addNewCatalog("test_3", "test_parent");
+        expected.add(2, "test_3");
         ArrayList<String> actual = getNamesFromContentList();
-        catalogDaoJdbc.deleteCatalog("test_3");
+        catalogDao.deleteCatalog("test_3");
         Assert.assertEquals(expected, actual);
     }
 
     @Test
-    public void addDeleteCatalogTest() {
-        CatalogDaoJdbc catalogDaoJdbc = new CatalogDaoJdbc();
-        catalogDaoJdbc.deleteCatalog("test_2");
+    public void deleteCatalogTest() {
+        catalogDao.deleteCatalog("test_2");
         expected.remove("test_2");
         ArrayList<String> actual = getNamesFromContentList();
-        catalogDaoJdbc.addNewCatalog("test_2", "test_1");
+        catalogDao.addNewCatalog("test_2", "test_parent");
         Assert.assertEquals(expected, actual);
     }
 
     @Test
     public void getCatalogIdTest() {
-        CatalogDaoJdbc catalogDaoJdbc = new CatalogDaoJdbc();
-        catalogDaoJdbc.addNewCatalog("test_3", "test_1");
-        int actual = catalogDaoJdbc.getCatalogId("test_3");
-        catalogDaoJdbc.deleteCatalog("test_3");
-        Assert.assertEquals(catalog_id + 1, actual);
+        catalogDao.addNewCatalog("test_3", "test_parent");
+        int expected = catalogDao.getCatalogId("test_3") + 2;
+        catalogDao.deleteCatalog("test_3");
+        catalogDao.addNewCatalog("test_3", "test_parent");
+        catalogDao.deleteCatalog("test_3");
+        catalogDao.addNewCatalog("test_3", "test_parent");
+        int actual = catalogDao.getCatalogId("test_3");
+        catalogDao.deleteCatalog("test_3");
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void loadCatalogTest() {
+        Catalog test = catalogDao.loadCatalog("test_parent");
+        test.setContentList(catalogDao.getContentList(test.getName()));
+        List<String> actual = new ArrayList();
+        for (Unit u : test.getContentList()) {
+            actual.add(u.getName());
+        }
+        Assert.assertEquals(expected, actual);
     }
 }

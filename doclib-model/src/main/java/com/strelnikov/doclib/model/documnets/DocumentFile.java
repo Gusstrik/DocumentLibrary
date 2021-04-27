@@ -11,4 +11,9 @@ public class DocumentFile {
     private String fileName;
 
     private String filePath;
+
+    public DocumentFile(String fileName, String filePath){
+        this.fileName=fileName;
+        this.filePath=filePath;
+    }
 }

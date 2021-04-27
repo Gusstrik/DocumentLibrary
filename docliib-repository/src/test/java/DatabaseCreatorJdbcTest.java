@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-public class PostgresDatabaseCreatorJdbcTest {
+public class DatabaseCreatorJdbcTest {
 
     @Test
     public void createDatabaseTest() {

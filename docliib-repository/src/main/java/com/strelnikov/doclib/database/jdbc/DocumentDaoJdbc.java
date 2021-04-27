@@ -1,9 +1,13 @@
 package com.strelnikov.doclib.database.jdbc;
 
 import com.strelnikov.doclib.database.DocumentDao;
+import com.strelnikov.doclib.model.documnets.Document;
+import com.strelnikov.doclib.model.documnets.DocumentType;
+import com.strelnikov.doclib.model.documnets.DocumentVersion;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 @Slf4j
 public class DocumentDaoJdbc implements DocumentDao {
@@ -11,43 +15,35 @@ public class DocumentDaoJdbc implements DocumentDao {
     private final String DOCUMENT_ADD_QUERY = "INSERT INTO document VALUES" +
             "(nextval('document_id_seq'),?,?,?,?,?,false);";
 
-    public void addNewDocument(String name, String type, int version, String description, int catalogId) {
-        try (Connection connection = DatabaseConnectorJdbc.getConnectionFromPool();){
+    @Override
+    public void addNewDocument(Document document, int catalogId) {
+        try (Connection connection = DatabaseConnectorJdbc.getConnectionFromPool();) {
             PreparedStatement statement = connection.prepareStatement(DOCUMENT_ADD_QUERY);
-            statement.setString(1, name);
-            statement.setString(2, type);
-            statement.setInt(3,version);
-            statement.setString(4,description);
-            statement.setInt(5,catalogId);
+            statement.setString(1, document.getName());
+            DocumentVersion actualDocument = document.getDocumentVersion();
+            statement.setString(2, document.getDocumentType().getCurentType());
+            statement.setInt(3, document.getActualVersion());
+            statement.setString(4, actualDocument.getDescription());
+            statement.setInt(5, catalogId);
             statement.executeUpdate();
         } catch (SQLException e) {
             log.error(e.getMessage(), e);
         }
     }
-    public void addNewDocuemnt(String name, String type, int version, String description) {
-        addNewDocument(name,type,version,description,1);
-    }
-    public void addNewDocuemnt(String name, int version, String type, int catalogId) {
-        addNewDocument(name,type,version,"",catalogId);
-    }
-    public void addNewDocuemnt(String name, String type, int version){
-        addNewDocument(name,type,version,"",1);
-    }
 
-    private final String DOCUMENT_GET_ID_QUERY="SELECT id FROM document WHERE name=? AND version=? AND type=?;";
+    private final String DOCUMENT_GET_ID_QUERY = "SELECT id FROM document WHERE name=? AND version=? AND type=?;";
 
-    public int getDocumentId(String name, String type, int version){
-        int id=-1;
-        try (Connection connection = DatabaseConnectorJdbc.getConnectionFromPool()){
-//          Statement statement = connection.createStatement();
+    @Override
+    public int getDocumentId(Document document) {
+        int id = -1;
+        try (Connection connection = DatabaseConnectorJdbc.getConnectionFromPool()) {
             PreparedStatement statement = connection.prepareStatement("SELECT id FROM document WHERE name=? AND version=? AND type=?;");
-            statement.setString(1, name);
-            statement.setInt(2,version);
-            statement.setString(3,type);
-//          ResultSet rs = statement.executeQuery("SELECT id FROM document WHERE name='"+name+"' AND version="+version+" AND type='"+type+"';");
+            statement.setString(1, document.getName());
+            statement.setInt(2, document.getActualVersion());
+            statement.setString(3, document.getDocumentType().getCurentType());
             ResultSet rs = statement.executeQuery();
-            if (rs.next()){
-                id=rs.getInt(1);
+            if (rs.next()) {
+                id = rs.getInt(1);
             }
         } catch (SQLException e) {
             log.error(e.getMessage(), e);
@@ -55,10 +51,11 @@ public class DocumentDaoJdbc implements DocumentDao {
         return id;
     }
 
-    private final String DOCUMENT_DELETE_QUERY="DELETE FROM document WHERE id=?";
+    private final String DOCUMENT_DELETE_QUERY = "DELETE FROM document WHERE id=?";
 
-    public void deleteDocument(int id){
-        try (Connection connection = DatabaseConnectorJdbc.getConnectionFromPool()){
+    @Override
+    public void deleteDocument(int id) {
+        try (Connection connection = DatabaseConnectorJdbc.getConnectionFromPool()) {
             PreparedStatement statement = connection.prepareStatement(DOCUMENT_DELETE_QUERY);
             statement.setInt(1, id);
             statement.executeUpdate();
@@ -66,4 +63,34 @@ public class DocumentDaoJdbc implements DocumentDao {
             log.error(e.getMessage(), e);
         }
     }
+
+
+    private final String DOCUMENT_LOAD_QUERY = "SELECT * FROM document WHERE name=? AND type=?";
+
+    @Override
+    public Document loadDocument(String name, String type) {
+        Document document = null;
+        try (Connection connection = DatabaseConnectorJdbc.getConnectionFromPool()) {
+            PreparedStatement statement = connection.prepareStatement(DOCUMENT_LOAD_QUERY);
+            statement.setString(1,name);
+            statement.setString(2,type);
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()){
+                document =new Document(rs.getString(2));
+                document.setDocumentType(new DocumentType(rs.getString(3)));
+                document.setVersionsList(new ArrayList<DocumentVersion>());
+                document.getVersionsList().add(new DocumentVersion(rs.getString(5),rs.getBoolean(7)));
+                document.setActualVersion(rs.getInt(4));
+            }
+            while(rs.next()){
+                document.getVersionsList().add(new DocumentVersion(rs.getString(5),rs.getBoolean(7)));
+                document.setActualVersion(rs.getInt(4));
+            }
+        } catch (SQLException e) {
+            log.error(e.getMessage(), e);
+        }
+        return document;
+    }
+
+
 }

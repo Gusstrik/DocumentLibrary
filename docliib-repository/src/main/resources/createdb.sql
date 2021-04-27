@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS document
     id           serial          not null,
     name         varchar(20)     not null,
     type         varchar(20)     not null,
-    version      int default (1) not null,
+    version      int default (0) not null,
     description  varchar(200),
     catalog      int,
     is_moderated bool,
