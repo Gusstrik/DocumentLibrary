@@ -1,0 +1,17 @@
+{
+  "mode": "newVer",
+  "name": "testingDoc",
+  "catalogName": "/",
+  "version":"1",
+  "type": "Order",
+  "fileList": [
+    {
+      "fileName": "testing4",
+      "path": "TestPath1"
+    },
+    {
+      "fileName": "testing3",
+      "path": "TestPath2"
+    }
+  ]
+}

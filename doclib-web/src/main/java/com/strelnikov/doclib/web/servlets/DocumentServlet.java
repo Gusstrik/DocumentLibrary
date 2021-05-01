@@ -62,6 +62,7 @@ public class DocumentServlet extends HttpServlet {
                     result = "New document was created";
                 } else {
                     result = "Incorrect input data";
+                    response.setStatus(400);
                 }
             }else if(mode.equals("newVer")){
                 DocumentDto documentDto = ServletUtils.parseNewDocVersion(requestBody);
@@ -70,11 +71,14 @@ public class DocumentServlet extends HttpServlet {
                     result = "New version of document was created";
                 } else {
                     result = "Incorrect input data";
+                    response.setStatus(400);
                 }
             }else{
                 result="Incorrect adding mode";
+                response.setStatus(400);
             }
         } else {
+            response.setStatus(400);
             result = "Please specify adding mode:\n" +
                     "\"newDoc\" - for adding new Document\n" +
                     "\"newVer\" - for adding new Version";

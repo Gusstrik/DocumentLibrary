@@ -19,7 +19,7 @@ public class DocumentImpl implements DocumentActions {
     @Override
     public Document createNewDocument(String name, DocumentType docType, Catalog catalog) {
         Document document = new Document(name);
-        document.setActualVersion(1);
+        document.setActualVersion(0);
         document.setDocumentType(docType);
         document.getVersionsList().add(new DocumentVersion());
         CatalogDaoJdbc catalogDaoJdbc = new CatalogDaoJdbc();

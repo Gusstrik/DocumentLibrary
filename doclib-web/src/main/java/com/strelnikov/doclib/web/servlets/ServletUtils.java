@@ -131,12 +131,11 @@ public class ServletUtils {
     public static DocumentDto parseNewDocument(String requestBody){
         String [] strArray = requestBody.split(",");
         String docName = getParameterValue("name",strArray);
-        int docVersion=0;
         String type = getParameterValue("type",strArray);
         String catalogName = getParameterValue("catalogName",strArray);
         DocumentDto documentDto = null;
         if(docName!=null&&type!=null&&catalogName!=null){
-            documentDto=new DocumentDto(docName,docVersion,type,catalogName);
+            documentDto=new DocumentDto(docName,0,type,catalogName);
         }else{
             log.debug("docName = "+docName);
             log.debug("type = "+type);

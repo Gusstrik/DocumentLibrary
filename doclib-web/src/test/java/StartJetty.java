@@ -3,6 +3,8 @@ import org.eclipse.jetty.webapp.WebAppContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+
 
 public class StartJetty {
     private static final Logger log;
@@ -12,7 +14,7 @@ public class StartJetty {
     }
 
     public static void main(String[] args) throws Exception {
-        Server server = init("C:\\Users\\istre\\DocumentLibrary\\doclib-web\\src\\main\\webapp");
+        Server server = init("doclib-web/src/test/webapp");
         server.start();
         server.join();
 
