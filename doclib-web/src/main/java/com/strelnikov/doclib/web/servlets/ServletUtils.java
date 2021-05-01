@@ -1,15 +1,14 @@
 package com.strelnikov.doclib.web.servlets;
 
 import com.strelnikov.doclib.dto.CatalogDto;
+import com.strelnikov.doclib.dto.DocTypeDto;
 import com.strelnikov.doclib.model.conception.Unit;
 
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.Field;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -39,13 +38,33 @@ public class ServletUtils {
         }
     }
 
+    public static void writeDocTypesJson(HttpServletResponse response, DocTypeDto typeDto){
+        response.setContentType("application/json");
+        String str = "{\n";
+        str += "  \"typeList\":[";
+        for (int i=0;i<typeDto.getTypeList().size();i++){
+            if (i!=0){
+                str+=",";
+            }
+            str+=quotesWrap(typeDto.getTypeList().get(i));
+        }
+        str+="]\n}";
+        try {
+            OutputStream outputStream = response.getOutputStream();
+            outputStream.write(str.getBytes());
+            outputStream.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private static String quotesWrap(String str) {
         return "\"" + str + "\"";
     }
 
     public static CatalogDto parseJsonToCatalog(InputStream inputStream){
         String requestBody="";
-        CatalogDto catalogDto=null;
+        CatalogDto catalogDto;
         try {
             requestBody=new String(inputStream.readAllBytes());
         } catch (IOException e) {
@@ -56,13 +75,18 @@ public class ServletUtils {
         String parentName=null;
         for (String str:strArray){
             if (str.contains("\"name\"")){
-                catalogName = str.substring(str.indexOf(": \"")+3,str.lastIndexOf('"'));
+                str=str.replaceAll("\\s","");
+                catalogName = str.substring(str.indexOf(":\"")+2,str.lastIndexOf('"'));
             }
         }
         for (String str:strArray){
             if (str.contains("\"parent\"")){
-                parentName = str.substring(str.indexOf(": \"")+3,str.lastIndexOf('"'));
+                str=str.replaceAll("\\s","");
+                parentName = str.substring(str.indexOf(":\"")+2,str.lastIndexOf('"'));
             }
+        }
+        if (catalogName==null){
+            return null;
         }
         if (parentName==null){
             catalogDto = new CatalogDto(catalogName,"/");

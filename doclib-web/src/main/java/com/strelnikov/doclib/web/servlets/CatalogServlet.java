@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.strelnikov.doclib.dto.CatalogDto;
 import com.strelnikov.doclib.service.dtomapper.DtoMapper;
 import com.strelnikov.doclib.service.dtomapper.impl.DtoMapperImpl;
+import org.eclipse.jetty.server.Request;
 
 
 import javax.imageio.plugins.tiff.GeoTIFFTagSet;
@@ -44,8 +45,14 @@ public class CatalogServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,IOException{
         CatalogDto catalogDto = ServletUtils.parseJsonToCatalog(request.getInputStream());
+        response.setContentType("text/html");
+        OutputStream outputStream = response.getOutputStream();
         if (!(catalogDto == null)){
             dtoMapper.mapCatalog(catalogDto);
+            outputStream.write("Catalog was successfully added".getBytes());
+        }else {
+            outputStream.write("Catalog wasn't added. Incorrect input data".getBytes());
         }
+        outputStream.flush();
     }
 }

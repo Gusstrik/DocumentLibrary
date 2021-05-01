@@ -12,11 +12,11 @@ public class DocumentType {
 
     private String curentType;
 
-    public  DocumentType(){
+    public DocumentType() {
 
     }
 
-    public DocumentType(String type){
-        curentType=type;
+    public DocumentType(String type) {
+        curentType = type;
     }
 }
