@@ -65,7 +65,7 @@ public class DocumentDaoJdbc implements DocumentDao {
     }
 
 
-    private final String DOCUMENT_LOAD_QUERY = "SELECT * FROM document WHERE name=? AND type=?";
+    private final String DOCUMENT_LOAD_QUERY = "SELECT * FROM document WHERE name=? AND type=? ORDER BY version";
 
     @Override
     public Document loadDocument(String name, String type) {

@@ -86,7 +86,7 @@ public class FileDaoJdbc implements FileDao {
     }
 
     private final String FILE_COPY_IN_TABLE_QUERY = "INSERT INTO file(id,name,document_id,path)\n" +
-            "VALUES (nextval('file_id_seq',?,?,?));";
+            "VALUES (nextval('file_id_seq'),?,?,?);";
 
     private void copyFile(DocumentFile docFile, int docId) {
         try (Connection connection = DatabaseConnectorJdbc.getConnectionFromPool()) {

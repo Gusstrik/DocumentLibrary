@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <property name="FILE_LOG_PATTERN" value="%d{dd.MM.yyyy HH:mm:ss.SSS} [%thread] %-5level %c - %msg%n"/>
+
+    <appender name="dtoMapper-log" class="ch.qos.logback.core.FileAppender">
+        <file>logs/service/dtoMapper.log</file>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="com.strelnikov.doclib.service.dtomapper.impl" level="debug">
+        <appender-ref ref="dtoMapper-log"/>
+    </logger>
+</configuration>

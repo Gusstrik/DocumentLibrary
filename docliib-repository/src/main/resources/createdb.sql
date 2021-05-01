@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS document
 CREATE TABLE IF NOT EXISTS file
 (
     id          serial,
-    name        varchar(20)  not null unique,
+    name        varchar(20)  not null,
     document_id int          not null,
     path        varchar(300) not null,
     PRIMARY KEY (id),

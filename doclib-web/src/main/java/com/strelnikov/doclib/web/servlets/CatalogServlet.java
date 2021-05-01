@@ -31,7 +31,6 @@ public class CatalogServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String param = request.getParameter("name");
-        //CatalogActions catalogActions = new CatalogImpl();
         CatalogDto catalogDto;
         if(param==null||param.isEmpty()){
             catalogDto = dtoMapper.mapCatalog("/");
