@@ -1,4 +1,4 @@
-package com.strelnikov.doclib.database;
+package com.strelnikov.doclib.repository;
 
 import com.strelnikov.doclib.model.documnets.DocumentFile;
 

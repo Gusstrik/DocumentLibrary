@@ -1,4 +1,4 @@
-package com.strelnikov.doclib.database.jdbc;
+package com.strelnikov.doclib.repository.jdbc;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 

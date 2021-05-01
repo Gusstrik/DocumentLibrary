@@ -1,15 +1,11 @@
-import com.strelnikov.doclib.database.jdbc.CatalogDaoJdbc;
-import com.strelnikov.doclib.database.jdbc.DatabaseConnectorJdbc;
-import com.strelnikov.doclib.database.jdbc.DatabaseCreatorJdbc;
+import com.strelnikov.doclib.repository.jdbc.CatalogDaoJdbc;
+import com.strelnikov.doclib.repository.jdbc.DatabaseConnectorJdbc;
+import com.strelnikov.doclib.repository.jdbc.DatabaseCreatorJdbc;
 
 import com.strelnikov.doclib.model.conception.Unit;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.units.qual.A;
-import org.checkerframework.checker.units.qual.C;
 import org.junit.Assert;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.ResultSet;

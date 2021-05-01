@@ -1,7 +1,7 @@
-import com.strelnikov.doclib.database.DocumentDao;
-import com.strelnikov.doclib.database.jdbc.DatabaseCreatorJdbc;
-import com.strelnikov.doclib.database.jdbc.DatabaseConnectorJdbc;
-import com.strelnikov.doclib.database.jdbc.DocumentDaoJdbc;
+import com.strelnikov.doclib.repository.DocumentDao;
+import com.strelnikov.doclib.repository.jdbc.DatabaseCreatorJdbc;
+import com.strelnikov.doclib.repository.jdbc.DatabaseConnectorJdbc;
+import com.strelnikov.doclib.repository.jdbc.DocumentDaoJdbc;
 import com.strelnikov.doclib.model.documnets.Document;
 import com.strelnikov.doclib.model.documnets.DocumentVersion;
 import lombok.extern.slf4j.Slf4j;

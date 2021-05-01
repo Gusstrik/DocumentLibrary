@@ -1,10 +1,8 @@
-import com.strelnikov.doclib.database.CatalogDao;
-import com.strelnikov.doclib.database.jdbc.DatabaseCreatorJdbc;
+import com.strelnikov.doclib.repository.jdbc.DatabaseCreatorJdbc;
 import com.strelnikov.doclib.model.catalogs.Catalog;
 import com.strelnikov.doclib.model.conception.Unit;
 import com.strelnikov.doclib.service.CatalogActions;
 import com.strelnikov.doclib.service.impl.CatalogImpl;
-import org.checkerframework.checker.units.qual.A;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;

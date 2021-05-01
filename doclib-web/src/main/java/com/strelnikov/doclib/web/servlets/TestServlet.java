@@ -23,7 +23,7 @@ public class TestServlet extends HttpServlet {
         System.out.println(request.getServerPort());
         System.out.println(request.getRequestURI());
         System.out.println(request.getMethod());
-        response.setContentType("text/html");
+        response.setContentType("application/json");
         PrintWriter printWriter=response.getWriter();
         printWriter.write("Test");
         printWriter.close();

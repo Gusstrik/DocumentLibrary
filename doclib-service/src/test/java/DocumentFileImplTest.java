@@ -1,4 +1,4 @@
-import com.strelnikov.doclib.database.jdbc.DatabaseCreatorJdbc;
+import com.strelnikov.doclib.repository.jdbc.DatabaseCreatorJdbc;
 import com.strelnikov.doclib.model.documnets.Document;
 import com.strelnikov.doclib.model.documnets.DocumentFile;
 import com.strelnikov.doclib.model.documnets.DocumentType;
@@ -8,7 +8,6 @@ import com.strelnikov.doclib.service.impl.DocumentFileImpl;
 import com.strelnikov.doclib.service.impl.DocumentImpl;
 import org.junit.*;
 
-import javax.print.Doc;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +40,8 @@ public class DocumentFileImplTest {
 
     @Before
     public void beforeEachFileTest(){
-        document = documentActions.loadDocument("test_doc",new DocumentType("test_type"));
+        document = documentActions.loadDocument("tes" +
+                "t_doc",new DocumentType("test_type"));
         documentActions.refreshDocumentsFileList(document);
         expected = convertToStringList(document.getDocumentVersion().getFilesList());
     }

@@ -1,6 +1,6 @@
-package com.strelnikov.doclib.database.jdbc;
+package com.strelnikov.doclib.repository.jdbc;
 
-import com.strelnikov.doclib.database.DocumentDao;
+import com.strelnikov.doclib.repository.DocumentDao;
 import com.strelnikov.doclib.model.documnets.Document;
 import com.strelnikov.doclib.model.documnets.DocumentType;
 import com.strelnikov.doclib.model.documnets.DocumentVersion;

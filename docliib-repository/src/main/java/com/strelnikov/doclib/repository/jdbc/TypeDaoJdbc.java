@@ -1,6 +1,6 @@
-package com.strelnikov.doclib.database.jdbc;
+package com.strelnikov.doclib.repository.jdbc;
 
-import com.strelnikov.doclib.database.TypeDao;
+import com.strelnikov.doclib.repository.TypeDao;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.*;

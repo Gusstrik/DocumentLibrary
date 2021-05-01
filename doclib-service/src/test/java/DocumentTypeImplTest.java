@@ -1,4 +1,4 @@
-import com.strelnikov.doclib.database.jdbc.DatabaseCreatorJdbc;
+import com.strelnikov.doclib.repository.jdbc.DatabaseCreatorJdbc;
 import com.strelnikov.doclib.model.documnets.DocumentType;
 import com.strelnikov.doclib.service.DocumentTypeActions;
 import com.strelnikov.doclib.service.impl.DocumentTypeImpl;

@@ -3,9 +3,6 @@ import org.eclipse.jetty.webapp.WebAppContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.FileReader;
-import java.io.Reader;
-import java.sql.SQLOutput;
 
 public class StartJetty {
     private static final Logger log;
@@ -15,7 +12,7 @@ public class StartJetty {
     }
 
     public static void main(String[] args) throws Exception {
-        Server server = init("C:\\Users\\istre\\DocumentLibrary\\test\\src\\main\\webapp");
+        Server server = init("C:\\Users\\istre\\DocumentLibrary\\doclib-web\\src\\main\\webapp");
         server.start();
         server.join();
 
@@ -26,7 +23,7 @@ public class StartJetty {
         WebAppContext wcon = new WebAppContext();
 
 
-        wcon.setContextPath("/test-app");
+        wcon.setContextPath("/doclib-app");
         wcon.setDescriptor(webDir + "/web.xml");
         wcon.setResourceBase(webDir);
         wcon.setConfigurationDiscovered(true);

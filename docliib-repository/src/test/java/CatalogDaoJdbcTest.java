@@ -1,8 +1,8 @@
-import com.strelnikov.doclib.database.CatalogDao;
-import com.strelnikov.doclib.database.jdbc.DatabaseCreatorJdbc;
+import com.strelnikov.doclib.repository.CatalogDao;
+import com.strelnikov.doclib.repository.jdbc.DatabaseCreatorJdbc;
 
-import com.strelnikov.doclib.database.jdbc.CatalogDaoJdbc;
-import com.strelnikov.doclib.database.jdbc.DocumentDaoJdbc;
+import com.strelnikov.doclib.repository.jdbc.CatalogDaoJdbc;
+import com.strelnikov.doclib.repository.jdbc.DocumentDaoJdbc;
 import com.strelnikov.doclib.model.catalogs.Catalog;
 import com.strelnikov.doclib.model.conception.Unit;
 import lombok.extern.slf4j.Slf4j;

@@ -1,10 +1,10 @@
 package com.strelnikov.doclib.service.impl;
 
-import com.strelnikov.doclib.database.CatalogDao;
+import com.strelnikov.doclib.repository.CatalogDao;
 import com.strelnikov.doclib.model.catalogs.Catalog;
 import com.strelnikov.doclib.model.conception.Unit;
 import com.strelnikov.doclib.service.CatalogActions;
-import com.strelnikov.doclib.database.jdbc.CatalogDaoJdbc;
+import com.strelnikov.doclib.repository.jdbc.CatalogDaoJdbc;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,7 +1,7 @@
-import com.strelnikov.doclib.database.FileDao;
-import com.strelnikov.doclib.database.jdbc.DatabaseCreatorJdbc;
-import com.strelnikov.doclib.database.jdbc.DocumentDaoJdbc;
-import com.strelnikov.doclib.database.jdbc.FileDaoJdbc;
+import com.strelnikov.doclib.repository.FileDao;
+import com.strelnikov.doclib.repository.jdbc.DatabaseCreatorJdbc;
+import com.strelnikov.doclib.repository.jdbc.DocumentDaoJdbc;
+import com.strelnikov.doclib.repository.jdbc.FileDaoJdbc;
 import com.strelnikov.doclib.model.documnets.Document;
 import com.strelnikov.doclib.model.documnets.DocumentFile;
 import com.strelnikov.doclib.model.documnets.DocumentVersion;

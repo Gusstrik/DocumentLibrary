@@ -1,10 +1,8 @@
 package com.strelnikov.doclib.service.impl;
 
-import com.strelnikov.doclib.database.jdbc.TypeDaoJdbc;
+import com.strelnikov.doclib.repository.jdbc.TypeDaoJdbc;
 import com.strelnikov.doclib.model.documnets.DocumentType;
 import com.strelnikov.doclib.service.DocumentTypeActions;
-
-import java.util.List;
 
 public class DocumentTypeImpl implements DocumentTypeActions {
 

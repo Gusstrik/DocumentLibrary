@@ -2,8 +2,10 @@ package com.strelnikov.doclib.model.catalogs;
 
 import com.strelnikov.doclib.model.conception.Unit;
 import com.strelnikov.doclib.model.conception.UnitType;
+
 import lombok.Getter;
 import lombok.Setter;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,11 +14,11 @@ import java.util.List;
 @Setter
 public class Catalog extends Unit {
 
-    private List<Unit> ContentList;
+    private List<Unit> contentList;
 
     public Catalog(String name) {
         super(name, UnitType.CATALOG);
-        ContentList = new ArrayList();
+        contentList = new ArrayList();
     }
 
 }
