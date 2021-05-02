@@ -1,6 +1,6 @@
 package com.strelnikov.doclib.repository.jdbc.configuration;
 
-import com.strelnikov.doclib.repository.jdbc.*;
+
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -14,7 +14,7 @@ import java.util.ResourceBundle;
 @ComponentScan(basePackages = "com.strelnikov.doclib.repository")
 public class RepositoryConfiguration {
 
-    private static BasicDataSource dataSource = new BasicDataSource();
+    private static final BasicDataSource dataSource = new BasicDataSource();
 
     static {
         ResourceBundle resourse = ResourceBundle.getBundle("database");

@@ -9,7 +9,7 @@ import java.util.ResourceBundle;
 
 
 public class DatabaseConnectorJdbc {
-    private static BasicDataSource ds = new BasicDataSource();
+    private static final BasicDataSource ds = new BasicDataSource();
     static{
         ResourceBundle resourse = ResourceBundle.getBundle("database");
         //String dbName = resourse.getString("db.name");

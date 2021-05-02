@@ -18,7 +18,7 @@ import java.util.List;
 @Repository
 public class FileDaoJdbc implements FileDao {
 
-    private DataSource dataSource;
+    private final DataSource dataSource;
 
     public FileDaoJdbc(@Autowired DataSource dataSource){
         this.dataSource = dataSource;
@@ -36,7 +36,6 @@ public class FileDaoJdbc implements FileDao {
             statement.setInt(2, documentId);
             statement.setString(3, filePath);
             statement.executeUpdate();
-            connection.close();
         } catch (SQLException e) {
             log.error(e.getMessage(), e);
 
@@ -81,7 +80,7 @@ public class FileDaoJdbc implements FileDao {
 
     @Override
     public List<DocumentFile> getFilesList(int document_id) {
-        List<DocumentFile> list = new ArrayList();
+        List<DocumentFile> list = new ArrayList<>();
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(FILE_GET_DOCUMNET_LIST_QUERY);
             statement.setInt(1, document_id);

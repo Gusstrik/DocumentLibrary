@@ -20,7 +20,7 @@ import java.util.List;
 @Slf4j
 public class CatalogDaoJdbc implements CatalogDao {
 
-    private DataSource dataSource;
+    private final DataSource dataSource;
 
 
     public CatalogDaoJdbc(@Autowired DataSource dataSource) {
@@ -89,7 +89,7 @@ public class CatalogDaoJdbc implements CatalogDao {
             "SELECT name from catalog where parent =?";
 
     private List<Unit> getListCatalogs(String curentCatalog) {
-        List<Unit> list = new ArrayList();
+        List<Unit> list = new ArrayList<>();
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(CATALOG_SHOW_CATALOGS);
             statement.setString(1, curentCatalog);
@@ -107,7 +107,7 @@ public class CatalogDaoJdbc implements CatalogDao {
             "SELECT name from document where catalog =?";
 
     private List<Unit> getListDocuments(int catalog_id) {
-        List<Unit> list = new ArrayList();
+        List<Unit> list = new ArrayList<>();
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(CATALOG_SHOW_DOCUMENTS);
             statement.setInt(1, catalog_id);

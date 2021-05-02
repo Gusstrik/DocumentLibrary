@@ -16,7 +16,7 @@ import java.util.ArrayList;
 @Repository
 public class DocumentDaoJdbc implements DocumentDao {
 
-    private DataSource dataSource;
+    private final DataSource dataSource;
 
     public DocumentDaoJdbc(@Autowired DataSource dataSource){
         this.dataSource = dataSource;
@@ -47,7 +47,7 @@ public class DocumentDaoJdbc implements DocumentDao {
     public int getDocumentId(Document document) {
         int id = -1;
         try (Connection connection = dataSource.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement("SELECT id FROM document WHERE name=? AND version=? AND type=?;");
+            PreparedStatement statement = connection.prepareStatement(DOCUMENT_GET_ID_QUERY);
             statement.setString(1, document.getName());
             statement.setInt(2, document.getActualVersion());
             statement.setString(3, document.getDocumentType().getCurentType());
@@ -88,7 +88,7 @@ public class DocumentDaoJdbc implements DocumentDao {
             if (rs.next()){
                 document =new Document(rs.getString(2));
                 document.setDocumentType(new DocumentType(rs.getString(3)));
-                document.setVersionsList(new ArrayList<DocumentVersion>());
+                document.setVersionsList(new ArrayList<>());
                 document.getVersionsList().add(new DocumentVersion(rs.getString(5),rs.getBoolean(7)));
                 document.setActualVersion(rs.getInt(4));
             }

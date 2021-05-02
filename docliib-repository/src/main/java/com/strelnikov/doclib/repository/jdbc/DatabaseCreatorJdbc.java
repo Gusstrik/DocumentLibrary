@@ -15,7 +15,7 @@ import java.sql.SQLException;
 @Repository
 public class DatabaseCreatorJdbc {
 
-    private DataSource dataSource;
+    private final DataSource dataSource;
 
     public DatabaseCreatorJdbc(@Autowired DataSource dataSource){
         this.dataSource = dataSource;

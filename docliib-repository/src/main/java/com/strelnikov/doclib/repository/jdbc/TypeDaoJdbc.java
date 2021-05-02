@@ -14,7 +14,7 @@ import java.util.List;
 @Repository
 public class TypeDaoJdbc implements TypeDao {
 
-    private DataSource dataSource;
+    private final DataSource dataSource;
 
     public TypeDaoJdbc(@Autowired DataSource dataSource){
         this.dataSource = dataSource;
@@ -49,7 +49,7 @@ public class TypeDaoJdbc implements TypeDao {
     private final String TYPE_GET_LIST_QUERY = "SELECT* FROM types";
 
     public List<String> getTypesList() {
-        ArrayList<String> list = new ArrayList();
+        ArrayList<String> list = new ArrayList<>();
         try (Connection connection = dataSource.getConnection()){
             Statement statement = connection.createStatement();
             ResultSet rs = statement.executeQuery(TYPE_GET_LIST_QUERY);
