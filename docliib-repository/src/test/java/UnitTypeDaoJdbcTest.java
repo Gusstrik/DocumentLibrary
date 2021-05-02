@@ -10,10 +10,10 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import java.util.List;
 
 @Slf4j
-public class PostgresUnitTypeDaoJdbcTest {
+public class UnitTypeDaoJdbcTest {
 
     private static final ApplicationContext appContext = new AnnotationConfigApplicationContext(RepositoryConfiguration.class);
-    private final TypeDao typeDao = appContext.getBean(TypeDaoJdbc.class);
+    private final TypeDao typeDao = appContext.getBean(TypeDao.class);
     private List<String> expected;
 
     @Before

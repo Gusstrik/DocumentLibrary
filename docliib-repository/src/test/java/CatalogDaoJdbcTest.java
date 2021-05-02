@@ -1,8 +1,6 @@
 import com.strelnikov.doclib.repository.CatalogDao;
 import com.strelnikov.doclib.repository.jdbc.DatabaseCreatorJdbc;
 
-import com.strelnikov.doclib.repository.jdbc.CatalogDaoJdbc;
-import com.strelnikov.doclib.repository.jdbc.DocumentDaoJdbc;
 import com.strelnikov.doclib.model.catalogs.Catalog;
 import com.strelnikov.doclib.model.conception.Unit;
 import com.strelnikov.doclib.repository.jdbc.configuration.RepositoryConfiguration;
@@ -10,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.*;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,8 +18,8 @@ public class CatalogDaoJdbcTest {
     private static final ApplicationContext appContext = new AnnotationConfigApplicationContext(RepositoryConfiguration.class);
 
     private ArrayList<String> expected;
-    private CatalogDao catalogDao = appContext.getBean(CatalogDaoJdbc.class);
-    private static DatabaseCreatorJdbc databaseCreatorJdbc=appContext.getBean(DatabaseCreatorJdbc.class);
+    private final CatalogDao catalogDao = appContext.getBean(CatalogDao.class);
+    private static final DatabaseCreatorJdbc databaseCreatorJdbc=appContext.getBean(DatabaseCreatorJdbc.class);
 
     @BeforeClass
     public static void beforeFileDaoTest() {
@@ -41,7 +38,8 @@ public class CatalogDaoJdbcTest {
 
 
     private ArrayList<String> getNamesFromContentList() {
-        ArrayList<String> list = new ArrayList();
+        ArrayList<String> list;
+        list = new ArrayList<>();
         for (Unit e : catalogDao.getContentList("test_parent")) {
             list.add(e.getName());
         }
@@ -84,7 +82,8 @@ public class CatalogDaoJdbcTest {
     public void loadCatalogTest() {
         Catalog test = catalogDao.loadCatalog("test_parent");
         test.setContentList(catalogDao.getContentList(test.getName()));
-        List<String> actual = new ArrayList();
+        List<String> actual;
+        actual = new ArrayList<>();
         for (Unit u : test.getContentList()) {
             actual.add(u.getName());
         }

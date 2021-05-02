@@ -1,7 +1,6 @@
 import com.strelnikov.doclib.repository.DocumentDao;
 import com.strelnikov.doclib.repository.jdbc.DatabaseCreatorJdbc;
 import com.strelnikov.doclib.repository.jdbc.DatabaseConnectorJdbc;
-import com.strelnikov.doclib.repository.jdbc.DocumentDaoJdbc;
 import com.strelnikov.doclib.model.documnets.Document;
 import com.strelnikov.doclib.model.documnets.DocumentVersion;
 import com.strelnikov.doclib.repository.jdbc.configuration.RepositoryConfiguration;
@@ -21,7 +20,7 @@ public class DocumentDaoJdbcTest {
 
     private static final ApplicationContext appContext = new AnnotationConfigApplicationContext(RepositoryConfiguration.class);
 
-    private final DocumentDao documentDao = appContext.getBean(DocumentDaoJdbc.class);
+    private final DocumentDao documentDao = appContext.getBean(DocumentDao.class);
     private static final DatabaseCreatorJdbc creator = appContext.getBean(DatabaseCreatorJdbc.class);
 
     @BeforeClass
@@ -37,7 +36,8 @@ public class DocumentDaoJdbcTest {
     private int document_id;
 
     private ArrayList<Integer> getVersionList(){
-        ArrayList<Integer> list = new ArrayList();
+        ArrayList<Integer> list;
+        list = new ArrayList<>();
         try ( Connection connection = DatabaseConnectorJdbc.getConnectionFromPool()) {
             Statement statement = connection.createStatement();
             ResultSet rs = statement.executeQuery("SELECT version from document where name='test_doc';");

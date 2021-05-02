@@ -1,8 +1,6 @@
 import com.strelnikov.doclib.repository.DocumentDao;
 import com.strelnikov.doclib.repository.FileDao;
 import com.strelnikov.doclib.repository.jdbc.DatabaseCreatorJdbc;
-import com.strelnikov.doclib.repository.jdbc.DocumentDaoJdbc;
-import com.strelnikov.doclib.repository.jdbc.FileDaoJdbc;
 import com.strelnikov.doclib.model.documnets.Document;
 import com.strelnikov.doclib.model.documnets.DocumentFile;
 import com.strelnikov.doclib.model.documnets.DocumentVersion;
@@ -21,9 +19,9 @@ public class DocumentFileDaoJdbcTest {
 
     private static final ApplicationContext appContext = new AnnotationConfigApplicationContext(RepositoryConfiguration.class);
     private static final DatabaseCreatorJdbc creator = appContext.getBean(DatabaseCreatorJdbc.class);
-    private static final DocumentDao documentDao = appContext.getBean(DocumentDaoJdbc.class);
+    private static final DocumentDao documentDao = appContext.getBean(DocumentDao.class);
     private List<String> expected;
-    private final FileDao fileDao = appContext.getBean(FileDaoJdbc.class);
+    private final FileDao fileDao = appContext.getBean(FileDao.class);
 
     @BeforeClass
     public static void beforeFileDaoTest() {
@@ -41,7 +39,8 @@ public class DocumentFileDaoJdbcTest {
     }
 
     private List<String> convertToStringList(List<DocumentFile> fileList) {
-        List<String> list = new ArrayList();
+        List<String> list;
+        list = new ArrayList<>();
         for (DocumentFile df : fileList) {
             list.add(df.getFileName());
         }
