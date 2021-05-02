@@ -3,6 +3,8 @@ package com.strelnikov.doclib.repository.jdbc;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.jdbc.ScriptRunner;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.io.*;
@@ -10,11 +12,12 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 @Slf4j
+@Repository
 public class DatabaseCreatorJdbc {
 
     private DataSource dataSource;
 
-    public DatabaseCreatorJdbc(DataSource dataSource){
+    public DatabaseCreatorJdbc(@Autowired DataSource dataSource){
         this.dataSource = dataSource;
     }
 

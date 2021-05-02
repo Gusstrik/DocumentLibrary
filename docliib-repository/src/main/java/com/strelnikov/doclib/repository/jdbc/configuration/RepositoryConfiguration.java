@@ -3,12 +3,15 @@ package com.strelnikov.doclib.repository.jdbc.configuration;
 import com.strelnikov.doclib.repository.jdbc.*;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 
+import javax.sql.DataSource;
 import java.util.ResourceBundle;
 
 @Configuration
+@ComponentScan(basePackages = "com.strelnikov.doclib.repository")
 public class RepositoryConfiguration {
 
     private static BasicDataSource dataSource = new BasicDataSource();
@@ -20,29 +23,8 @@ public class RepositoryConfiguration {
         dataSource.setPassword(resourse.getString("db.password"));
     }
 
-
     @Bean
-    public CatalogDaoJdbc catalogDaoJdbc() {
-        return new CatalogDaoJdbc(dataSource);
-    }
-
-    @Bean
-    public DatabaseCreatorJdbc databaseCreatorJdbc(){
-        return new DatabaseCreatorJdbc(dataSource);
-    }
-
-    @Bean
-    public DocumentDaoJdbc documentDaoJdbc(){
-        return new DocumentDaoJdbc(dataSource);
-    }
-
-    @Bean
-    public FileDaoJdbc fileDaoJdbc(){
-        return new FileDaoJdbc(dataSource);
-    }
-
-    @Bean
-    public TypeDaoJdbc typeDaoJdbc(){
-        return new TypeDaoJdbc(dataSource);
+    public DataSource dataSource() {
+        return dataSource;
     }
 }

@@ -3,6 +3,8 @@ package com.strelnikov.doclib.repository.jdbc;
 import com.strelnikov.doclib.repository.FileDao;
 import com.strelnikov.doclib.model.documnets.DocumentFile;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -13,11 +15,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
+@Repository
 public class FileDaoJdbc implements FileDao {
 
     private DataSource dataSource;
 
-    public FileDaoJdbc(DataSource dataSource){
+    public FileDaoJdbc(@Autowired DataSource dataSource){
         this.dataSource = dataSource;
     }
 

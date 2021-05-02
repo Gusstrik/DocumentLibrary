@@ -5,17 +5,20 @@ import com.strelnikov.doclib.model.documnets.Document;
 import com.strelnikov.doclib.model.documnets.DocumentType;
 import com.strelnikov.doclib.model.documnets.DocumentVersion;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 
 @Slf4j
+@Repository
 public class DocumentDaoJdbc implements DocumentDao {
 
     private DataSource dataSource;
 
-    public DocumentDaoJdbc(DataSource dataSource){
+    public DocumentDaoJdbc(@Autowired DataSource dataSource){
         this.dataSource = dataSource;
     }
 

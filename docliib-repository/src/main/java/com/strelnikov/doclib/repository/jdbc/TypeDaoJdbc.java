@@ -2,6 +2,8 @@ package com.strelnikov.doclib.repository.jdbc;
 
 import com.strelnikov.doclib.repository.TypeDao;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -9,11 +11,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
+@Repository
 public class TypeDaoJdbc implements TypeDao {
 
     private DataSource dataSource;
 
-    public TypeDaoJdbc(DataSource dataSource){
+    public TypeDaoJdbc(@Autowired DataSource dataSource){
         this.dataSource = dataSource;
     }
 
