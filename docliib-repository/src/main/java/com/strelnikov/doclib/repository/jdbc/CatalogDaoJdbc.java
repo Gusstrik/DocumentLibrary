@@ -6,6 +6,7 @@ import com.strelnikov.doclib.model.catalogs.Catalog;
 import com.strelnikov.doclib.model.documnets.Document;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,12 +17,18 @@ import java.util.List;
 @Slf4j
 public class CatalogDaoJdbc implements CatalogDao {
 
+    private DataSource dataSource;
+
+    public CatalogDaoJdbc(DataSource dataSource){
+        this.dataSource = dataSource;
+    }
+
     private final String CATALOG_ADD_QUERY = "INSERT INTO catalog VALUES" +
             "(nextval('catalog_id_seq'),?,?)";
 
     @Override
     public void addNewCatalog(String name, String parent) {
-        try (Connection connection = DatabaseConnectorJdbc.getConnectionFromPool()) {
+        try (Connection connection = dataSource.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(CATALOG_ADD_QUERY);
             statement.setString(1, name);
             statement.setString(2, parent);
@@ -37,7 +44,7 @@ public class CatalogDaoJdbc implements CatalogDao {
     @Override
     public Catalog loadCatalog(String name) {
         Catalog catalog=null;
-        try (Connection connection = DatabaseConnectorJdbc.getConnectionFromPool()){
+        try (Connection connection = dataSource.getConnection()){
             PreparedStatement statement = connection.prepareStatement(CATALOG_LOAD_QUERY);
             statement.setString(1,name);
             ResultSet rs = statement.executeQuery();
@@ -63,7 +70,7 @@ public class CatalogDaoJdbc implements CatalogDao {
 
     @Override
     public void deleteCatalog(String name) {
-        try (Connection connection = DatabaseConnectorJdbc.getConnectionFromPool()){
+        try (Connection connection = dataSource.getConnection()){
             PreparedStatement statement = connection.prepareStatement(CATALOG_DELETE_QUERY);
             statement.setString(1, name);
             statement.setString(2, name);
@@ -79,7 +86,7 @@ public class CatalogDaoJdbc implements CatalogDao {
 
     private List<Unit> getListCatalogs(String curentCatalog) {
         List<Unit> list = new ArrayList();
-        try (Connection connection = DatabaseConnectorJdbc.getConnectionFromPool()){
+        try (Connection connection = dataSource.getConnection()){
             PreparedStatement statement = connection.prepareStatement(CATALOG_SHOW_CATALOGS);
             statement.setString(1, curentCatalog);
             ResultSet rs = statement.executeQuery();
@@ -97,7 +104,7 @@ public class CatalogDaoJdbc implements CatalogDao {
 
     private List<Unit> getListDocuments(int catalog_id) {
         List<Unit> list = new ArrayList();
-        try (Connection connection = DatabaseConnectorJdbc.getConnectionFromPool()){
+        try (Connection connection = dataSource.getConnection()){
             PreparedStatement statement = connection.prepareStatement(CATALOG_SHOW_DOCUMENTS);
             statement.setInt(1, catalog_id);
             ResultSet rs = statement.executeQuery();
@@ -123,7 +130,7 @@ public class CatalogDaoJdbc implements CatalogDao {
     @Override
     public int getCatalogId(String name){
         int id=-1;
-        try (Connection connection = DatabaseConnectorJdbc.getConnectionFromPool()){
+        try (Connection connection = dataSource.getConnection()){
             PreparedStatement statement = connection.prepareStatement(CATALOG_GET_ID);
             statement.setString(1, name);
             ResultSet rs = statement.executeQuery();

@@ -4,6 +4,7 @@ import com.strelnikov.doclib.repository.FileDao;
 import com.strelnikov.doclib.model.documnets.DocumentFile;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,13 +15,19 @@ import java.util.List;
 @Slf4j
 public class FileDaoJdbc implements FileDao {
 
+    private DataSource dataSource;
+
+    public FileDaoJdbc(DataSource dataSource){
+        this.dataSource = dataSource;
+    }
+
 
     private final String FILE_ADD_QUERY = "INSERT INTO file VALUES" +
             "(nextval('file_id_seq'),?,?,?)";
 
     @Override
     public void addNewFile(String fileName, int documentId, String filePath) {
-        try (Connection connection = DatabaseConnectorJdbc.getConnectionFromPool()) {
+        try (Connection connection = dataSource.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(FILE_ADD_QUERY);
             statement.setString(1, fileName);
             statement.setInt(2, documentId);
@@ -37,7 +44,7 @@ public class FileDaoJdbc implements FileDao {
 
     @Override
     public void deleteFile(String name) {
-        try (Connection connection = DatabaseConnectorJdbc.getConnectionFromPool()) {
+        try (Connection connection = dataSource.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(FILE_DELETE_QUERY);
             statement.setString(1, name);
             statement.executeUpdate();
@@ -54,7 +61,7 @@ public class FileDaoJdbc implements FileDao {
    @Override
     public DocumentFile loadFile(String name) {
        DocumentFile documentFile=null;
-        try (Connection connection = DatabaseConnectorJdbc.getConnectionFromPool()) {
+        try (Connection connection = dataSource.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(FILE_LOAD_QUERY);
             statement.setString(1, name);
             ResultSet rs = statement.executeQuery();
@@ -72,7 +79,7 @@ public class FileDaoJdbc implements FileDao {
     @Override
     public List<DocumentFile> getFilesList(int document_id) {
         List<DocumentFile> list = new ArrayList();
-        try (Connection connection = DatabaseConnectorJdbc.getConnectionFromPool()) {
+        try (Connection connection = dataSource.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(FILE_GET_DOCUMNET_LIST_QUERY);
             statement.setInt(1, document_id);
             ResultSet rs = statement.executeQuery();
@@ -89,7 +96,7 @@ public class FileDaoJdbc implements FileDao {
             "VALUES (nextval('file_id_seq'),?,?,?);";
 
     private void copyFile(DocumentFile docFile, int docId) {
-        try (Connection connection = DatabaseConnectorJdbc.getConnectionFromPool()) {
+        try (Connection connection = dataSource.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(FILE_COPY_IN_TABLE_QUERY);
             statement.setString(1, docFile.getFileName());
             statement.setInt(2, docId);

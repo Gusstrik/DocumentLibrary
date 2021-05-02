@@ -17,6 +17,7 @@
     </modules>
 
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>16</maven.compiler.source>
         <maven.compiler.target>16</maven.compiler.target>
         <lombok.version>1.18.20</lombok.version>
@@ -30,6 +31,7 @@
         <javaxservlet.version>4.0.1</javaxservlet.version>
         <jetty.version>10.0.2</jetty.version>
         <jakson.version>2.12.3</jakson.version>
+        <spring.version>5.3.6</spring.version>
     </properties>
 
     <dependencyManagement>
@@ -96,6 +98,16 @@
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
                 <version>${jakson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-core</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context</artifactId>
+                <version>${spring.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -4,8 +4,11 @@ import com.strelnikov.doclib.repository.jdbc.DatabaseConnectorJdbc;
 import com.strelnikov.doclib.repository.jdbc.DocumentDaoJdbc;
 import com.strelnikov.doclib.model.documnets.Document;
 import com.strelnikov.doclib.model.documnets.DocumentVersion;
+import com.strelnikov.doclib.repository.jdbc.configuration.RepositoryConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.*;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -16,17 +19,18 @@ import java.util.ArrayList;
 @Slf4j
 public class DocumentDaoJdbcTest {
 
-    private final DocumentDao documentDao = new DocumentDaoJdbc();
+    private static final ApplicationContext appContext = new AnnotationConfigApplicationContext(RepositoryConfiguration.class);
+
+    private final DocumentDao documentDao = appContext.getBean(DocumentDaoJdbc.class);
+    private static final DatabaseCreatorJdbc creator = appContext.getBean(DatabaseCreatorJdbc.class);
 
     @BeforeClass
     public static void beforeFileDaoTest() {
-        DatabaseCreatorJdbc creator = new DatabaseCreatorJdbc();
         creator.runScript("src/test/resources/insertestdb.sql");
     }
 
     @AfterClass
     public static void afterFileDaoTest() {
-        DatabaseCreatorJdbc creator = new DatabaseCreatorJdbc();
         creator.runScript("src/test/resources/deletedb.sql");
     }
 

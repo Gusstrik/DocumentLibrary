@@ -5,8 +5,11 @@ import com.strelnikov.doclib.repository.jdbc.CatalogDaoJdbc;
 import com.strelnikov.doclib.repository.jdbc.DocumentDaoJdbc;
 import com.strelnikov.doclib.model.catalogs.Catalog;
 import com.strelnikov.doclib.model.conception.Unit;
+import com.strelnikov.doclib.repository.jdbc.configuration.RepositoryConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.*;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 ;
 
 import java.util.ArrayList;
@@ -15,20 +18,20 @@ import java.util.List;
 @Slf4j
 public class CatalogDaoJdbcTest {
 
+    private static final ApplicationContext appContext = new AnnotationConfigApplicationContext(RepositoryConfiguration.class);
+
     private ArrayList<String> expected;
-    private CatalogDao catalogDao = new CatalogDaoJdbc();
+    private CatalogDao catalogDao = appContext.getBean(CatalogDaoJdbc.class);
+    private static DatabaseCreatorJdbc databaseCreatorJdbc=appContext.getBean(DatabaseCreatorJdbc.class);
 
     @BeforeClass
     public static void beforeFileDaoTest() {
-        DatabaseCreatorJdbc creator = new DatabaseCreatorJdbc();
-        creator.runScript("src/test/resources/insertestdb.sql");
-        DocumentDaoJdbc documentDaoJdbc = new DocumentDaoJdbc();
+        databaseCreatorJdbc.runScript("src/test/resources/insertestdb.sql");
     }
 
     @AfterClass
     public static void afterFileDaoTest() {
-        DatabaseCreatorJdbc creator = new DatabaseCreatorJdbc();
-        creator.runScript("src/test/resources/deletedb.sql");
+        databaseCreatorJdbc.runScript("src/test/resources/deletedb.sql");
     }
 
     @Before

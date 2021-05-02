@@ -4,6 +4,7 @@ package com.strelnikov.doclib.repository.jdbc;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.jdbc.ScriptRunner;
 
+import javax.sql.DataSource;
 import java.io.*;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -11,8 +12,14 @@ import java.sql.SQLException;
 @Slf4j
 public class DatabaseCreatorJdbc {
 
+    private DataSource dataSource;
+
+    public DatabaseCreatorJdbc(DataSource dataSource){
+        this.dataSource = dataSource;
+    }
+
     public void createDatabse() {
-        try (Connection connection = DatabaseConnectorJdbc.getConnectionFromPool();
+        try (Connection connection = dataSource.getConnection();
              Reader reader = new FileReader("src/main/resources/createdb.sql")){
             ScriptRunner sr = new ScriptRunner(connection);
             sr.runScript(reader);
@@ -23,7 +30,7 @@ public class DatabaseCreatorJdbc {
     }
 
     public void runScript(String sqriptSqlPath){
-        try (Connection connection = DatabaseConnectorJdbc.getConnectionFromPool();
+        try (Connection connection = dataSource.getConnection();
              Reader reader = new FileReader(sqriptSqlPath)){
             ScriptRunner sr = new ScriptRunner(connection);
             sr.runScript(reader);

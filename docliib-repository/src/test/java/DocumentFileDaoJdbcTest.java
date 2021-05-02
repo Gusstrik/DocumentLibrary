@@ -1,3 +1,4 @@
+import com.strelnikov.doclib.repository.DocumentDao;
 import com.strelnikov.doclib.repository.FileDao;
 import com.strelnikov.doclib.repository.jdbc.DatabaseCreatorJdbc;
 import com.strelnikov.doclib.repository.jdbc.DocumentDaoJdbc;
@@ -5,8 +6,11 @@ import com.strelnikov.doclib.repository.jdbc.FileDaoJdbc;
 import com.strelnikov.doclib.model.documnets.Document;
 import com.strelnikov.doclib.model.documnets.DocumentFile;
 import com.strelnikov.doclib.model.documnets.DocumentVersion;
+import com.strelnikov.doclib.repository.jdbc.configuration.RepositoryConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.*;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,26 +19,26 @@ import java.util.List;
 public class DocumentFileDaoJdbcTest {
     private static int document_id;
 
+    private static final ApplicationContext appContext = new AnnotationConfigApplicationContext(RepositoryConfiguration.class);
+    private static final DatabaseCreatorJdbc creator = appContext.getBean(DatabaseCreatorJdbc.class);
+    private static final DocumentDao documentDao = appContext.getBean(DocumentDaoJdbc.class);
+    private List<String> expected;
+    private final FileDao fileDao = appContext.getBean(FileDaoJdbc.class);
+
     @BeforeClass
     public static void beforeFileDaoTest() {
-        DatabaseCreatorJdbc creator = new DatabaseCreatorJdbc();
         creator.runScript("src/test/resources/insertestdb.sql");
-        DocumentDaoJdbc documentDaoJdbc = new DocumentDaoJdbc();
         Document testDoc = new Document("test_doc");
         testDoc.getDocumentType().setCurentType("test_type");
         testDoc.setActualVersion(0);
         testDoc.getVersionsList().add(new DocumentVersion("test description", false));
-        document_id = documentDaoJdbc.getDocumentId(testDoc);
+        document_id = documentDao.getDocumentId(testDoc);
     }
 
     @AfterClass
     public static void afterFileDaoTest() {
-        DatabaseCreatorJdbc creator = new DatabaseCreatorJdbc();
         creator.runScript("src/test/resources/deletedb.sql");
     }
-
-    private List<String> expected;
-    private final FileDao fileDao = new FileDaoJdbc();
 
     private List<String> convertToStringList(List<DocumentFile> fileList) {
         List<String> list = new ArrayList();

@@ -13,8 +13,6 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
-        <maven.compiler.source>16</maven.compiler.source>
-        <maven.compiler.target>16</maven.compiler.target>
         <doclib.version>1.0-SNAPSHOT</doclib.version>
     </properties>
 

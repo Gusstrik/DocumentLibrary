@@ -3,9 +3,12 @@ import com.strelnikov.doclib.repository.jdbc.DatabaseConnectorJdbc;
 import com.strelnikov.doclib.repository.jdbc.DatabaseCreatorJdbc;
 
 import com.strelnikov.doclib.model.conception.Unit;
+import com.strelnikov.doclib.repository.jdbc.configuration.RepositoryConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Test;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -17,9 +20,12 @@ import java.util.List;
 @Slf4j
 public class DatabaseCreatorJdbcTest {
 
+    private static final ApplicationContext appContext = new AnnotationConfigApplicationContext(RepositoryConfiguration.class);
+
+    private static final DatabaseCreatorJdbc creator = appContext.getBean(DatabaseCreatorJdbc.class);
+
     @Test
     public void createDatabaseTest() {
-        DatabaseCreatorJdbc creator = new DatabaseCreatorJdbc();
         creator.createDatabse();
         String homeCatName = "";
         log.info("Database was successfully created");
@@ -36,9 +42,8 @@ public class DatabaseCreatorJdbcTest {
 
     @Test
     public void runScriptTest(){
-        DatabaseCreatorJdbc creator = new DatabaseCreatorJdbc();
         creator.runScript("src/test/resources/insertestdb.sql");
-        CatalogDaoJdbc catalogDaoJdbc = new CatalogDaoJdbc();
+        CatalogDaoJdbc catalogDaoJdbc = appContext.getBean(CatalogDaoJdbc.class);
         List<Unit> list = catalogDaoJdbc.getContentList("test_parent");
         List<String> expected = new ArrayList();
         expected.add("test_catalog");

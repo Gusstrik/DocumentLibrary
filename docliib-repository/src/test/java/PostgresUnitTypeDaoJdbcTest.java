@@ -1,53 +1,53 @@
 
+import com.strelnikov.doclib.repository.TypeDao;
 import com.strelnikov.doclib.repository.jdbc.TypeDaoJdbc;
+import com.strelnikov.doclib.repository.jdbc.configuration.RepositoryConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.*;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.util.List;
 
 @Slf4j
 public class PostgresUnitTypeDaoJdbcTest {
 
-
+    private static final ApplicationContext appContext = new AnnotationConfigApplicationContext(RepositoryConfiguration.class);
+    private final TypeDao typeDao = appContext.getBean(TypeDaoJdbc.class);
     private List<String> expected;
 
     @Before
     public void beforeEachTypeDaoTest() {
-        TypeDaoJdbc typeDaoJdbc = new TypeDaoJdbc();
-        typeDaoJdbc.addType("test_type");
-        expected = typeDaoJdbc.getTypesList();
+        typeDao.addType("test_type");
+        expected = typeDao.getTypesList();
     }
 
     @After
     public void afterEachTypeDaoTest() {
-        TypeDaoJdbc typeDaoJdbc = new TypeDaoJdbc();
-        typeDaoJdbc.deleteType("test_type");
+        typeDao.deleteType("test_type");
     }
 
     @Test
     public void getTypeListTest() {
-        TypeDaoJdbc typeDaoJdbc = new TypeDaoJdbc();
-        List<String> actual = typeDaoJdbc.getTypesList();
+        List<String> actual = typeDao.getTypesList();
         Assert.assertEquals(expected, actual);
     }
 
     @Test
     public void addTypeTest() {
-        TypeDaoJdbc typeDaoJdbc = new TypeDaoJdbc();
-        typeDaoJdbc.addType("test_adding_type");
+        typeDao.addType("test_adding_type");
         expected.add("test_adding_type");
-        List<String> actual = typeDaoJdbc.getTypesList();
-        typeDaoJdbc.deleteType("test_adding_type");
+        List<String> actual = typeDao.getTypesList();
+        typeDao.deleteType("test_adding_type");
         Assert.assertEquals(expected, actual);
     }
 
     @Test
     public void deleteTypeTest() {
-        TypeDaoJdbc typeDaoJdbc = new TypeDaoJdbc();
-        typeDaoJdbc.deleteType("test_type");
-        List<String> actual = typeDaoJdbc.getTypesList();
+        typeDao.deleteType("test_type");
+        List<String> actual = typeDao.getTypesList();
         expected.remove("test_type");
-        typeDaoJdbc.addType("test_type");
+        typeDao.addType("test_type");
         Assert.assertEquals(expected, actual);
     }
 

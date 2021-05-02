@@ -6,18 +6,25 @@ import com.strelnikov.doclib.model.documnets.DocumentType;
 import com.strelnikov.doclib.model.documnets.DocumentVersion;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 
 @Slf4j
 public class DocumentDaoJdbc implements DocumentDao {
 
+    private DataSource dataSource;
+
+    public DocumentDaoJdbc(DataSource dataSource){
+        this.dataSource = dataSource;
+    }
+
     private final String DOCUMENT_ADD_QUERY = "INSERT INTO document VALUES" +
             "(nextval('document_id_seq'),?,?,?,?,?,false);";
 
     @Override
     public void addNewDocument(Document document, int catalogId) {
-        try (Connection connection = DatabaseConnectorJdbc.getConnectionFromPool();) {
+        try (Connection connection = dataSource.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(DOCUMENT_ADD_QUERY);
             statement.setString(1, document.getName());
             DocumentVersion actualDocument = document.getDocumentVersion();
@@ -36,7 +43,7 @@ public class DocumentDaoJdbc implements DocumentDao {
     @Override
     public int getDocumentId(Document document) {
         int id = -1;
-        try (Connection connection = DatabaseConnectorJdbc.getConnectionFromPool()) {
+        try (Connection connection = dataSource.getConnection()) {
             PreparedStatement statement = connection.prepareStatement("SELECT id FROM document WHERE name=? AND version=? AND type=?;");
             statement.setString(1, document.getName());
             statement.setInt(2, document.getActualVersion());
@@ -55,7 +62,7 @@ public class DocumentDaoJdbc implements DocumentDao {
 
     @Override
     public void deleteDocument(int id) {
-        try (Connection connection = DatabaseConnectorJdbc.getConnectionFromPool()) {
+        try (Connection connection = dataSource.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(DOCUMENT_DELETE_QUERY);
             statement.setInt(1, id);
             statement.executeUpdate();
@@ -70,7 +77,7 @@ public class DocumentDaoJdbc implements DocumentDao {
     @Override
     public Document loadDocument(String name, String type) {
         Document document = null;
-        try (Connection connection = DatabaseConnectorJdbc.getConnectionFromPool()) {
+        try (Connection connection = dataSource.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(DOCUMENT_LOAD_QUERY);
             statement.setString(1,name);
             statement.setString(2,type);
