@@ -1,32 +1,29 @@
 package com.strelnikov.doclib.web.servlets;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.strelnikov.doclib.dto.CatalogDto;
 import com.strelnikov.doclib.service.dtomapper.DtoMapper;
-import com.strelnikov.doclib.service.dtomapper.impl.DtoMapperImpl;
-import org.eclipse.jetty.server.Request;
 
 
-import javax.imageio.plugins.tiff.GeoTIFFTagSet;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.Reader;
 
 public class CatalogServlet extends HttpServlet {
+
+    private DtoMapper dtoMapper=null;
+
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        System.out.println(config+"initialized!");
+        dtoMapper = ApplicationContextHolder.getApplicationContext().getBean(DtoMapper.class);
     }
 
-    private final DtoMapper dtoMapper = new DtoMapperImpl();
+
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

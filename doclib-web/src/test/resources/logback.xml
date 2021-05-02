@@ -34,4 +34,8 @@
     <logger name="com.strelnikov.doclib.web.servlets" level="debug">
         <appender-ref ref="servlet-log"/>
     </logger>
+
+    <logger name="StartJetty" level="debug">
+        <appender-ref ref="servlet-log"/>
+    </logger>
 </configuration>

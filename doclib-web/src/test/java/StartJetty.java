@@ -1,17 +1,15 @@
+import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.util.List;
 
-
+@Slf4j
 public class StartJetty {
-    private static final Logger log;
 
-    static {
-        log = LoggerFactory.getLogger(StartJetty.class);
-    }
 
     public static void main(String[] args) throws Exception {
         Server server = init("doclib-web/src/test/webapp");

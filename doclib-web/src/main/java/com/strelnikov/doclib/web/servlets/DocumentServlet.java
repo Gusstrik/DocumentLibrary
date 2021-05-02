@@ -5,6 +5,8 @@ import com.strelnikov.doclib.service.dtomapper.DtoMapper;
 import com.strelnikov.doclib.service.dtomapper.impl.DtoMapperImpl;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,6 +17,15 @@ import java.io.OutputStream;
 
 @Slf4j
 public class DocumentServlet extends HttpServlet {
+
+    private DtoMapper dtoMapper=null;
+
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        dtoMapper = ApplicationContextHolder.getApplicationContext().getBean(DtoMapper.class);
+    }
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
         String docName = request.getParameter("name");
@@ -23,7 +34,6 @@ public class DocumentServlet extends HttpServlet {
         if (!(docName == null || strDocVersion == null || docType == null)) {
             int docVersion = Integer.parseInt(strDocVersion);
             DocumentDto document = new DocumentDto(docName, docVersion, docType);
-            DtoMapper dtoMapper = new DtoMapperImpl();
             document = dtoMapper.mapDocument(document);
             ServletUtils.writeDocumentJson(response, document);
         } else {
@@ -42,7 +52,6 @@ public class DocumentServlet extends HttpServlet {
         String mode;
         InputStream inputStream = null;
         OutputStream outputStream = null;
-        DtoMapper dtoMapper = new DtoMapperImpl();
         String result = "";
         String requestBody=null;
         response.setContentType("text/html");
