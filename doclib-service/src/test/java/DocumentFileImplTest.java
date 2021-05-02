@@ -2,41 +2,44 @@ import com.strelnikov.doclib.repository.jdbc.DatabaseCreatorJdbc;
 import com.strelnikov.doclib.model.documnets.Document;
 import com.strelnikov.doclib.model.documnets.DocumentFile;
 import com.strelnikov.doclib.model.documnets.DocumentType;
+import com.strelnikov.doclib.repository.jdbc.configuration.RepositoryConfiguration;
 import com.strelnikov.doclib.service.DocumentActions;
 import com.strelnikov.doclib.service.DocumentFileActions;
-import com.strelnikov.doclib.service.impl.DocumentFileImpl;
-import com.strelnikov.doclib.service.impl.DocumentImpl;
+import com.strelnikov.doclib.service.impl.configuration.ServiceImplConfiguration;
 import org.junit.*;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class DocumentFileImplTest {
+    private static final ApplicationContext appContext = new AnnotationConfigApplicationContext(ServiceImplConfiguration.class, RepositoryConfiguration.class);
+
+    private static final DatabaseCreatorJdbc creator = appContext.getBean(DatabaseCreatorJdbc.class);
+    private final DocumentActions documentActions = appContext.getBean(DocumentActions.class);
+    private final DocumentFileActions fileActions = appContext.getBean(DocumentFileActions.class);
+    private List<String> expected;
+    private Document document;
+
     @BeforeClass
-    public static void beforCataloImpTests() {
-        DatabaseCreatorJdbc creator = new DatabaseCreatorJdbc();
+    public static void beforeCatalogImpTests() {
         creator.runScript("src/test/resources/insertestdb.sql");
     }
 
     @AfterClass
     public static void afterCatalogImpTests() {
-        DatabaseCreatorJdbc creator = new DatabaseCreatorJdbc();
         creator.runScript("src/test/resources/deletedb.sql");
     }
 
     private List<String> convertToStringList(List<DocumentFile> fileList){
-        List<String> list = new ArrayList();
+        List<String> list;
+        list = new ArrayList<>();
         for (DocumentFile file:fileList){
             list.add(file.getFileName());
         }
         return list;
     }
-
-    private List<String> expected;
-    private final DocumentFileActions fileActions = new DocumentFileImpl();
-    private final  DocumentActions documentActions = new DocumentImpl();
-    private Document document;
-
 
     @Before
     public void beforeEachFileTest(){

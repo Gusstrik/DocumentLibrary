@@ -13,18 +13,28 @@ import com.strelnikov.doclib.service.DocumentTypeActions;
 import com.strelnikov.doclib.service.dtomapper.DtoMapper;
 import com.strelnikov.doclib.model.catalogs.Catalog;
 import com.strelnikov.doclib.service.CatalogActions;
-import com.strelnikov.doclib.service.impl.CatalogImpl;
-import com.strelnikov.doclib.service.impl.DocumentImpl;
-import com.strelnikov.doclib.service.impl.DocumentTypeImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
+@Component
 public class DtoMapperImpl implements DtoMapper {
 
-    public final CatalogActions catalogActions = new CatalogImpl();
+    private final CatalogActions catalogActions;
+    private final DocumentActions documentActions;
+    private final DocumentTypeActions documentTypeActions;
+
+    public DtoMapperImpl(@Autowired CatalogActions catalogActions, @Autowired DocumentActions documentActions,
+                         @Autowired DocumentTypeActions documentTypeActions){
+        this.catalogActions= catalogActions;
+        this.documentActions = documentActions;
+        this.documentTypeActions=documentTypeActions;
+    }
+
 
     @Override
     public CatalogDto mapCatalog(String catalogName) {
@@ -43,19 +53,17 @@ public class DtoMapperImpl implements DtoMapper {
 
     @Override
     public DocTypeDto mapDocType() {
-        DocumentTypeActions documentTypeActions = new DocumentTypeImpl();
         documentTypeActions.refreshListDocumentType();
         return new DocTypeDto(DocumentType.documentTypeList);
     }
 
     @Override
     public DocumentDto mapDocument(DocumentDto documentDto) {
-        DocumentActions documentActions = new DocumentImpl();
         Document document = documentActions.loadDocument(documentDto.getName(), new DocumentType(documentDto.getType()));
         document.setActualVersion(documentDto.getVersion());
         documentActions.refreshDocumentsFileList(document);
         DocumentVersion documentVersion = document.getDocumentVersion(documentDto.getVersion());
-        List<DocFileDto> fileDtoList = new ArrayList();
+        List<DocFileDto> fileDtoList = new ArrayList<>();
         for (DocumentFile docFile : documentVersion.getFilesList()) {
             fileDtoList.add(new DocFileDto(docFile.getFileName(), docFile.getFilePath()));
         }
@@ -66,13 +74,11 @@ public class DtoMapperImpl implements DtoMapper {
     @Override
     public void mapNewDocument(DocumentDto documentDto) {
         Catalog catalog = new Catalog(documentDto.getCatalogName());
-        DocumentActions documentActions = new DocumentImpl();
         documentActions.createNewDocument(documentDto.getName(),new DocumentType(documentDto.getType()),catalog);
     }
 
     @Override
     public void mapNewDocVersion(DocumentDto documentDto) {
-        DocumentActions documentActions = new DocumentImpl();
         Catalog catalog = new Catalog(documentDto.getCatalogName());
         Document document = documentActions.loadDocument(documentDto.getName(), new DocumentType(documentDto.getType()));
         document.setActualVersion(document.getActualVersion()+1);

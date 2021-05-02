@@ -3,31 +3,35 @@ import com.strelnikov.doclib.model.catalogs.Catalog;
 import com.strelnikov.doclib.model.documnets.Document;
 import com.strelnikov.doclib.model.documnets.DocumentType;
 import com.strelnikov.doclib.model.documnets.DocumentVersion;
+import com.strelnikov.doclib.repository.jdbc.configuration.RepositoryConfiguration;
 import com.strelnikov.doclib.service.CatalogActions;
 import com.strelnikov.doclib.service.DocumentActions;
-import com.strelnikov.doclib.service.impl.CatalogImpl;
-import com.strelnikov.doclib.service.impl.DocumentImpl;
+import com.strelnikov.doclib.service.impl.configuration.ServiceImplConfiguration;
 import org.junit.*;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.util.List;
 
 public class DocumentImplTest {
+    private static final ApplicationContext appContext = new AnnotationConfigApplicationContext(ServiceImplConfiguration.class, RepositoryConfiguration.class);
+
+    private static final DatabaseCreatorJdbc creator = appContext.getBean(DatabaseCreatorJdbc.class);
+    private final DocumentActions documentActions = appContext.getBean(DocumentActions.class);
+    private final CatalogActions catalogActions = appContext.getBean(CatalogActions.class);
+
+    private List<String> expected;
+    private final Catalog mainCatalog = new Catalog("/");
+
     @BeforeClass
     public static void beforCataloImpTests() {
-        DatabaseCreatorJdbc creator = new DatabaseCreatorJdbc();
         creator.runScript("src/test/resources/insertestdb.sql");
     }
 
     @AfterClass
     public static void afterCatalogImpTests() {
-        DatabaseCreatorJdbc creator = new DatabaseCreatorJdbc();
         creator.runScript("src/test/resources/deletedb.sql");
     }
-
-    private List<String> expected;
-    private final Catalog mainCatalog = new Catalog("/");
-    private final CatalogActions catalogActions = new CatalogImpl();
-    private final DocumentActions documentActions = new DocumentImpl();
 
     @Before
     public void beforeEachDocumentImlTest(){
@@ -104,13 +108,4 @@ public class DocumentImplTest {
         Assert.assertEquals(expected,actual);
    }
 
-//
-//    @Override
-//    public void refreshDocumentsFileList(Document documnet) {
-//        DocumentDaoJdbc documentDaoJdbc = new DocumentDaoJdbc();
-//        int documentId= documentDaoJdbc.getDocumentId(documnet);
-//        DocumentVersion actualVersion = documnet.getVersionsList().get(documnet.getActualVersion());
-//        FileDaoJdbc fileDaoJdbc = new FileDaoJdbc();
-//        actualVersion.setFilesList(fileDaoJdbc.getFilesList(documentId));
-//    }
 }
