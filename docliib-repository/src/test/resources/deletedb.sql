@@ -1,9 +1,9 @@
 DELETE
-FROM types
-where type = 'test_type';
+FROM doc_types
+where name = 'test_type';
 
 DELETE
-FROM catalog
+FROM catalogs
 where name = 'test_parent'
   OR parent = 'test_parent';
 
