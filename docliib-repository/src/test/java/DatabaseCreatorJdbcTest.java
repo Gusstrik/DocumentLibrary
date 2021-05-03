@@ -31,7 +31,7 @@ public class DatabaseCreatorJdbcTest {
         log.info("Database was successfully created");
         try(Connection connection = DatabaseConnectorJdbc.getConnectionFromPool()) {
             Statement statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery("Select name from catalog where name='/'");
+            ResultSet rs = statement.executeQuery("Select name from catalogs where name='/'");
             rs.next();
             homeCatName = rs.getString(1);
         } catch (SQLException e) {
