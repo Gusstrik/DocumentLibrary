@@ -31,17 +31,16 @@ public class CatalogDaoJdbc implements CatalogDao {
             "(nextval('catalogs_id_seq'),?,?)";
 
     @Override
-    public void addNewCatalog(String name, String parent) {
+    public void addNewCatalog(Catalog catalog) {
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(CATALOG_ADD_QUERY);
-            statement.setString(1, name);
-            statement.setString(2, parent);
+            statement.setString(1, catalog.getName());
+            statement.setString(2, catalog.getParent());
             statement.executeUpdate();
         } catch (SQLException e) {
             log.error(e.getMessage(), e);
         }
     }
-
 
     private final String CATALOG_LOAD_QUERY = "SELECT name, parent FROM catalogs WHERE name=?";
 
@@ -52,20 +51,16 @@ public class CatalogDaoJdbc implements CatalogDao {
             PreparedStatement statement = connection.prepareStatement(CATALOG_LOAD_QUERY);
             statement.setString(1, name);
             ResultSet rs = statement.executeQuery();
-
             if (rs.next()) {
-                catalog = new Catalog(rs.getString(1));
+                catalog = new Catalog();
+                catalog.setName(rs.getString(1));
+                catalog.setParent(rs.getString(2));
+                catalog.setContentList(getContentList(catalog.getName()));
             }
-            return catalog;
         } catch (SQLException e) {
             log.error(e.getMessage(), e);
         }
-        return null;
-    }
-
-
-    public void addNewCatalog(String name) {
-        addNewCatalog(name, "/");
+        return catalog;
     }
 
     private final String CATALOG_DELETE_QUERY =
@@ -120,8 +115,8 @@ public class CatalogDaoJdbc implements CatalogDao {
         return list;
     }
 
-    @Override
-    public List<Unit> getContentList(String currentCatalog) {
+
+    private List<Unit> getContentList(String currentCatalog) {
         List<Unit> list = getListCatalogs(currentCatalog);
         list.addAll(getListDocuments(getCatalogId(currentCatalog)));
         return list;

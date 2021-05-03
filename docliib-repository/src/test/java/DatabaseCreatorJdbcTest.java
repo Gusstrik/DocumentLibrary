@@ -1,3 +1,4 @@
+import com.strelnikov.doclib.model.catalogs.Catalog;
 import com.strelnikov.doclib.repository.jdbc.CatalogDaoJdbc;
 import com.strelnikov.doclib.repository.jdbc.DatabaseConnectorJdbc;
 import com.strelnikov.doclib.repository.jdbc.DatabaseCreatorJdbc;
@@ -44,7 +45,8 @@ public class DatabaseCreatorJdbcTest {
     public void runScriptTest(){
         creator.runScript("src/test/resources/insertestdb.sql");
         CatalogDaoJdbc catalogDaoJdbc = appContext.getBean(CatalogDaoJdbc.class);
-        List<Unit> list = catalogDaoJdbc.getContentList("test_parent");
+        Catalog catalog = catalogDaoJdbc.loadCatalog("test_parent");
+        List<Unit> list = catalog.getContentList();
         List<String> expected = new ArrayList<>();
         expected.add("test_catalog");
         expected.add("test_doc");

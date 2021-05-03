@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface CatalogDao {
 
-    void addNewCatalog(String name, String parent);
+    void addNewCatalog(Catalog catalog);
 
     Catalog loadCatalog(String name);
 
@@ -15,5 +15,4 @@ public interface CatalogDao {
 
     int  getCatalogId(String name);
 
-    List<Unit> getContentList(String catalogName);
 }
