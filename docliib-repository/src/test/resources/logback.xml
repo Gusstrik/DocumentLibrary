@@ -9,7 +9,7 @@
         </encoder>
     </appender>
 
-    <logger name="UnitTypeDaoJdbcTest" level="debug">
+    <logger name="DocTypeDaoJdbcTest" level="debug">
         <appender-ref ref="postgresdatabase-test-log"/>
     </logger>
 

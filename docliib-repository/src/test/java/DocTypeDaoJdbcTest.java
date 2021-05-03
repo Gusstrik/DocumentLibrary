@@ -9,7 +9,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import java.util.List;
 
 @Slf4j
-public class UnitTypeDaoJdbcTest {
+public class DocTypeDaoJdbcTest {
 
     private static final ApplicationContext appContext = new AnnotationConfigApplicationContext(RepositoryConfiguration.class);
     private final TypeDao typeDao = appContext.getBean(TypeDao.class);

@@ -21,7 +21,7 @@ public class TypeDaoJdbc implements TypeDao {
     }
 
 
-    private static final String TYPE_ADD_QUERY = "INSERT INTO types VALUES (nextval('types_id_seq'),?)";
+    private static final String TYPE_ADD_QUERY = "INSERT INTO doc_types VALUES (nextval('doc_types_id_seq'),?)";
 
     public void addType(String type) {
         try (Connection connection = dataSource.getConnection()){
@@ -34,7 +34,7 @@ public class TypeDaoJdbc implements TypeDao {
     }
 
     private final String TYPE_DELETE_QUERY =
-            "DELETE FROM types where (type = ?)";
+            "DELETE FROM doc_types where (name = ?)";
 
     public void deleteType(String type) {
         try (Connection connection = dataSource.getConnection()){
@@ -46,7 +46,7 @@ public class TypeDaoJdbc implements TypeDao {
         }
     }
 
-    private final String TYPE_GET_LIST_QUERY = "SELECT* FROM types";
+    private final String TYPE_GET_LIST_QUERY = "SELECT* FROM doc_types";
 
     public List<String> getTypesList() {
         ArrayList<String> list = new ArrayList<>();
