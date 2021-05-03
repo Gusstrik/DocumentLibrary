@@ -3,7 +3,7 @@ import com.strelnikov.doclib.repository.jdbc.DatabaseConnectorJdbc;
 import com.strelnikov.doclib.repository.jdbc.DatabaseCreatorJdbc;
 
 import com.strelnikov.doclib.model.conception.Unit;
-import com.strelnikov.doclib.repository.jdbc.configuration.RepositoryConfiguration;
+import com.strelnikov.doclib.repository.configuration.RepositoryConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Test;
@@ -45,10 +45,10 @@ public class DatabaseCreatorJdbcTest {
         creator.runScript("src/test/resources/insertestdb.sql");
         CatalogDaoJdbc catalogDaoJdbc = appContext.getBean(CatalogDaoJdbc.class);
         List<Unit> list = catalogDaoJdbc.getContentList("test_parent");
-        List<String> expected = new ArrayList();
+        List<String> expected = new ArrayList<>();
         expected.add("test_catalog");
         expected.add("test_doc");
-        List<String> actual = new ArrayList();
+        List<String> actual = new ArrayList<>();
         for (Unit u:list){
             actual.add(u.getName());
         }

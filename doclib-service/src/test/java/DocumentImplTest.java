@@ -3,7 +3,7 @@ import com.strelnikov.doclib.model.catalogs.Catalog;
 import com.strelnikov.doclib.model.documnets.Document;
 import com.strelnikov.doclib.model.documnets.DocumentType;
 import com.strelnikov.doclib.model.documnets.DocumentVersion;
-import com.strelnikov.doclib.repository.jdbc.configuration.RepositoryConfiguration;
+import com.strelnikov.doclib.repository.configuration.RepositoryConfiguration;
 import com.strelnikov.doclib.service.CatalogActions;
 import com.strelnikov.doclib.service.DocumentActions;
 import com.strelnikov.doclib.service.impl.configuration.ServiceImplConfiguration;

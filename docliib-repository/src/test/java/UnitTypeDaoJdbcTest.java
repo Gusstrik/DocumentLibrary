@@ -1,7 +1,6 @@
 
 import com.strelnikov.doclib.repository.TypeDao;
-import com.strelnikov.doclib.repository.jdbc.TypeDaoJdbc;
-import com.strelnikov.doclib.repository.jdbc.configuration.RepositoryConfiguration;
+import com.strelnikov.doclib.repository.configuration.RepositoryConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.*;
 import org.springframework.context.ApplicationContext;

@@ -4,7 +4,7 @@ import com.strelnikov.doclib.repository.jdbc.DatabaseCreatorJdbc;
 import com.strelnikov.doclib.model.documnets.Document;
 import com.strelnikov.doclib.model.documnets.DocumentFile;
 import com.strelnikov.doclib.model.documnets.DocumentVersion;
-import com.strelnikov.doclib.repository.jdbc.configuration.RepositoryConfiguration;
+import com.strelnikov.doclib.repository.configuration.RepositoryConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.*;
 import org.springframework.context.ApplicationContext;

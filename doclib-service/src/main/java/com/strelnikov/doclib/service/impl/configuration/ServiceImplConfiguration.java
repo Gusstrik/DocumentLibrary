@@ -4,7 +4,7 @@ import com.strelnikov.doclib.repository.CatalogDao;
 import com.strelnikov.doclib.repository.DocumentDao;
 import com.strelnikov.doclib.repository.FileDao;
 import com.strelnikov.doclib.repository.TypeDao;
-import com.strelnikov.doclib.repository.jdbc.configuration.RepositoryConfiguration;
+import com.strelnikov.doclib.repository.configuration.RepositoryConfiguration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;

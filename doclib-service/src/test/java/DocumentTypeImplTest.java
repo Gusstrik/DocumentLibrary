@@ -1,6 +1,6 @@
 import com.strelnikov.doclib.repository.jdbc.DatabaseCreatorJdbc;
 import com.strelnikov.doclib.model.documnets.DocumentType;
-import com.strelnikov.doclib.repository.jdbc.configuration.RepositoryConfiguration;
+import com.strelnikov.doclib.repository.configuration.RepositoryConfiguration;
 import com.strelnikov.doclib.service.DocumentTypeActions;
 import com.strelnikov.doclib.service.impl.configuration.ServiceImplConfiguration;
 import org.junit.*;
