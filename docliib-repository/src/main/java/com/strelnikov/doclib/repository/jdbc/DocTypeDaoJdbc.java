@@ -24,7 +24,7 @@ public class DocTypeDaoJdbc implements DocTypeDao {
     private static final String TYPE_ADD_QUERY = "INSERT INTO doc_types VALUES (nextval('doc_types_id_seq'),?)";
 
     @Override
-    public void addType(String type) {
+    public void insertType(String type) {
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(TYPE_ADD_QUERY);
             statement.setString(1, type);

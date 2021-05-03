@@ -5,7 +5,7 @@ import com.strelnikov.doclib.model.documnets.DocumentType;
 import java.util.List;
 
 public interface DocTypeDao {
-    void addType(String type);
+    void insertType(String type);
 
     void deleteType(String type);
 

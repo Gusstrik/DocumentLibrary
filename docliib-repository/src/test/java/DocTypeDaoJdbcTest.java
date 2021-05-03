@@ -30,7 +30,7 @@ public class DocTypeDaoJdbcTest {
 
     @Before
     public void beforeEachTypeDaoTest() {
-        docTypeDao.addType("test_type");
+        docTypeDao.insertType("test_type");
         expected = docTypeDao.getTypesList();
     }
 
@@ -47,7 +47,7 @@ public class DocTypeDaoJdbcTest {
 
     @Test
     public void addTypeTest() {
-        docTypeDao.addType("test_adding_type");
+        docTypeDao.insertType("test_adding_type");
         expected.add("test_adding_type");
         List<String> actual = docTypeDao.getTypesList();
         docTypeDao.deleteType("test_adding_type");
@@ -59,7 +59,7 @@ public class DocTypeDaoJdbcTest {
         docTypeDao.deleteType("test_type");
         List<String> actual = docTypeDao.getTypesList();
         expected.remove("test_type");
-        docTypeDao.addType("test_type");
+        docTypeDao.insertType("test_type");
         Assert.assertEquals(expected, actual);
     }
 
