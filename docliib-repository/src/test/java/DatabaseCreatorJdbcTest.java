@@ -45,7 +45,7 @@ public class DatabaseCreatorJdbcTest {
     public void runScriptTest(){
         creator.runScript("src/test/resources/insertestdb.sql");
         CatalogDaoJdbc catalogDaoJdbc = appContext.getBean(CatalogDaoJdbc.class);
-        Catalog catalog = catalogDaoJdbc.loadCatalog("test_parent");
+        Catalog catalog = catalogDaoJdbc.loadCatalog(1);
         List<Unit> list = catalog.getContentList();
         List<String> expected = new ArrayList<>();
         expected.add("test_catalog");
