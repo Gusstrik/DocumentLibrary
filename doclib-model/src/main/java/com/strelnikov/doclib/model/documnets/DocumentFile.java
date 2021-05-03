@@ -12,7 +12,13 @@ public class DocumentFile {
 
     private String fileName;
 
+    private int docVersionId;
+
     private String filePath;
+
+    public DocumentFile(){
+
+    }
 
     public DocumentFile(String fileName, String filePath){
         this.fileName=fileName;
