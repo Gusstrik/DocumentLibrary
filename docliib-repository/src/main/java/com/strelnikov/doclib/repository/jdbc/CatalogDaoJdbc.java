@@ -27,8 +27,8 @@ public class CatalogDaoJdbc implements CatalogDao {
         this.dataSource = dataSource;
     }
 
-    private final String CATALOG_ADD_QUERY = "INSERT INTO catalog VALUES" +
-            "(nextval('catalog_id_seq'),?,?)";
+    private final String CATALOG_ADD_QUERY = "INSERT INTO catalogs VALUES" +
+            "(nextval('catalogs_id_seq'),?,?)";
 
     @Override
     public void addNewCatalog(String name, String parent) {
@@ -43,7 +43,7 @@ public class CatalogDaoJdbc implements CatalogDao {
     }
 
 
-    private final String CATALOG_LOAD_QUERY = "SELECT name, parent FROM catalog WHERE name=?";
+    private final String CATALOG_LOAD_QUERY = "SELECT name, parent FROM catalogs WHERE name=?";
 
     @Override
     public Catalog loadCatalog(String name) {
@@ -59,7 +59,6 @@ public class CatalogDaoJdbc implements CatalogDao {
             return catalog;
         } catch (SQLException e) {
             log.error(e.getMessage(), e);
-            System.out.println("Ohw shit");
         }
         return null;
     }
@@ -70,7 +69,7 @@ public class CatalogDaoJdbc implements CatalogDao {
     }
 
     private final String CATALOG_DELETE_QUERY =
-            "DELETE FROM catalog where (name = ?) or (parent = ?)";
+            "DELETE FROM catalogs where (name = ?) or (parent = ?)";
 
     @Override
     public void deleteCatalog(String name) {
@@ -86,7 +85,7 @@ public class CatalogDaoJdbc implements CatalogDao {
 
 
     private final String CATALOG_SHOW_CATALOGS =
-            "SELECT name from catalog where parent =?";
+            "SELECT name from catalogs where parent =?";
 
     private List<Unit> getListCatalogs(String curentCatalog) {
         List<Unit> list = new ArrayList<>();
@@ -104,7 +103,7 @@ public class CatalogDaoJdbc implements CatalogDao {
     }
 
     private final String CATALOG_SHOW_DOCUMENTS =
-            "SELECT name from document where catalog =?";
+            "SELECT name from documents where catalog_id =?";
 
     private List<Unit> getListDocuments(int catalog_id) {
         List<Unit> list = new ArrayList<>();
@@ -130,7 +129,7 @@ public class CatalogDaoJdbc implements CatalogDao {
 
 
     private final String CATALOG_GET_ID =
-            "SELECT id from catalog where name =?";
+            "SELECT id from catalogs where name =?";
 
     @Override
     public int getCatalogId(String name) {
