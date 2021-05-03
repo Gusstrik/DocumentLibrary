@@ -1,14 +1,17 @@
 package com.strelnikov.doclib.repository;
 
 
+import com.strelnikov.doclib.model.documnets.Document;
 import com.strelnikov.doclib.model.documnets.DocumentVersion;
 
-public interface DocVersionDao {
-    DocumentVersion loadDocVersion(int documentId, int docVersion);
+import java.util.List;
 
-    void addNewDocVersion(DocumentVersion documentVersion, int docuemntId);
+public interface DocVersionDao {
+
+    DocumentVersion insertDocVersion(DocumentVersion documentVersion);
 
     void deleteDocVersion(int versionId);
 
-    int getDocVersionId(DocumentVersion documentVersion, int documentId);
+    List<DocumentVersion> getDocVersionList(Document document);
+
 }

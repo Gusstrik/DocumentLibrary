@@ -1,23 +1,27 @@
+import com.strelnikov.doclib.model.documnets.Document;
 import com.strelnikov.doclib.model.documnets.DocumentVersion;
 import com.strelnikov.doclib.model.documnets.Importance;
 import com.strelnikov.doclib.repository.DocVersionDao;
 import com.strelnikov.doclib.repository.configuration.RepositoryConfiguration;
 import com.strelnikov.doclib.repository.jdbc.DatabaseCreatorJdbc;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+import java.util.List;
 
 public class DocVersionDaoTest {
 
     private static final ApplicationContext appContext = new AnnotationConfigApplicationContext(RepositoryConfiguration.class);
     DocVersionDao docVersionDao = appContext.getBean(DocVersionDao.class);
     private static final DatabaseCreatorJdbc creator = appContext.getBean(DatabaseCreatorJdbc.class);
+    private static Document document;
+    private int expected;
 
     @BeforeClass
     public static void beforeFileDaoTest() {
+        document= new Document();
+        document.setId(1);
         creator.runScript("src/test/resources/insertestdb.sql");
     }
 
@@ -26,42 +30,43 @@ public class DocVersionDaoTest {
         creator.runScript("src/test/resources/deletedb.sql");
     }
 
-    @Test
-    public void getDocVersionIdTest(){
-        DocumentVersion documentVersion = new DocumentVersion();
-        documentVersion.setVersion(0);
-        int actual = docVersionDao.getDocVersionId(documentVersion,1);
-        Assert.assertEquals(1,actual);
+    @Before
+    public void beforeEachDocVersionDaoTest(){
+        expected=docVersionDao.getDocVersionList(document).size();
     }
 
     @Test
-    public void loadDocVersionTest(){
-        DocumentVersion documentVersion = docVersionDao.loadDocVersion(1,0);
-        Assert.assertEquals("test description",documentVersion.getDescription());
-    }
-
-    @Test
-    public void addDocVersionTest(){
+    public void insertDocVersionTest(){
+        expected+=1;
         DocumentVersion documentVersion = new DocumentVersion();
         documentVersion.setVersion(1);
+        documentVersion.setDocumentId(1);
         documentVersion.setDescription("another version of testDoc");
         documentVersion.setImportance(Importance.IMPORTANT);
         documentVersion.setModerated(false);
-        docVersionDao.addNewDocVersion(documentVersion, 1);
-        DocumentVersion actual = docVersionDao.loadDocVersion(1,documentVersion.getVersion());
-        docVersionDao.deleteDocVersion(docVersionDao.getDocVersionId(documentVersion,1));
-        Assert.assertEquals(documentVersion.getDescription(),actual.getDescription());
+        documentVersion= docVersionDao.insertDocVersion(documentVersion);
+        int actual = docVersionDao.getDocVersionList(document).size();
+        docVersionDao.deleteDocVersion(documentVersion.getId());
+        Assert.assertEquals(expected,actual);
     }
 
     @Test
     public void deleteDocVersionTest(){
         DocumentVersion documentVersion = new DocumentVersion();
         documentVersion.setVersion(1);
+        documentVersion.setDocumentId(1);
         documentVersion.setDescription("another version of testDoc");
         documentVersion.setImportance(Importance.IMPORTANT);
         documentVersion.setModerated(false);
-        docVersionDao.deleteDocVersion(docVersionDao.getDocVersionId(documentVersion,1));
-        DocumentVersion actual = docVersionDao.loadDocVersion(1,documentVersion.getVersion());
-        Assert.assertNull(actual);
+        documentVersion= docVersionDao.insertDocVersion(documentVersion);
+        docVersionDao.deleteDocVersion(documentVersion.getId());
+        int actual = docVersionDao.getDocVersionList(document).size();
+        Assert.assertEquals(expected,actual);
+    }
+
+    @Test
+    public void getDocVersionsListTest(){
+        List<DocumentVersion> list = docVersionDao.getDocVersionList(document);
+        Assert.assertEquals("test description",list.get(0).getDescription());
     }
 }
