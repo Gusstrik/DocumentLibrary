@@ -7,7 +7,7 @@ VALUES (2, 'test_parent', '/')
 on conflict do nothing;
 
 INSERT INTO catalogs (id, name, parent)
-VALUES (nextval('catalogs_id_seq'), 'test_catalog','test_parent')
+VALUES (nextval('catalogs_id_seq'), 'test_catalog',2)
 on conflict do nothing;
 
 INSERT INTO documents (id, name, type, actual_version, catalog_id)
