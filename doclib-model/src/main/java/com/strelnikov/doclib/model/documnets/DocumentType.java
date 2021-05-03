@@ -10,6 +10,8 @@ import java.util.List;
 public class DocumentType {
     public static List<String> documentTypeList;
 
+    private  int id;
+
     private String curentType;
 
     public DocumentType() {

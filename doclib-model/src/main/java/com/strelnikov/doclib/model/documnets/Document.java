@@ -10,14 +10,16 @@ import java.util.ArrayList;
 @Setter
 @Getter
 public class Document extends Unit {
-    public ArrayList<DocumentVersion> versionsList = new ArrayList();
+    public ArrayList<DocumentVersion> versionsList = new ArrayList<>();
 
     private int actualVersion;
 
     private DocumentType documentType = new DocumentType();
 
-    public Document(String name) {
-        super(name, UnitType.DOCUMENT);
+    public Document(){
+        super();
+        this.setUnitType(UnitType.DOCUMENT);
+        actualVersion=0;
         versionsList.add(new DocumentVersion());
     }
 

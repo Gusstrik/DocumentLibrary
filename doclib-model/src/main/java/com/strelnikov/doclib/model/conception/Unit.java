@@ -14,10 +14,9 @@ public abstract class Unit {
 
     public Unit(){}
 
-    public Unit(String name, UnitType unitType) {
-        this.name = name;
-        this.unitType = unitType;
-    }
+    private int id;
+
+    private int parent_id;
 
     private String name;
 

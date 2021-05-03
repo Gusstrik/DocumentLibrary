@@ -10,6 +10,9 @@ import java.util.List;
 @Setter
 public class DocumentVersion {
 
+    private int id;
+
+    private int documentId;
 
     private String description;
 
@@ -17,17 +20,12 @@ public class DocumentVersion {
 
     private Importance importance;
 
-    private List<DocumentFile> filesList = new ArrayList();
+    private List<DocumentFile> filesList = new ArrayList<>();
 
     private boolean isModerated;
 
     public DocumentVersion() {
 
-    }
-
-    public DocumentVersion(String description, boolean isModerated) {
-        this.description = description;
-        this.isModerated = isModerated;
     }
 
 }
