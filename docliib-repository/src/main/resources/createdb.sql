@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS catalogs
 (
     id     serial,
     name   varchar(20) not null unique,
-    parent varchar(20),
+    parent int,
     PRIMARY KEY (id)
 );
 
