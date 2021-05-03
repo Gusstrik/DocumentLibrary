@@ -5,19 +5,22 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
-
 import java.util.List;
 
 @Getter
 @AllArgsConstructor
-public class CatalogDto {
-
+public class DocVersionDto {
 
     private int id;
-    @NonNull
-    private String name;
-    private int parentId;
-    @NonNull
-    private List<UnitDto> contentList;
 
+    private int documentId;
+
+    private int version;
+    private String description;
+    @NonNull
+    private String importance;
+
+    private boolean isModerated;
+    @NonNull
+    private List<DocFileDto>fileList;
 }
