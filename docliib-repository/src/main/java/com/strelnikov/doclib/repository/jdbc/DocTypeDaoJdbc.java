@@ -1,6 +1,6 @@
 package com.strelnikov.doclib.repository.jdbc;
 
-import com.strelnikov.doclib.repository.TypeDao;
+import com.strelnikov.doclib.repository.DocTypeDao;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -12,19 +12,20 @@ import java.util.List;
 
 @Slf4j
 @Repository
-public class TypeDaoJdbc implements TypeDao {
+public class DocTypeDaoJdbc implements DocTypeDao {
 
     private final DataSource dataSource;
 
-    public TypeDaoJdbc(@Autowired DataSource dataSource){
+    public DocTypeDaoJdbc(@Autowired DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
 
     private static final String TYPE_ADD_QUERY = "INSERT INTO doc_types VALUES (nextval('doc_types_id_seq'),?)";
 
+    @Override
     public void addType(String type) {
-        try (Connection connection = dataSource.getConnection()){
+        try (Connection connection = dataSource.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(TYPE_ADD_QUERY);
             statement.setString(1, type);
             statement.executeUpdate();
@@ -36,8 +37,9 @@ public class TypeDaoJdbc implements TypeDao {
     private final String TYPE_DELETE_QUERY =
             "DELETE FROM doc_types where (name = ?)";
 
+    @Override
     public void deleteType(String type) {
-        try (Connection connection = dataSource.getConnection()){
+        try (Connection connection = dataSource.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(TYPE_DELETE_QUERY);
             statement.setString(1, type);
             statement.executeUpdate();
@@ -48,9 +50,10 @@ public class TypeDaoJdbc implements TypeDao {
 
     private final String TYPE_GET_LIST_QUERY = "SELECT* FROM doc_types";
 
+    @Override
     public List<String> getTypesList() {
         ArrayList<String> list = new ArrayList<>();
-        try (Connection connection = dataSource.getConnection()){
+        try (Connection connection = dataSource.getConnection()) {
             Statement statement = connection.createStatement();
             ResultSet rs = statement.executeQuery(TYPE_GET_LIST_QUERY);
             while (rs.next()) {

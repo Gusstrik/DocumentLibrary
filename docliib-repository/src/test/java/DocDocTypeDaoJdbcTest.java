@@ -1,5 +1,5 @@
 
-import com.strelnikov.doclib.repository.TypeDao;
+import com.strelnikov.doclib.repository.DocTypeDao;
 import com.strelnikov.doclib.repository.configuration.RepositoryConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.*;
@@ -9,44 +9,44 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import java.util.List;
 
 @Slf4j
-public class DocTypeDaoJdbcTest {
+public class DocDocTypeDaoJdbcTest {
 
     private static final ApplicationContext appContext = new AnnotationConfigApplicationContext(RepositoryConfiguration.class);
-    private final TypeDao typeDao = appContext.getBean(TypeDao.class);
+    private final DocTypeDao docTypeDao = appContext.getBean(DocTypeDao.class);
     private List<String> expected;
 
     @Before
     public void beforeEachTypeDaoTest() {
-        typeDao.addType("test_type");
-        expected = typeDao.getTypesList();
+        docTypeDao.addType("test_type");
+        expected = docTypeDao.getTypesList();
     }
 
     @After
     public void afterEachTypeDaoTest() {
-        typeDao.deleteType("test_type");
+        docTypeDao.deleteType("test_type");
     }
 
     @Test
     public void getTypeListTest() {
-        List<String> actual = typeDao.getTypesList();
+        List<String> actual = docTypeDao.getTypesList();
         Assert.assertEquals(expected, actual);
     }
 
     @Test
     public void addTypeTest() {
-        typeDao.addType("test_adding_type");
+        docTypeDao.addType("test_adding_type");
         expected.add("test_adding_type");
-        List<String> actual = typeDao.getTypesList();
-        typeDao.deleteType("test_adding_type");
+        List<String> actual = docTypeDao.getTypesList();
+        docTypeDao.deleteType("test_adding_type");
         Assert.assertEquals(expected, actual);
     }
 
     @Test
     public void deleteTypeTest() {
-        typeDao.deleteType("test_type");
-        List<String> actual = typeDao.getTypesList();
+        docTypeDao.deleteType("test_type");
+        List<String> actual = docTypeDao.getTypesList();
         expected.remove("test_type");
-        typeDao.addType("test_type");
+        docTypeDao.addType("test_type");
         Assert.assertEquals(expected, actual);
     }
 
