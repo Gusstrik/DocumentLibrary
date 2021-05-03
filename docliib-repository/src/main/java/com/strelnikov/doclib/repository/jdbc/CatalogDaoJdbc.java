@@ -5,6 +5,7 @@ import com.strelnikov.doclib.repository.CatalogDao;
 import com.strelnikov.doclib.model.conception.Unit;
 import com.strelnikov.doclib.model.catalogs.Catalog;
 import com.strelnikov.doclib.model.documnets.Document;
+import com.strelnikov.doclib.repository.DocumentDao;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -27,6 +28,9 @@ public class CatalogDaoJdbc implements CatalogDao {
     public CatalogDaoJdbc(@Autowired DataSource dataSource) {
         this.dataSource = dataSource;
     }
+    @Autowired
+    private DocumentDao documentDao;
+
 
     private final String CATALOG_INSERT_QUERY = "INSERT INTO catalogs VALUES" +
             "(nextval('catalogs_id_seq'),?,?) RETURNING id";
@@ -101,33 +105,12 @@ public class CatalogDaoJdbc implements CatalogDao {
         return list;
     }
 
-    private final String CATALOG_SHOW_DOCUMENTS =
-            "SELECT id,name from documents where catalog_id =?";
 
-    private List<Unit> getListDocuments(int catalog_id) {
-        List<Unit> list = new ArrayList<>();
-        try (Connection connection = dataSource.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement(CATALOG_SHOW_DOCUMENTS);
-            statement.setInt(1, catalog_id);
-            ResultSet rs = statement.executeQuery();
-            while (rs.next()) {
-                Unit unit = new Document();
-                unit.setId(rs.getInt(1));
-                unit.setName(rs.getString(2));
-                unit.setUnitType(UnitType.DOCUMENT);
-                unit.setParent_id(catalog_id);
-                list.add(unit);
-            }
-        } catch (SQLException e) {
-            log.error(e.getMessage(), e);
-        }
-        return list;
-    }
 
 
     private List<Unit> getContentList(int catalogId) {
         List<Unit> list = getListCatalogs(catalogId);
-        list.addAll(getListDocuments(catalogId));
+        list.addAll(documentDao.getDocumentsList(catalogId));
         return list;
     }
 

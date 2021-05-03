@@ -1,14 +1,22 @@
 package com.strelnikov.doclib.repository;
 
+import com.strelnikov.doclib.model.catalogs.Catalog;
+import com.strelnikov.doclib.model.conception.Unit;
 import com.strelnikov.doclib.model.documnets.Document;
+
+import java.util.List;
 
 public interface DocumentDao {
 
-    void addNewDocument(Document document, int catalogId);
+    Document insertDocument(Document document);
 
-    int getDocumentId(Document document);
+    Document loadDocument(Unit unit);
+
+    void updateDocument(Document document);
+
+    List<Unit> getDocumentsList(int catalogId);
 
     void deleteDocument(int documentId);
 
-    Document loadDocument(String name, String type);
+
 }

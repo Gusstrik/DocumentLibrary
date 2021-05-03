@@ -6,15 +6,18 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Setter
 @Getter
 public class Document extends Unit {
-    public ArrayList<DocumentVersion> versionsList = new ArrayList<>();
+
+    public List<DocumentVersion> versionsList = new ArrayList<>();
 
     private int actualVersion;
 
     private DocumentType documentType = new DocumentType();
+
 
     public Document(){
         super();
