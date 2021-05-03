@@ -13,6 +13,8 @@ public class DocumentVersion {
 
     private String description;
 
+    private int version;
+
     private Importance importance;
 
     private List<DocumentFile> filesList = new ArrayList();

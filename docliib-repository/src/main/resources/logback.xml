@@ -9,7 +9,7 @@
         </encoder>
     </appender>
 
-    <logger name="com.strelnikov.doclib.repository" level="debug">
+    <logger name="com.strelnikov.doclib.repository.jdbc" level="debug">
         <appender-ref ref="postgresdatabase-log"/>
     </logger>
 </configuration>
