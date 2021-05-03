@@ -3,15 +3,11 @@ VALUES (nextval('doc_types_id_seq'), 'test_type')
 on conflict (name) do nothing;
 
 INSERT INTO catalogs (id, name, parent)
-VALUES (2, 'test_parent', '/')
-on conflict do nothing;
-
-INSERT INTO catalogs (id, name, parent)
-VALUES (nextval('catalogs_id_seq'), 'test_catalog',2)
+VALUES (2, 'test_catalog', 1)
 on conflict do nothing;
 
 INSERT INTO documents (id, name, type, actual_version, catalog_id)
-VALUES (1, 'test_doc', 'test_type', 0,2)
+VALUES (1, 'test_doc', 'test_type', 0,1)
 on conflict do nothing;
 
 INSERT INTO documents_versions(id, document_id,version,description,importance,is_moderated)

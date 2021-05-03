@@ -4,6 +4,4 @@ where name = 'test_type';
 
 DELETE
 FROM catalogs
-where name = 'test_parent'
-  OR parent = 'test_parent';
-
+where name = 'test_catalog';

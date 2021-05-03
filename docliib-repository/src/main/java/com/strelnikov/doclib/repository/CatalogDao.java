@@ -7,12 +7,12 @@ import java.util.List;
 
 public interface CatalogDao {
 
-    void addNewCatalog(Catalog catalog);
+    void updateCatalog(Catalog catalog);
 
-    Catalog loadCatalog(String name);
+    Catalog loadCatalog(int catalogId);
 
-    void deleteCatalog(String name);
+    void deleteCatalog(int catalogId);
 
-    int  getCatalogId(String name);
+    Catalog insertCatalog(Catalog catalog);
 
 }
