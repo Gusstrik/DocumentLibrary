@@ -1,37 +1,26 @@
 package com.strelnikov.doclib.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NonNull;
 
 import java.util.List;
 
 @Getter
+@AllArgsConstructor
 public class DocumentDto {
+
+    private int id;
+    @NonNull
     private String name;
-    private int version;
+    @NonNull
     private String type;
-    private List<DocFileDto> fileList;
-    private boolean isModerated;
-    private String catalogName;
 
-    public DocumentDto(String name, int version, String type){
-        this.name=name;
-        this.version=version;
-        this.type=type;
-    }
+    private int actualVersion;
 
-    public DocumentDto(String name, int version,String type,String parent){
-        this(name, version, type);
-        this.catalogName=parent;
-    }
+    private int catalogId;
+    @NonNull
+    private List<DocVersionDto> versionList;
 
-    public DocumentDto(String name, int version, String type, List<DocFileDto> fileList,boolean isModerated){
-        this(name, version, type);
-        this.fileList=fileList;
-        this.isModerated=isModerated;
-    }
-
-    public DocumentDto(String name, int version, String type, List<DocFileDto> fileList,boolean isModerated, String catalogName){
-        this(name, version, type, fileList, isModerated);
-        this.catalogName = catalogName;
-    }
+    public DocumentDto(){}
 }

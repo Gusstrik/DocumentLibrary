@@ -1,22 +1,17 @@
 package com.strelnikov.doclib.service;
 
-import com.strelnikov.doclib.model.catalogs.Catalog;
-import com.strelnikov.doclib.model.documnets.Document;
-import com.strelnikov.doclib.model.documnets.DocumentType;
+
+import com.strelnikov.doclib.dto.DocumentDto;
+import com.strelnikov.doclib.service.exceptions.UnitIsAlreadyExistException;
+import com.strelnikov.doclib.service.exceptions.UnitNotFoundException;
+import com.strelnikov.doclib.service.exceptions.VersionIsAlreadyExistException;
 
 public interface DocumentActions {
-    Document createNewDocument(String name, DocumentType docType, Catalog catalog);
 
-    void deleteDocumentVersion (Document document);
+    void deleteDocument(int documentId);
 
-    void createNewDocumentVersion(Document document, Catalog catalog);
+    DocumentDto loadDocument(int documentId) throws UnitNotFoundException;
 
-    Document deleteNotActualVersions (Document document);
-
-    void deleteDocument(Document document);
-
-    void refreshDocumentsFileList(Document document);
-
-    Document loadDocument(String name, DocumentType docType);
+    DocumentDto saveDocument(DocumentDto catalogDto) throws UnitIsAlreadyExistException, VersionIsAlreadyExistException;
 
 }

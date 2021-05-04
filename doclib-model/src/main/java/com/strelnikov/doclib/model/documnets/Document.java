@@ -6,18 +6,23 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Setter
 @Getter
 public class Document extends Unit {
-    public ArrayList<DocumentVersion> versionsList = new ArrayList();
+
+    public List<DocumentVersion> versionsList = new ArrayList<>();
 
     private int actualVersion;
 
     private DocumentType documentType = new DocumentType();
 
-    public Document(String name) {
-        super(name, UnitType.DOCUMENT);
+
+    public Document(){
+        super();
+        this.setUnitType(UnitType.DOCUMENT);
+        actualVersion=0;
         versionsList.add(new DocumentVersion());
     }
 
@@ -32,4 +37,14 @@ public class Document extends Unit {
             return versionsList.get(actualVersion);
         }
     }
+
+    public boolean isVersionExist(DocumentVersion docVersion){
+        for (DocumentVersion existingVer:versionsList){
+            if (existingVer.equals(docVersion)){
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

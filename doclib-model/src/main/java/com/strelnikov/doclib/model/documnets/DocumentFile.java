@@ -8,9 +8,17 @@ import lombok.Setter;
 @Setter
 public class DocumentFile {
 
+    private int id;
+
     private String fileName;
 
+    private int docVersionId;
+
     private String filePath;
+
+    public DocumentFile(){
+
+    }
 
     public DocumentFile(String fileName, String filePath){
         this.fileName=fileName;

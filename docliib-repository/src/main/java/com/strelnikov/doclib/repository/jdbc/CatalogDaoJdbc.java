@@ -1,9 +1,11 @@
 package com.strelnikov.doclib.repository.jdbc;
 
+import com.strelnikov.doclib.model.conception.UnitType;
 import com.strelnikov.doclib.repository.CatalogDao;
 import com.strelnikov.doclib.model.conception.Unit;
 import com.strelnikov.doclib.model.catalogs.Catalog;
 import com.strelnikov.doclib.model.documnets.Document;
+import com.strelnikov.doclib.repository.DocumentDao;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -26,58 +28,53 @@ public class CatalogDaoJdbc implements CatalogDao {
     public CatalogDaoJdbc(@Autowired DataSource dataSource) {
         this.dataSource = dataSource;
     }
-
-    private final String CATALOG_ADD_QUERY = "INSERT INTO catalog VALUES" +
-            "(nextval('catalog_id_seq'),?,?)";
-
-    @Override
-    public void addNewCatalog(String name, String parent) {
-        try (Connection connection = dataSource.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement(CATALOG_ADD_QUERY);
-            statement.setString(1, name);
-            statement.setString(2, parent);
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            log.error(e.getMessage(), e);
-        }
-    }
+    @Autowired
+    private DocumentDao documentDao;
 
 
-    private final String CATALOG_LOAD_QUERY = "SELECT name, parent FROM catalog WHERE name=?";
+    private final String CATALOG_INSERT_QUERY = "INSERT INTO catalogs VALUES" +
+            "(nextval('catalogs_id_seq'),?,?) RETURNING id";
 
     @Override
-    public Catalog loadCatalog(String name) {
-        Catalog catalog = null;
+    public Catalog insertCatalog(Catalog catalog) {
         try (Connection connection = dataSource.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement(CATALOG_LOAD_QUERY);
-            statement.setString(1, name);
+            PreparedStatement statement = connection.prepareStatement(CATALOG_INSERT_QUERY);
+            statement.setString(1, catalog.getName());
+            statement.setInt(2, catalog.getParent_id());
             ResultSet rs = statement.executeQuery();
-
-            if (rs.next()) {
-                catalog = new Catalog(rs.getString(1));
+            if(rs.next()){
+                catalog.setId(rs.getInt(1));
             }
-            return catalog;
         } catch (SQLException e) {
             log.error(e.getMessage(), e);
-            System.out.println("Ohw shit");
         }
-        return null;
+        return catalog;
     }
 
+    private final String CATALOG_UPDATE_QUERY = "UPDATE catalogs SET name=?, parent=? WHERE id = ?;";
 
-    public void addNewCatalog(String name) {
-        addNewCatalog(name, "/");
+    @Override
+    public void updateCatalog(Catalog catalog) {
+        try(Connection connection = dataSource.getConnection()){
+            PreparedStatement statement = connection.prepareStatement(CATALOG_UPDATE_QUERY);
+            statement.setString(1,catalog.getName());
+            statement.setInt(2,catalog.getParent_id());
+            statement.setInt(3,catalog.getId());
+            statement.executeUpdate();
+        }catch (SQLException e){
+            log.error(e.getMessage(),e);
+        }
     }
 
     private final String CATALOG_DELETE_QUERY =
-            "DELETE FROM catalog where (name = ?) or (parent = ?)";
+            "DELETE FROM catalogs where (id = ?) or (parent = ?)";
 
     @Override
-    public void deleteCatalog(String name) {
+    public void deleteCatalog(int catalogId) {
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(CATALOG_DELETE_QUERY);
-            statement.setString(1, name);
-            statement.setString(2, name);
+            statement.setInt(1, catalogId);
+            statement.setInt(2, catalogId);
             statement.executeUpdate();
         } catch (SQLException e) {
             log.error(e.getMessage(), e);
@@ -86,16 +83,21 @@ public class CatalogDaoJdbc implements CatalogDao {
 
 
     private final String CATALOG_SHOW_CATALOGS =
-            "SELECT name from catalog where parent =?";
+            "SELECT id, name FROM catalogs WHERE parent =?";
 
-    private List<Unit> getListCatalogs(String curentCatalog) {
+    private List<Unit> getListCatalogs(int catalogId) {
         List<Unit> list = new ArrayList<>();
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(CATALOG_SHOW_CATALOGS);
-            statement.setString(1, curentCatalog);
+            statement.setInt(1, catalogId);
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
-                list.add(new Catalog(rs.getString(1)));
+                Unit unit = new Catalog();
+                unit.setId(rs.getInt(1));
+                unit.setName(rs.getString(2));
+                unit.setUnitType(UnitType.CATALOG);
+                unit.setParent_id(catalogId);
+                list.add(unit);
             }
         } catch (SQLException e) {
             log.error(e.getMessage(), e);
@@ -103,48 +105,35 @@ public class CatalogDaoJdbc implements CatalogDao {
         return list;
     }
 
-    private final String CATALOG_SHOW_DOCUMENTS =
-            "SELECT name from document where catalog =?";
 
-    private List<Unit> getListDocuments(int catalog_id) {
-        List<Unit> list = new ArrayList<>();
-        try (Connection connection = dataSource.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement(CATALOG_SHOW_DOCUMENTS);
-            statement.setInt(1, catalog_id);
-            ResultSet rs = statement.executeQuery();
-            while (rs.next()) {
-                list.add(new Document(rs.getString(1)));
-            }
-        } catch (SQLException e) {
-            log.error(e.getMessage(), e);
-        }
+
+
+    private List<Unit> getContentList(int catalogId) {
+        List<Unit> list = getListCatalogs(catalogId);
+        list.addAll(documentDao.getDocumentsList(catalogId));
         return list;
     }
 
-    @Override
-    public List<Unit> getContentList(String currentCatalog) {
-        List<Unit> list = getListCatalogs(currentCatalog);
-        list.addAll(getListDocuments(getCatalogId(currentCatalog)));
-        return list;
-    }
-
-
-    private final String CATALOG_GET_ID =
-            "SELECT id from catalog where name =?";
+    private final String CATALOG_LOAD_QUERY = "SELECT * FROM catalogs WHERE id=?";
 
     @Override
-    public int getCatalogId(String name) {
-        int id = -1;
+    public Catalog loadCatalog(int catalogId) {
+        Catalog catalog = null;
         try (Connection connection = dataSource.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement(CATALOG_GET_ID);
-            statement.setString(1, name);
+            PreparedStatement statement = connection.prepareStatement(CATALOG_LOAD_QUERY);
+            statement.setInt(1, catalogId);
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
-                id = rs.getInt(1);
+                catalog = new Catalog();
+                catalog.setId(catalogId);
+                catalog.setName(rs.getString(2));
+                catalog.setParent_id(rs.getInt(3));
+                catalog.setContentList(getContentList(catalogId));
             }
         } catch (SQLException e) {
             log.error(e.getMessage(), e);
         }
-        return id;
+        return catalog;
     }
+
 }

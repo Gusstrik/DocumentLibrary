@@ -9,8 +9,8 @@
         </encoder>
     </appender>
 
-    <logger name="UnitTypeDaoJdbcTest" level="debug">
-        <appender-ref ref="postgresdatabase-test-log"/>
+    <logger name="com.strelnikov.doclib.repository.jdbc" level="debug">
+        <appender-ref ref="jdbc-test-log"/>
     </logger>
 
 </configuration>

@@ -10,12 +10,17 @@ import java.util.List;
 @Setter
 public class DocumentVersion {
 
+    private int id;
+
+    private int documentId;
 
     private String description;
 
+    private int version;
+
     private Importance importance;
 
-    private List<DocumentFile> filesList = new ArrayList();
+    private List<DocumentFile> filesList = new ArrayList<>();
 
     private boolean isModerated;
 
@@ -23,9 +28,13 @@ public class DocumentVersion {
 
     }
 
-    public DocumentVersion(String description, boolean isModerated) {
-        this.description = description;
-        this.isModerated = isModerated;
+    @Override
+    public boolean equals(Object o){
+        if (o instanceof DocumentVersion compare){
+            return compare.getId() == this.id;
+        }else {
+            return false;
+        }
     }
 
 }

@@ -1,19 +1,15 @@
+import com.strelnikov.doclib.model.conception.Unit;
+import com.strelnikov.doclib.model.documnets.DocumentType;
 import com.strelnikov.doclib.repository.DocumentDao;
 import com.strelnikov.doclib.repository.jdbc.DatabaseCreatorJdbc;
-import com.strelnikov.doclib.repository.jdbc.DatabaseConnectorJdbc;
 import com.strelnikov.doclib.model.documnets.Document;
-import com.strelnikov.doclib.model.documnets.DocumentVersion;
 import com.strelnikov.doclib.repository.configuration.RepositoryConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.*;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 public class DocumentDaoJdbcTest {
@@ -33,92 +29,55 @@ public class DocumentDaoJdbcTest {
         creator.runScript("src/test/resources/deletedb.sql");
     }
 
-    private int document_id;
-
-    private ArrayList<Integer> getVersionList(){
-        ArrayList<Integer> list;
-        list = new ArrayList<>();
-        try ( Connection connection = DatabaseConnectorJdbc.getConnectionFromPool()) {
-            Statement statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery("SELECT version from document where name='test_doc';");
-            while (rs.next()) {
-                list.add(rs.getInt(1));
-            }
-            connection.close();
-            System.out.println(list);
-        } catch (SQLException e) {
-            log.error(e.getMessage(), e);
-        }
-        return list;
-    }
-
-    private ArrayList<Integer> expected;
-
-    @Before
-    public void beforeEachDocumentTest() {
-        Document testDoc = new Document("test_doc");
-        testDoc.getDocumentType().setCurentType("test_type");
-        testDoc.setActualVersion(2);
-        testDoc.getVersionsList().add(new DocumentVersion("test description", false));
-        testDoc.getVersionsList().add(new DocumentVersion("test description", false));
-        documentDao.addNewDocument(testDoc, 1);
-        document_id = documentDao.getDocumentId(testDoc);
-        expected=getVersionList();
-    }
-
-    @After
-    public void afterEachDocumentTest(){
-        documentDao.deleteDocument(document_id);
+    @Test
+    public void loadDocuemntTest(){
+        Unit unit = new Document();
+        unit.setId(1);
+        Document document = documentDao.loadDocument(unit.getId());
+        Assert.assertEquals("test_doc",document.getName());
     }
 
     @Test
-    public void addDocumentTest(){
-        Document testDoc = new Document("test_doc");
-        testDoc.getDocumentType().setCurentType("test_type");
-        testDoc.setActualVersion(3);
-        testDoc.getVersionsList().add(new DocumentVersion("test description", false));
-        testDoc.getVersionsList().add(new DocumentVersion("test description", false));
-        testDoc.getVersionsList().add(new DocumentVersion("test description", false));
-        documentDao.addNewDocument(testDoc, 1);
-        ArrayList<Integer>actual=getVersionList();
-        expected.add(3);
-        documentDao.deleteDocument(documentDao.getDocumentId(testDoc));
-        Assert.assertEquals(expected,actual);
+    public void getDocumentsListTest(){
+        List<Unit> list = documentDao.getDocumentsList(1);
+        Assert.assertEquals("test_doc", list.get(0).getName());
+    }
+
+    @Test
+    public void updateDocuemntTest(){
+        Unit unit = new Document();
+        unit.setId(1);
+        Document document = documentDao.loadDocument(unit.getId());
+        document.setName("changed name");
+        documentDao.updateDocument(document);
+        Document actual = documentDao.loadDocument(unit.getId());
+        document.setName("test_doc");
+        documentDao.updateDocument(document);
+        Assert.assertEquals("changed name",actual.getName());
+    }
+
+    @Test
+    public void insertDocumentTest(){
+        Document document = new Document();
+        document.setName("test doc 2");
+        document.setParent_id(1);
+        document.setDocumentType(new DocumentType("test_type"));
+        document = documentDao.insertDocument(document);
+        int actual = documentDao.getDocumentsList(1).size();
+        documentDao.deleteDocument(document.getId());
+        Assert.assertEquals(2,actual);
     }
 
     @Test
     public void deleteDocumentTest(){
-        documentDao.deleteDocument(document_id);
-        ArrayList<Integer> actual = getVersionList();
-        expected.remove(1);
-        Document testDoc = new Document("test_doc");
-        testDoc.getDocumentType().setCurentType("test_type");
-        testDoc.setActualVersion(2);
-        testDoc.getVersionsList().add(new DocumentVersion("test description", false));
-        testDoc.getVersionsList().add(new DocumentVersion("test description", false));
-        documentDao.addNewDocument(testDoc, 1);
-        document_id = documentDao.getDocumentId(testDoc);
-        Assert.assertEquals(expected,actual);
+        Document document = new Document();
+        document.setName("test doc 2");
+        document.setParent_id(1);
+        document.setDocumentType(new DocumentType("test_type"));
+        document = documentDao.insertDocument(document);
+        documentDao.deleteDocument(document.getId());
+        int actual = documentDao.getDocumentsList(1).size();
+        Assert.assertEquals(1,actual);
     }
 
-    @Test
-    public void getDocumentIdTest(){
-        Document testDoc = new Document("test_doc");
-        testDoc.getDocumentType().setCurentType("test_type");
-        testDoc.setActualVersion(3);
-        testDoc.getVersionsList().add(new DocumentVersion("test description", false));
-        testDoc.getVersionsList().add(new DocumentVersion("test description", false));
-        testDoc.getVersionsList().add(new DocumentVersion("test description", false));
-        documentDao.addNewDocument(testDoc, 1);
-        int actual = documentDao.getDocumentId(testDoc);
-        documentDao.deleteDocument(actual);
-        Assert.assertEquals(document_id+1,actual);
-    }
-
-    @Test
-    public void loadDocumentTest(){
-        Document document = documentDao.loadDocument("test_doc","test_type");
-        DocumentVersion docVersion = document.getVersionsList().get(document.getActualVersion()-1);
-        Assert.assertEquals("test description", docVersion.getDescription());
-    }
 }

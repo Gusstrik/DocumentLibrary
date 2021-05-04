@@ -21,8 +21,13 @@ public class CatalogDaoJdbcTest {
     private final CatalogDao catalogDao = appContext.getBean(CatalogDao.class);
     private static final DatabaseCreatorJdbc databaseCreatorJdbc=appContext.getBean(DatabaseCreatorJdbc.class);
 
+    private static Catalog parentCat;
+
     @BeforeClass
     public static void beforeFileDaoTest() {
+        parentCat=new Catalog();
+        parentCat.setId(1);
+        parentCat.setName("/");
         databaseCreatorJdbc.runScript("src/test/resources/insertestdb.sql");
     }
 
@@ -38,9 +43,10 @@ public class CatalogDaoJdbcTest {
 
 
     private ArrayList<String> getNamesFromContentList() {
+        parentCat=catalogDao.loadCatalog(parentCat.getId());
         ArrayList<String> list;
         list = new ArrayList<>();
-        for (Unit e : catalogDao.getContentList("test_parent")) {
+        for (Unit e : parentCat.getContentList()) {
             list.add(e.getName());
         }
         return list;
@@ -49,44 +55,43 @@ public class CatalogDaoJdbcTest {
 
     @Test
     public void addCatalogTest() {
-        catalogDao.addNewCatalog("test_3", "test_parent");
-        expected.add(2, "test_3");
-        ArrayList<String> actual = getNamesFromContentList();
-        catalogDao.deleteCatalog("test_3");
-        Assert.assertEquals(expected, actual);
+        Catalog catalog = new Catalog();
+        catalog.setParent_id(1);
+        catalog.setName("test_1");
+        catalog = catalogDao.insertCatalog(catalog);
+        int amount = expected.size()+1;
+        int actual = getNamesFromContentList().size();
+        catalogDao.deleteCatalog(catalog.getId());
+        Assert.assertEquals(amount, actual);
     }
 
     @Test
     public void deleteCatalogTest() {
-        catalogDao.deleteCatalog("test_2");
-        expected.remove("test_2");
+        Catalog catalog = new Catalog();
+        catalog.setParent_id(1);
+        catalog.setName("test_1");
+        catalog = catalogDao.insertCatalog(catalog);
+        catalogDao.deleteCatalog(catalog.getId());
         ArrayList<String> actual = getNamesFromContentList();
-        catalogDao.addNewCatalog("test_2", "test_parent");
-        Assert.assertEquals(expected, actual);
-    }
-
-    @Test
-    public void getCatalogIdTest() {
-        catalogDao.addNewCatalog("test_3", "test_parent");
-        int expected = catalogDao.getCatalogId("test_3") + 2;
-        catalogDao.deleteCatalog("test_3");
-        catalogDao.addNewCatalog("test_3", "test_parent");
-        catalogDao.deleteCatalog("test_3");
-        catalogDao.addNewCatalog("test_3", "test_parent");
-        int actual = catalogDao.getCatalogId("test_3");
-        catalogDao.deleteCatalog("test_3");
         Assert.assertEquals(expected, actual);
     }
 
     @Test
     public void loadCatalogTest() {
-        Catalog test = catalogDao.loadCatalog("test_parent");
-        test.setContentList(catalogDao.getContentList(test.getName()));
-        List<String> actual;
-        actual = new ArrayList<>();
-        for (Unit u : test.getContentList()) {
-            actual.add(u.getName());
-        }
-        Assert.assertEquals(expected, actual);
+        Catalog test = catalogDao.loadCatalog(1);
+        Assert.assertEquals("/", test.getName());
+    }
+
+    @Test
+    public void updateCatalogTest(){
+        Catalog catalog = new Catalog();
+        catalog.setName("test catalog");
+        catalog.setParent_id(1);
+        catalog=catalogDao.insertCatalog(catalog);
+        catalog.setName("changed_name");
+        catalogDao.updateCatalog(catalog);
+        Catalog test = catalogDao.loadCatalog(catalog.getId());
+        catalogDao.deleteCatalog(catalog.getId());
+        Assert.assertEquals("changed_name",test.getName());
     }
 }

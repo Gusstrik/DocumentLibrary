@@ -1,4 +1,4 @@
-package com.strelnikov.doclib.web.servlets;
+package com.strelnikov.doclib.web.servlets.utils;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
