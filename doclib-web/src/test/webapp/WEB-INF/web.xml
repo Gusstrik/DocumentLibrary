@@ -23,6 +23,16 @@
         <servlet-class>com.strelnikov.doclib.web.servlets.DocumentServlet</servlet-class>
     </servlet>
 
+    <servlet>
+        <servlet-name>unit-servlet</servlet-name>
+        <servlet-class>com.strelnikov.doclib.web.servlets.UnitServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>unit-servlet</servlet-name>
+        <url-pattern>/unit</url-pattern>
+    </servlet-mapping>
+
     <servlet-mapping>
         <servlet-name>catalog-servlet</servlet-name>
         <url-pattern>/catalog</url-pattern>

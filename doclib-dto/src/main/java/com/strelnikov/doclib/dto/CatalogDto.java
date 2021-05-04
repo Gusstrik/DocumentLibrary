@@ -1,9 +1,7 @@
 package com.strelnikov.doclib.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.*;
 
 
 import java.util.List;
@@ -12,12 +10,15 @@ import java.util.List;
 @AllArgsConstructor
 public class CatalogDto {
 
-
-    private int id;
+    private int id = 0;
     @NonNull
+
     private String name;
+
     private int parentId;
+
     @NonNull
     private List<UnitDto> contentList;
 
+    public CatalogDto(){}
 }

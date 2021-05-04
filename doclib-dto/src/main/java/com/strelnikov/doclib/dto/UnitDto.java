@@ -16,5 +16,5 @@ public class UnitDto {
     private String unitType;
 
     private int parentId;
-
+    public UnitDto(){}
 }

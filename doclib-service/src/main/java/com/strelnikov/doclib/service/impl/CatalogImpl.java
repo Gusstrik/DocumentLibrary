@@ -33,16 +33,20 @@ public class CatalogImpl implements CatalogActions {
 
 
     private boolean checkIfCatalogExist(Unit addingUnit) {
-        Catalog parentCatlog = catalogDao.loadCatalog(addingUnit.getParent_id());
-        boolean isExistflag = false;
-        for (Unit unit : parentCatlog.getContentList()) {
-            if (unit.getUnitType().equals(UnitType.CATALOG) &&
-                    unit.getName().equals(addingUnit.getName())&&
-                    unit.getId()!=addingUnit.getId()) {
-                isExistflag = true;
+        if(addingUnit.getParent_id()!=0) {
+            Catalog parentCatlog = catalogDao.loadCatalog(addingUnit.getParent_id());
+            for (Unit unit : parentCatlog.getContentList()) {
+                if (unit.getUnitType().equals(UnitType.CATALOG) &&
+                        unit.getName().equals(addingUnit.getName()) &&
+                        unit.getId() != addingUnit.getId()) {
+                    return true;
+                }
             }
+            return false;
         }
-        return isExistflag;
+        else {
+            return false;
+        }
     }
 
     private CatalogDto createNewCatalog(CatalogDto catalogDto) throws UnitIsAlreadyExistException{

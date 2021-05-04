@@ -1,8 +1,13 @@
 package com.strelnikov.doclib.web.servlets;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.strelnikov.doclib.dto.CatalogDto;
+import com.strelnikov.doclib.service.CatalogActions;
 import com.strelnikov.doclib.service.dtomapper.DtoMapper;
+import com.strelnikov.doclib.service.exceptions.UnitIsAlreadyExistException;
+import com.strelnikov.doclib.service.exceptions.UnitNotFoundException;
+import lombok.SneakyThrows;
 
 
 import javax.servlet.ServletConfig;
@@ -15,40 +20,42 @@ import java.io.OutputStream;
 
 public class CatalogServlet extends HttpServlet {
 
-    private DtoMapper dtoMapper=null;
+    private DtoMapper dtoMapper = null;
+    private CatalogActions catalogActions = null;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         dtoMapper = ApplicationContextHolder.getApplicationContext().getBean(DtoMapper.class);
-    }
-
-
-
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String param = request.getParameter("name");
-        CatalogDto catalogDto;
-        if(param==null||param.isEmpty()){
-            catalogDto = dtoMapper.mapCatalog("/");
-
-        }else{
-            catalogDto = dtoMapper.mapCatalog(param);
-        }
-        ServletUtils.writeCatalogJson(response,catalogDto);
+        catalogActions = ApplicationContextHolder.getApplicationContext().getBean(CatalogActions.class);
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,IOException{
-        CatalogDto catalogDto = ServletUtils.parseJsonToCatalog(request.getInputStream());
-        response.setContentType("text/html");
-        OutputStream outputStream = response.getOutputStream();
-        if (!(catalogDto == null)){
-            dtoMapper.mapCatalog(catalogDto);
-            outputStream.write("Catalog was successfully added".getBytes());
-        }else {
-            outputStream.write("Catalog wasn't added. Incorrect input data".getBytes());
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws JsonProcessingException, IOException {
+        String param = request.getParameter("id");
+        if (param == null) {
+            param = "1";
         }
-        outputStream.flush();
+        try {
+            CatalogDto catalogDto = catalogActions.loadCatalog(Integer.parseInt(param));
+            String cat = ServletUtils.convertToJson(catalogDto);
+            response.setContentType("application/json");
+            response.getOutputStream().write(cat.getBytes());
+            response.getOutputStream().flush();
+        } catch (UnitNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws JsonProcessingException, IOException {
+        String requestBody = new String(request.getInputStream().readAllBytes());
+        CatalogDto catalogDto = null;
+        catalogDto = (CatalogDto) ServletUtils.convertToDtoCatalog(requestBody);
+        try {
+            catalogDto = catalogActions.saveCatalog(catalogDto);
+        } catch (UnitIsAlreadyExistException e) {
+            e.printStackTrace();
+        }
     }
 }
