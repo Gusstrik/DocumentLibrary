@@ -25,15 +25,19 @@ public class DocTypeImpl implements DocTypeActions {
     @Override
     public void addDocumentType(DocTypeDto docTypeDto) {
         docTypeDao.insertType(docTypeDto.getDocType());
+        refreshListDocumentType();
+
     }
 
     @Override
     public void deleteDocumentType(DocTypeDto docTypeDto) {
         docTypeDao.deleteType(docTypeDto.getDocType());
+        refreshListDocumentType();
     }
 
     @Override
     public void refreshListDocumentType() {
         DocumentType.documentTypeList=docTypeDao.getTypesList();
+        DocTypeDto.typesList=docTypeDao.getTypesList();
     }
 }
