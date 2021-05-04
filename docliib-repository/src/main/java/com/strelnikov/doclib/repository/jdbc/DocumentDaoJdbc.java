@@ -2,6 +2,7 @@ package com.strelnikov.doclib.repository.jdbc;
 
 import com.strelnikov.doclib.model.conception.Unit;
 import com.strelnikov.doclib.model.conception.UnitType;
+import com.strelnikov.doclib.model.documnets.DocumentVersion;
 import com.strelnikov.doclib.repository.DocVersionDao;
 import com.strelnikov.doclib.repository.DocumentDao;
 import com.strelnikov.doclib.model.documnets.Document;
@@ -42,6 +43,10 @@ public class DocumentDaoJdbc implements DocumentDao {
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
                 document.setId(rs.getInt(1));
+            }
+            for(DocumentVersion docVersion:document.getVersionsList()){
+                docVersion.setDocumentId(document.getId());
+                docVersionDao.insertDocVersion(docVersion);
             }
         } catch (SQLException e) {
             log.error(e.getMessage(), e);
@@ -107,11 +112,11 @@ public class DocumentDaoJdbc implements DocumentDao {
     private final String DOCUMENT_LOAD_QUERY = "SELECT * FROM documents WHERE id = ?";
 
     @Override
-    public Document loadDocument(Unit unit) {
+    public Document loadDocument(int docId) {
         Document document = null;
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(DOCUMENT_LOAD_QUERY);
-            statement.setInt(1, unit.getId());
+            statement.setInt(1, docId);
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
                 document = new Document();

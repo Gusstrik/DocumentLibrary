@@ -33,7 +33,7 @@ public class DocumentDaoJdbcTest {
     public void loadDocuemntTest(){
         Unit unit = new Document();
         unit.setId(1);
-        Document document = documentDao.loadDocument(unit);
+        Document document = documentDao.loadDocument(unit.getId());
         Assert.assertEquals("test_doc",document.getName());
     }
 
@@ -47,10 +47,10 @@ public class DocumentDaoJdbcTest {
     public void updateDocuemntTest(){
         Unit unit = new Document();
         unit.setId(1);
-        Document document = documentDao.loadDocument(unit);
+        Document document = documentDao.loadDocument(unit.getId());
         document.setName("changed name");
         documentDao.updateDocument(document);
-        Document actual = documentDao.loadDocument(unit);
+        Document actual = documentDao.loadDocument(unit.getId());
         document.setName("test_doc");
         documentDao.updateDocument(document);
         Assert.assertEquals("changed name",actual.getName());

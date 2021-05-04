@@ -1,6 +1,5 @@
 package com.strelnikov.doclib.repository;
 
-import com.strelnikov.doclib.model.catalogs.Catalog;
 import com.strelnikov.doclib.model.conception.Unit;
 import com.strelnikov.doclib.model.documnets.Document;
 
@@ -10,7 +9,7 @@ public interface DocumentDao {
 
     Document insertDocument(Document document);
 
-    Document loadDocument(Unit unit);
+    Document loadDocument(int docId);
 
     void updateDocument(Document document);
 

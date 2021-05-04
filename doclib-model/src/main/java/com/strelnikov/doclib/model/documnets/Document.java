@@ -37,4 +37,14 @@ public class Document extends Unit {
             return versionsList.get(actualVersion);
         }
     }
+
+    public boolean isVersionExist(DocumentVersion docVersion){
+        for (DocumentVersion existingVer:versionsList){
+            if (existingVer.equals(docVersion)){
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

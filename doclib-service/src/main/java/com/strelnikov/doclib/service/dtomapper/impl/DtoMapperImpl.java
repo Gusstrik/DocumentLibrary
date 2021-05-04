@@ -125,7 +125,7 @@ public class DtoMapperImpl implements DtoMapper {
         for (DocumentFile file:documentVersion.getFilesList()){
             list.add(mapDocFile(file));
         }
-       return new DocVersionDto(documentVersion.getDocumentId(),documentVersion.getDocumentId(),documentVersion.getVersion(),
+       return new DocVersionDto(documentVersion.getId(),documentVersion.getDocumentId(),documentVersion.getVersion(),
                documentVersion.getDescription(),documentVersion.getImportance().toString(),documentVersion.isModerated(), list);
     }
 

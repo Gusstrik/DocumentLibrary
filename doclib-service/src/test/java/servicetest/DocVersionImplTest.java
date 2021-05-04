@@ -9,6 +9,7 @@ import com.strelnikov.doclib.repository.jdbc.DatabaseCreatorJdbc;
 import com.strelnikov.doclib.service.DocTypeActions;
 import com.strelnikov.doclib.service.DocVersionActions;
 import com.strelnikov.doclib.service.dtomapper.DtoMapper;
+import com.strelnikov.doclib.service.exceptions.VersionIsAlreadyExistException;
 import com.strelnikov.doclib.service.impl.configuration.ServiceImplConfiguration;
 import org.junit.*;
 import org.springframework.context.ApplicationContext;
@@ -45,7 +46,7 @@ public class DocVersionImplTest {
     }
 
     @Test
-    public void saveDocVersionTest() {
+    public void saveDocVersionTest() throws VersionIsAlreadyExistException {
         DocumentVersion docVersion = docVerDao.getDocVersionList(document).get(0);
         docVersion.setVersion(1);
         docVersion.setDescription("another test version");
@@ -56,7 +57,7 @@ public class DocVersionImplTest {
         Assert.assertEquals(expected, actual);
     }
     @Test
-    public void deleteDocVersionTest() {
+    public void deleteDocVersionTest() throws VersionIsAlreadyExistException {
         DocumentVersion docVersion = docVerDao.getDocVersionList(document).get(0);
         docVersion.setVersion(1);
         docVersion.setDescription("another test version");

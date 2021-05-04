@@ -28,4 +28,13 @@ public class DocumentVersion {
 
     }
 
+    @Override
+    public boolean equals(Object o){
+        if (o instanceof DocumentVersion compare){
+            return compare.getId() == this.id;
+        }else {
+            return false;
+        }
+    }
+
 }

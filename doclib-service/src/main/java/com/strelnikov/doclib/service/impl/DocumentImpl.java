@@ -1,85 +1,133 @@
 package com.strelnikov.doclib.service.impl;
 
+import com.strelnikov.doclib.dto.DocumentDto;
+import com.strelnikov.doclib.model.conception.Unit;
+import com.strelnikov.doclib.model.conception.UnitType;
 import com.strelnikov.doclib.repository.CatalogDao;
+
 import com.strelnikov.doclib.repository.DocumentDao;
-import com.strelnikov.doclib.repository.FileDao;
 import com.strelnikov.doclib.model.catalogs.Catalog;
 import com.strelnikov.doclib.model.documnets.Document;
-import com.strelnikov.doclib.model.documnets.DocumentType;
+
 import com.strelnikov.doclib.model.documnets.DocumentVersion;
+import com.strelnikov.doclib.service.DocVersionActions;
 import com.strelnikov.doclib.service.DocumentActions;
+import com.strelnikov.doclib.service.dtomapper.DtoMapper;
+import com.strelnikov.doclib.service.exceptions.UnitIsAlreadyExistException;
+import com.strelnikov.doclib.service.exceptions.UnitNotFoundException;
+import com.strelnikov.doclib.service.exceptions.VersionIsAlreadyExistException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class DocumentImpl implements DocumentActions {
 
     private final DocumentDao documentDao;
     private final CatalogDao catalogDao;
-    private final FileDao fileDao;
+    private final DtoMapper dtoMapper;
+    private final DocVersionActions docVerActions;
 
-    public DocumentImpl(@Autowired DocumentDao documentDao, @Autowired CatalogDao catalogDao, @Autowired FileDao fileDao){
-        this.documentDao =documentDao;
-        this.catalogDao= catalogDao;
-        this.fileDao = fileDao;
+    public DocumentImpl(@Autowired DocumentDao documentDao, @Autowired DocVersionActions docVerActions,
+                        @Autowired DtoMapper dtoMapper, @Autowired CatalogDao catalogDao) {
+        this.documentDao = documentDao;
+        this.docVerActions = docVerActions;
+        this.dtoMapper = dtoMapper;
+        this.catalogDao = catalogDao;
     }
 
     @Override
-    public Document createNewDocument(String name, DocumentType docType, Catalog catalog) {
-        Document document = new Document(name);
-        document.setActualVersion(0);
-        document.setDocumentType(docType);
-        document.getVersionsList().add(new DocumentVersion());
-        documentDao.addNewDocument(document,catalogDao.getCatalogId(catalog.getName()));
-        return document;
+    public void deleteDocument(int documentId) {
+        documentDao.deleteDocument(documentId);
     }
 
     @Override
-    public void deleteDocumentVersion(Document document) {
-        documentDao.deleteDocument(documentDao.getDocumentId(document));
-        document.versionsList.remove(document.getActualVersion()-1);
-        document.setActualVersion(document.getActualVersion()-1);
-    }
-
-    @Override
-    public void createNewDocumentVersion(Document document, Catalog curentCatalog) {
-        documentDao.addNewDocument(document,catalogDao.getCatalogId(curentCatalog.getName()));
-        DocumentVersion newVersion = document.getDocumentVersion();
-        fileDao.copyFilesToNewDoc(newVersion.getFilesList(),documentDao.getDocumentId(document));
-    }
-
-    @Override
-    public Document deleteNotActualVersions(Document document) {
-        for (int i = 0; i< document.getActualVersion(); i++){
-            Document tempDocVer = new Document(document.getName());
-            tempDocVer.setDocumentType(document.getDocumentType());
-            tempDocVer.setActualVersion(i);
-            documentDao.deleteDocument(documentDao.getDocumentId(tempDocVer));
-            document.getVersionsList().remove(i);
-        }
-        document.setActualVersion(1);
-        return document;
-    }
-
-    @Override
-    public void deleteDocument(Document document) {
-        for (int i = 0; i <= document.getActualVersion(); i++){
-            Document tempDocVer = new Document(document.getName());
-            tempDocVer.setDocumentType(document.getDocumentType());
-            tempDocVer.setActualVersion(i);
-            documentDao.deleteDocument(documentDao.getDocumentId(tempDocVer));
+    public DocumentDto loadDocument(int documentId) throws UnitNotFoundException {
+        Document document = documentDao.loadDocument(documentId);
+        if (document == null) {
+            throw new UnitNotFoundException(documentId);
+        } else {
+            return dtoMapper.mapDocument(document);
         }
     }
 
-    @Override
-    public void refreshDocumentsFileList(Document document) {
-        int documentId= documentDao.getDocumentId(document);
-        DocumentVersion actualVersion = document.getDocumentVersion();
-        actualVersion.setFilesList(fileDao.getFilesList(documentId));
+    private boolean checkIfDocumentExist(Document addingDocuemnt) {
+        Catalog parentCatlog = catalogDao.loadCatalog(addingDocuemnt.getParent_id());
+        for (Unit unit : parentCatlog.getContentList()) {
+            if (unit.getUnitType().equals(UnitType.DOCUMENT)) {
+                Document existinDoc = documentDao.loadDocument(unit.getId());
+                if (existinDoc.getName().equals(addingDocuemnt.getName()) &&
+                        existinDoc.getDocumentType().getCurentType().equals(addingDocuemnt.getDocumentType().getCurentType())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private DocumentDto createNewDocument(DocumentDto documentDto) throws UnitIsAlreadyExistException {
+        Document document = dtoMapper.mapDocument(documentDto);
+        if (checkIfDocumentExist(document)) {
+            throw new UnitIsAlreadyExistException(catalogDao.loadCatalog(document.getParent_id()), document);
+        } else {
+            return dtoMapper.mapDocument(documentDao.insertDocument(document));
+        }
+    }
+
+    private List<Integer> getVerListForDelete(Document document) {
+        Document dbDoc = documentDao.loadDocument(document.getId());
+        List<Integer> idListForDelete = new ArrayList<>();
+        for (DocumentVersion dbDocVersion : dbDoc.getVersionsList()) {
+            if (!document.isVersionExist(dbDocVersion)) {
+                idListForDelete.add(dbDocVersion.getId());
+            }
+        }
+        return idListForDelete;
+    }
+
+    private Document insertVerList(Document document) throws VersionIsAlreadyExistException {
+        Document dbDoc = documentDao.loadDocument(document.getId());
+        List<DocumentVersion> listForInsert = new ArrayList<>();
+        for (DocumentVersion docVersion : document.getVersionsList()) {
+            if (!dbDoc.isVersionExist(docVersion)) {
+                docVersion.setId(docVerActions.saveDocVersion(dtoMapper.mapDocVersion(docVersion)).getId());
+            }
+        }
+        return document;
+    }
+
+//    private boolean checkIsVersionExist(DocumentVersion documentVersion) {
+//        Document document = documentDao.loadDocument(documentVersion.getDocumentId());
+//        for (DocumentVersion docVer : document.getVersionsList()) {
+//            if (docVer.getVersion() == documentVersion.getVersion()) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
+
+    private void editDocuemnt(Document document) throws VersionIsAlreadyExistException {
+        document = insertVerList(document);
+
+        List<Integer> deleteList = getVerListForDelete(document);
+        for (int id : deleteList) {
+            docVerActions.deleteDocVersion(id);
+        }
+        documentDao.updateDocument(document);
     }
 
     @Override
-    public Document loadDocument(String name, DocumentType docType) {
-        return documentDao.loadDocument(name,docType.getCurentType());
+    public DocumentDto saveDocument(DocumentDto documentDto) throws UnitIsAlreadyExistException, VersionIsAlreadyExistException {
+        try {
+            loadDocument(documentDto.getId());
+            Document document = dtoMapper.mapDocument(documentDto);
+            editDocuemnt(document);
+            documentDto = loadDocument(documentDto.getId());
+        } catch (UnitNotFoundException e) {
+            documentDto = createNewDocument(documentDto);
+        }
+        return documentDto;
     }
 }

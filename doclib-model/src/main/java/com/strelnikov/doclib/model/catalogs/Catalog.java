@@ -21,5 +21,14 @@ public class Catalog extends Unit {
         contentList= new ArrayList<>();
     }
 
+    public boolean containUnit(Unit unit){
+        for (Unit contain:this.contentList){
+            if (contain.equals(unit)){
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
 
