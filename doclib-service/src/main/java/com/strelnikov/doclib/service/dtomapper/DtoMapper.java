@@ -1,21 +1,37 @@
 package com.strelnikov.doclib.service.dtomapper;
 
 
-import com.strelnikov.doclib.dto.CatalogDto;
-import com.strelnikov.doclib.dto.DocTypeDto;
-import com.strelnikov.doclib.dto.DocumentDto;
+import com.strelnikov.doclib.dto.*;
+import com.strelnikov.doclib.model.catalogs.Catalog;
+import com.strelnikov.doclib.model.conception.Unit;
+import com.strelnikov.doclib.model.documnets.Document;
+import com.strelnikov.doclib.model.documnets.DocumentFile;
+import com.strelnikov.doclib.model.documnets.DocumentType;
+import com.strelnikov.doclib.model.documnets.DocumentVersion;
 
 
 public interface DtoMapper {
-    CatalogDto mapCatalog(String catalogName);
 
-    void mapCatalog(CatalogDto catalog);
+    UnitDto mapUnit(Unit unit);
 
-    DocTypeDto mapDocType();
+    Unit mapUnit(UnitDto unitDto);
+    CatalogDto mapCatalog (Catalog catalog);
 
-    DocumentDto mapDocument(DocumentDto documentDto);
+    Catalog mapCatalog(CatalogDto catalogDto);
 
-    void mapNewDocument(DocumentDto documentDto);
+    DocTypeDto mapDocType(DocumentType documentType);
 
-    void mapNewDocVersion(DocumentDto documentDto);
+    DocumentType mapDocType(DocTypeDto docTypeDto);
+
+    DocFileDto mapDocFile(DocumentFile docFile);
+
+    DocumentFile mapDocFile(DocFileDto docFileDto);
+
+    DocumentVersion mapDocVersion(DocVersionDto docVersionDto);
+
+    DocVersionDto mapDocVersion(DocumentVersion documentVersion);
+
+    Document mapDocument(DocumentDto documentDto);
+    DocumentDto mapDocument (Document document);
+
 }
