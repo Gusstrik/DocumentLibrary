@@ -17,4 +17,5 @@ public class DocFileDto {
     @NonNull
     private String path;
 
+    public DocFileDto(){}
 }

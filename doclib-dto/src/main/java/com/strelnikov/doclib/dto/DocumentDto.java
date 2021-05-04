@@ -22,4 +22,5 @@ public class DocumentDto {
     @NonNull
     private List<DocVersionDto> versionList;
 
+    public DocumentDto(){}
 }

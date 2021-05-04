@@ -1,8 +1,13 @@
 package com.strelnikov.doclib.web.servlets;
 
+import com.strelnikov.doclib.dto.CatalogDto;
 import com.strelnikov.doclib.dto.DocumentDto;
+import com.strelnikov.doclib.service.DocumentActions;
 import com.strelnikov.doclib.service.dtomapper.DtoMapper;
 import com.strelnikov.doclib.service.dtomapper.impl.DtoMapperImpl;
+import com.strelnikov.doclib.service.exceptions.UnitIsAlreadyExistException;
+import com.strelnikov.doclib.service.exceptions.UnitNotFoundException;
+import com.strelnikov.doclib.service.exceptions.VersionIsAlreadyExistException;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.ServletConfig;
@@ -19,71 +24,40 @@ import java.io.OutputStream;
 public class DocumentServlet extends HttpServlet {
 
     private DtoMapper dtoMapper=null;
+    private DocumentActions documentActions;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         dtoMapper = ApplicationContextHolder.getApplicationContext().getBean(DtoMapper.class);
+        documentActions = ApplicationContextHolder.getApplicationContext().getBean(DocumentActions.class);
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("text/html");
-        OutputStream outputStream = response.getOutputStream();
-        outputStream.write("IT IS A DOCUEMNT SERVLET".getBytes());
-        outputStream.flush();
-    }
+        String param = request.getParameter("id");
+        if (param!=null){
+            try {
+                DocumentDto documentDto = documentActions.loadDocument(Integer.parseInt(param));
+                response.setContentType("application/json");
+                OutputStream outputStream = response.getOutputStream();
+                outputStream.write(ServletUtils.convertToJson(documentDto).getBytes());
+                outputStream.flush();
+            } catch (UnitNotFoundException e) {
+                e.printStackTrace();
+            }
 
-//    @Override
-//    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
-//        String mode;
-//        InputStream inputStream = null;
-//        OutputStream outputStream = null;
-//        String result = "";
-//        String requestBody=null;
-//        response.setContentType("text/html");
-//        try {
-//            inputStream = request.getInputStream();
-//            outputStream = response.getOutputStream();
-//            requestBody=ServletUtils.getRequestBody(inputStream);
-//        } catch (IOException e) {
-//            log.error(e.getMessage(),e);
-//        }
-//        mode = ServletUtils.parseDocumentAddingMode(requestBody);
-//        if (mode != null) {
-//            if (mode.equals("newDoc")) {
-//                DocumentDto documentDto = ServletUtils.parseNewDocument(requestBody);
-//                if (documentDto != null) {
-//                    dtoMapper.mapNewDocument(documentDto);
-//                    result = "New document was created";
-//                } else {
-//                    result = "Incorrect input data";
-//                    response.setStatus(400);
-//                }
-//            }else if(mode.equals("newVer")){
-//                DocumentDto documentDto = ServletUtils.parseNewDocVersion(requestBody);
-//                if (documentDto != null) {
-//                    dtoMapper.mapNewDocVersion(documentDto);
-//                    result = "New version of document was created";
-//                } else {
-//                    result = "Incorrect input data";
-//                    response.setStatus(400);
-//                }
-//            }else{
-//                result="Incorrect adding mode";
-//                response.setStatus(400);
-//            }
-//        } else {
-//            response.setStatus(400);
-//            result = "Please specify adding mode:\n" +
-//                    "\"newDoc\" - for adding new Document\n" +
-//                    "\"newVer\" - for adding new Version";
-//        }
-//        try {
-//            outputStream.write(result.getBytes());
-//            outputStream.flush();
-//        } catch (IOException e) {
-//            log.error(e.getMessage(),e);
-//        }
-//    }
+        }
+    }
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String requestBody = new String(request.getInputStream().readAllBytes());
+        DocumentDto documentDto = null;
+        documentDto = (DocumentDto) ServletUtils.convertToDtoDocument(requestBody);
+        try {
+            documentDto = documentActions.saveDocument(documentDto);
+        } catch (UnitIsAlreadyExistException | VersionIsAlreadyExistException e) {
+            e.printStackTrace();
+        }
+    }
 }

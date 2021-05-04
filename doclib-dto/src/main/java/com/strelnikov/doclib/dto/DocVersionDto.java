@@ -1,5 +1,6 @@
 package com.strelnikov.doclib.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
@@ -20,7 +21,10 @@ public class DocVersionDto {
     @NonNull
     private String importance;
 
+    @JsonProperty("moderated")
     private boolean isModerated;
     @NonNull
     private List<DocFileDto>fileList;
+
+    public DocVersionDto(){}
 }

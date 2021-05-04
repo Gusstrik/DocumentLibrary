@@ -5,6 +5,7 @@ import com.strelnikov.doclib.model.conception.Unit;
 import com.strelnikov.doclib.model.conception.UnitType;
 import com.strelnikov.doclib.repository.CatalogDao;
 
+import com.strelnikov.doclib.repository.DocFileDao;
 import com.strelnikov.doclib.repository.DocumentDao;
 import com.strelnikov.doclib.model.catalogs.Catalog;
 import com.strelnikov.doclib.model.documnets.Document;
@@ -29,13 +30,15 @@ public class DocumentImpl implements DocumentActions {
     private final CatalogDao catalogDao;
     private final DtoMapper dtoMapper;
     private final DocVersionActions docVerActions;
+    private final DocFileDao docFileDao;
 
     public DocumentImpl(@Autowired DocumentDao documentDao, @Autowired DocVersionActions docVerActions,
-                        @Autowired DtoMapper dtoMapper, @Autowired CatalogDao catalogDao) {
+                        @Autowired DtoMapper dtoMapper, @Autowired CatalogDao catalogDao, @Autowired DocFileDao docFileDao) {
         this.documentDao = documentDao;
         this.docVerActions = docVerActions;
         this.dtoMapper = dtoMapper;
         this.catalogDao = catalogDao;
+        this.docFileDao = docFileDao;
     }
 
     @Override
@@ -49,6 +52,9 @@ public class DocumentImpl implements DocumentActions {
         if (document == null) {
             throw new UnitNotFoundException(documentId);
         } else {
+            for (DocumentVersion documentVersion:document.getVersionsList()){
+                documentVersion.setFilesList(docFileDao.getFilesList(documentVersion));
+            }
             return dtoMapper.mapDocument(document);
         }
     }

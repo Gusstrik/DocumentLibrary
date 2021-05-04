@@ -134,23 +134,4 @@ public class DocumentDaoJdbc implements DocumentDao {
         return document;
     }
 
-//    private final String DOCUMENT_GET_ID_QUERY = "SELECT id FROM document WHERE name=? AND version=? AND type=?;";
-//
-//    @Override
-//    public int getDocumentId(Document document) {
-//        int id = -1;
-//        try (Connection connection = dataSource.getConnection()) {
-//            PreparedStatement statement = connection.prepareStatement(DOCUMENT_GET_ID_QUERY);
-//            statement.setString(1, document.getName());
-//            statement.setInt(2, document.getActualVersion());
-//            statement.setString(3, document.getDocumentType().getCurentType());
-//            ResultSet rs = statement.executeQuery();
-//            if (rs.next()) {
-//                id = rs.getInt(1);
-//            }
-//        } catch (SQLException e) {
-//            log.error(e.getMessage(), e);
-//        }
-//        return id;
-//    }
 }

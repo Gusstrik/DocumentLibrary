@@ -119,24 +119,5 @@ public class DocVersionDaoJdbc implements DocVersionDao {
         return list;
     }
 
-//    private final String VERSION_GET_ID_QUERY = "SELECT id FROM documents_versions WHERE " +
-//            "(version = ?) AND (document_id = ?);";
-//
-//    @Override
-//    public int getDocVersionId(DocumentVersion documentVersion, int documentId) {
-//        int docVersionId = -1;
-//        try (Connection connection = dataSource.getConnection()) {
-//            PreparedStatement statement = connection.prepareStatement(VERSION_GET_ID_QUERY);
-//            statement.setInt(1, documentVersion.getVersion());
-//            statement.setInt(2, documentId);
-//            ResultSet rs = statement.executeQuery();
-//            if (rs.next()) {
-//                docVersionId = rs.getInt("id");
-//            }
-//
-//        } catch (SQLException e) {
-//            log.error(e.getMessage(), e);
-//        }
-//        return docVersionId;
-//    }
+
 }
