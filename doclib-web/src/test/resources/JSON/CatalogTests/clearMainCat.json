@@ -1,0 +1,19 @@
+{
+  "id": 1,
+  "name": "/",
+  "parentId": 0,
+  "contentList": [
+    {
+      "id": 2,
+      "name": "test_catalog",
+      "unitType": "CATALOG",
+      "parentId": 1
+    },
+    {
+      "id": 1,
+      "name": "test_doc",
+      "unitType": "DOCUMENT",
+      "parentId": 1
+    }
+  ]
+}

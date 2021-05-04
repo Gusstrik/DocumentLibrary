@@ -1,0 +1,25 @@
+{
+  "id": 1,
+  "name": "test_doc",
+  "type": "test_type",
+  "actualVersion": 0,
+  "catalogId": 1,
+  "versionList": [
+    {
+      "id": 1,
+      "documentId": 1,
+      "version": 0,
+      "description": "test description",
+      "importance": "IMPORTANT",
+      "fileList": [
+        {
+          "id": 0,
+          "docVerId": 0,
+          "name": "test_file",
+          "path": "test_file"
+        }
+      ],
+      "moderated": false
+    }
+  ]
+}

@@ -1,9 +1,9 @@
 package com.strelnikov.doclib.web.servlets;
 
-import com.strelnikov.doclib.dto.CatalogDto;
 import com.strelnikov.doclib.service.CatalogActions;
 import com.strelnikov.doclib.service.dtomapper.DtoMapper;
 import com.strelnikov.doclib.service.exceptions.UnitNotFoundException;
+import com.strelnikov.doclib.web.servlets.utils.ApplicationContextHolder;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;

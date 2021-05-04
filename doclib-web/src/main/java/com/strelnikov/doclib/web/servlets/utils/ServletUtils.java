@@ -1,4 +1,4 @@
-package com.strelnikov.doclib.web.servlets;
+package com.strelnikov.doclib.web.servlets.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

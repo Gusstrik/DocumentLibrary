@@ -1,9 +1,8 @@
 package com.strelnikov.doclib.web.servlets;
 
 import com.strelnikov.doclib.dto.DocTypeDto;
-import com.strelnikov.doclib.model.documnets.DocumentType;
 import com.strelnikov.doclib.service.DocTypeActions;
-import com.strelnikov.doclib.service.dtomapper.DtoMapper;
+import com.strelnikov.doclib.web.servlets.utils.ApplicationContextHolder;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;

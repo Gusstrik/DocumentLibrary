@@ -7,7 +7,8 @@ import com.strelnikov.doclib.service.CatalogActions;
 import com.strelnikov.doclib.service.dtomapper.DtoMapper;
 import com.strelnikov.doclib.service.exceptions.UnitIsAlreadyExistException;
 import com.strelnikov.doclib.service.exceptions.UnitNotFoundException;
-import lombok.SneakyThrows;
+import com.strelnikov.doclib.web.servlets.utils.ApplicationContextHolder;
+import com.strelnikov.doclib.web.servlets.utils.ServletUtils;
 
 
 import javax.servlet.ServletConfig;
@@ -16,7 +17,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.OutputStream;
 
 public class CatalogServlet extends HttpServlet {
 

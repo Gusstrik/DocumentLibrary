@@ -1,13 +1,13 @@
 package com.strelnikov.doclib.web.servlets;
 
-import com.strelnikov.doclib.dto.CatalogDto;
 import com.strelnikov.doclib.dto.DocumentDto;
 import com.strelnikov.doclib.service.DocumentActions;
 import com.strelnikov.doclib.service.dtomapper.DtoMapper;
-import com.strelnikov.doclib.service.dtomapper.impl.DtoMapperImpl;
 import com.strelnikov.doclib.service.exceptions.UnitIsAlreadyExistException;
 import com.strelnikov.doclib.service.exceptions.UnitNotFoundException;
 import com.strelnikov.doclib.service.exceptions.VersionIsAlreadyExistException;
+import com.strelnikov.doclib.web.servlets.utils.ApplicationContextHolder;
+import com.strelnikov.doclib.web.servlets.utils.ServletUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.ServletConfig;
@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 
 
