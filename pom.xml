@@ -33,6 +33,7 @@
         <jakson.version>2.12.3</jakson.version>
         <spring.version>5.3.6</spring.version>
         <spring-jpa.version>2.5.0</spring-jpa.version>
+        <hibernate.version>6.0.0.Alpha7</hibernate.version>
     </properties>
 
     <dependencyManagement>
@@ -121,6 +122,12 @@
                 <artifactId>spring-data-jpa</artifactId>
                 <version>${spring-jpa.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.hibernate.orm</groupId>
+                <artifactId>hibernate-core</artifactId>
+                <version>${hibernate.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 

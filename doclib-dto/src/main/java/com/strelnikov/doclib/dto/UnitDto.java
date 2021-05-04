@@ -12,6 +12,9 @@ public class UnitDto {
     @NonNull
     private String name;
 
+    @NonNull
+    private String unitType;
+
     private int parentId;
 
 }

@@ -22,6 +22,18 @@ public abstract class Unit {
 
     private UnitType unitType;
 
+    @Override
+    public boolean equals(Object o){
+        if (o instanceof Unit){
+            Unit compare = (Unit) o;
+            return compare.getId() == this.id;
+        }else {
+            return false;
+        }
+    }
+
+
+
     //private ArrayList<Permission> permissions = new ArrayList();
 
 //    public void addPermissionsForNewUser(String login, Credentials... credentials) {

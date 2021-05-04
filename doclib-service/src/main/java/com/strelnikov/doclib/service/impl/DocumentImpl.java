@@ -59,7 +59,8 @@ public class DocumentImpl implements DocumentActions {
             if (unit.getUnitType().equals(UnitType.DOCUMENT)) {
                 Document existinDoc = documentDao.loadDocument(unit.getId());
                 if (existinDoc.getName().equals(addingDocuemnt.getName()) &&
-                        existinDoc.getDocumentType().getCurentType().equals(addingDocuemnt.getDocumentType().getCurentType())) {
+                        existinDoc.getDocumentType().getCurentType().equals(addingDocuemnt.getDocumentType().getCurentType())&&
+                        unit.getId()!=addingDocuemnt.getId()) {
                     return true;
                 }
             }
@@ -98,15 +99,7 @@ public class DocumentImpl implements DocumentActions {
         return document;
     }
 
-//    private boolean checkIsVersionExist(DocumentVersion documentVersion) {
-//        Document document = documentDao.loadDocument(documentVersion.getDocumentId());
-//        for (DocumentVersion docVer : document.getVersionsList()) {
-//            if (docVer.getVersion() == documentVersion.getVersion()) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
+
 
     private void editDocuemnt(Document document) throws VersionIsAlreadyExistException {
         document = insertVerList(document);

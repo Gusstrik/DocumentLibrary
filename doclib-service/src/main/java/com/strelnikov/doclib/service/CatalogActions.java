@@ -1,17 +1,18 @@
 package com.strelnikov.doclib.service;
 
+import com.strelnikov.doclib.dto.CatalogDto;
+import com.strelnikov.doclib.dto.UnitDto;
 import com.strelnikov.doclib.model.catalogs.Catalog;
-
-import java.util.List;
+import com.strelnikov.doclib.model.conception.Unit;
+import com.strelnikov.doclib.service.exceptions.UnitIsAlreadyExistException;
+import com.strelnikov.doclib.service.exceptions.UnitNotFoundException;
 
 public interface CatalogActions {
-    Catalog createNewCatalog(String name, String parent);
 
-    Catalog createNewCatalog(String name);
+    void deleteCatalog(CatalogDto catalogDto);
 
-    void deleteCatalog(String name);
+    CatalogDto loadCatalog(int catalogId) throws UnitNotFoundException;
 
-    List<String> showContent(Catalog catalog);
+    CatalogDto saveCatalog (CatalogDto catalogDto) throws UnitIsAlreadyExistException;
 
-    Catalog loadCatalog(String name);
 }
