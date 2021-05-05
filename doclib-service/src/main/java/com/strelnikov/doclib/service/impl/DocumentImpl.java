@@ -60,7 +60,7 @@ public class DocumentImpl implements DocumentActions {
     }
 
     private boolean checkIfDocumentExist(Document addingDocuemnt) {
-        Catalog parentCatlog = catalogDao.loadCatalog(addingDocuemnt.getParent_id());
+        Catalog parentCatlog = catalogDao.loadCatalog(addingDocuemnt.getCatalog_id());
         for (Unit unit : parentCatlog.getContentList()) {
             if (unit.getUnitType().equals(UnitType.DOCUMENT)) {
                 Document existinDoc = documentDao.loadDocument(unit.getId());
@@ -77,7 +77,7 @@ public class DocumentImpl implements DocumentActions {
     private DocumentDto createNewDocument(DocumentDto documentDto) throws UnitIsAlreadyExistException {
         Document document = dtoMapper.mapDocument(documentDto);
         if (checkIfDocumentExist(document)) {
-            throw new UnitIsAlreadyExistException(catalogDao.loadCatalog(document.getParent_id()), document);
+            throw new UnitIsAlreadyExistException(catalogDao.loadCatalog(document.getCatalog_id()), document);
         } else {
             return dtoMapper.mapDocument(documentDao.insertDocument(document));
         }
