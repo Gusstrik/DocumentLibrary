@@ -13,8 +13,8 @@ import javax.persistence.Query;
 import java.util.ArrayList;
 import java.util.List;
 
-@Repository(value="jpa")
-public class DocTypeHib implements DocTypeDao {
+@Repository(value="DocTypeJpa")
+public class DocTypeJpa implements DocTypeDao {
 
     private EntityManager getEntityManager(){
         ApplicationContext appContext = new AnnotationConfigApplicationContext(RepositoryConfiguration.class);

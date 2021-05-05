@@ -1,4 +1,5 @@
 import com.strelnikov.doclib.repository.DocFileDao;
+import com.strelnikov.doclib.repository.DocTypeDao;
 import com.strelnikov.doclib.repository.jdbc.DatabaseCreatorJdbc;
 import com.strelnikov.doclib.model.documnets.DocumentFile;
 import com.strelnikov.doclib.model.documnets.DocumentVersion;
@@ -18,7 +19,7 @@ public class DocFileDaoJdbcTest {
     private static final ApplicationContext appContext = new AnnotationConfigApplicationContext(RepositoryConfiguration.class);
     private static final DatabaseCreatorJdbc creator = appContext.getBean(DatabaseCreatorJdbc.class);
     private List<String> expected;
-    private final DocFileDao docFileDao = appContext.getBean(DocFileDao.class);
+    private final DocFileDao docFileDao = appContext.getBean("DocFileJpa",DocFileDao.class);
     private static DocumentVersion documentVersion = new DocumentVersion();
 
     @BeforeClass
@@ -45,6 +46,13 @@ public class DocFileDaoJdbcTest {
     @Before
     public void beforeEachFileDaoTest() {
         expected = convertToStringList();
+    }
+
+
+    @Test
+    public void getFileListTest(){
+        List<DocumentFile> list = docFileDao.getFilesList(documentVersion);
+        Assert.assertEquals("test_file",list.get(0).getFileName());
     }
 
     @Test

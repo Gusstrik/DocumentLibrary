@@ -8,6 +8,7 @@ import com.strelnikov.doclib.repository.DocVersionDao;
 import com.strelnikov.doclib.repository.DocFileDao;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -21,6 +22,7 @@ import java.util.List;
 public class DocVersionDaoJdbc implements DocVersionDao {
 
     @Autowired
+    @Qualifier("DocFileJdbc")
     private DocFileDao fileDao;
 
     private final DataSource dataSource;

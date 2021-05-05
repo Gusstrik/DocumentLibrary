@@ -15,7 +15,7 @@ import java.util.List;
 public class DocTypeDaoTest {
 
     private static final ApplicationContext appContext = new AnnotationConfigApplicationContext(RepositoryConfiguration.class);
-    private final DocTypeDao docTypeDao = appContext.getBean("jpa", DocTypeDao.class);
+    private final DocTypeDao docTypeDao = appContext.getBean("DocTypeJpa", DocTypeDao.class);
     private List<String> expected;
 
     private static final DatabaseCreatorJdbc creator = appContext.getBean(DatabaseCreatorJdbc.class);

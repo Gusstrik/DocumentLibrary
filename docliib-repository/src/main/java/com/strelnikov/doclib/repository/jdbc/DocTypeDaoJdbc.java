@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-@Repository("jdbc")
+@Repository("DocTypeJdbc")
 public class DocTypeDaoJdbc implements DocTypeDao {
 
     private final DataSource dataSource;

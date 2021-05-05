@@ -32,7 +32,7 @@ public class DocumentDaoJdbc implements DocumentDao {
     private DocVersionDao docVersionDao;
 
     @Autowired
-    @Qualifier("jdbc")
+    @Qualifier("DocTypeJdbc")
     DocTypeDao docTypeDao;
 
     private final String DOCUMENT_ADD_QUERY = "INSERT INTO documents VALUES (nextval('documents_id_seq'),?,?,?,?)" +

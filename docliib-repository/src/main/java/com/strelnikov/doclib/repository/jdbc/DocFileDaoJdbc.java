@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-@Repository
+@Repository("DocFileJdbc")
 public class DocFileDaoJdbc implements DocFileDao {
 
     private final DataSource dataSource;
