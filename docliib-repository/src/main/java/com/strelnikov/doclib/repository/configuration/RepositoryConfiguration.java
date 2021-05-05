@@ -57,7 +57,7 @@ public class RepositoryConfiguration {
 
     Properties additionalProperties(){
         Properties properties = new Properties();
-        properties.setProperty("hibernate.hbm2ddl.auto","update");
+        properties.setProperty("hibernate.hbm2ddl.auto","validate");
         properties.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
         properties.setProperty("hibernate.connection.release_mode", "after_transaction");
         properties.setProperty("hibernate.format_sql", "true");

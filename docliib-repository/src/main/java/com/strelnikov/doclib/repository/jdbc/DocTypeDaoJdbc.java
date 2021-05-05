@@ -1,5 +1,6 @@
 package com.strelnikov.doclib.repository.jdbc;
 
+import com.strelnikov.doclib.model.documnets.DocumentType;
 import com.strelnikov.doclib.repository.DocTypeDao;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-@Repository("docTypeDaoJdbc")
+@Repository("jdbc")
 public class DocTypeDaoJdbc implements DocTypeDao {
 
     private final DataSource dataSource;
@@ -46,6 +47,26 @@ public class DocTypeDaoJdbc implements DocTypeDao {
         } catch (SQLException e) {
             log.error(e.getMessage(), e);
         }
+    }
+
+    private final String TYPE_LOAD_QUERY = "SELECT * FROM doc_types where id = ?";
+
+    @Override
+    public DocumentType loadType(int typeId) {
+        DocumentType docType=null;
+        try (Connection connection = dataSource.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement(TYPE_LOAD_QUERY);
+            statement.setInt(1, typeId);
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()){
+                docType = new DocumentType();
+                docType.setCurentType(rs.getString(2));
+                docType.setId(rs.getInt(1));
+            }
+        } catch (SQLException e) {
+            log.error(e.getMessage(), e);
+        }
+        return docType;
     }
 
     private final String TYPE_GET_LIST_QUERY = "SELECT* FROM doc_types";

@@ -4,7 +4,6 @@ import com.strelnikov.doclib.model.conception.UnitType;
 import com.strelnikov.doclib.repository.CatalogDao;
 import com.strelnikov.doclib.model.conception.Unit;
 import com.strelnikov.doclib.model.catalogs.Catalog;
-import com.strelnikov.doclib.model.documnets.Document;
 import com.strelnikov.doclib.repository.DocumentDao;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +39,7 @@ public class CatalogDaoJdbc implements CatalogDao {
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(CATALOG_INSERT_QUERY);
             statement.setString(1, catalog.getName());
-            statement.setInt(2, catalog.getParent_id());
+            statement.setInt(2, catalog.getCatalog_id());
             ResultSet rs = statement.executeQuery();
             if(rs.next()){
                 catalog.setId(rs.getInt(1));
@@ -51,14 +50,14 @@ public class CatalogDaoJdbc implements CatalogDao {
         return catalog;
     }
 
-    private final String CATALOG_UPDATE_QUERY = "UPDATE catalogs SET name=?, parent=? WHERE id = ?;";
+    private final String CATALOG_UPDATE_QUERY = "UPDATE catalogs SET name=?, catalog_id=? WHERE id = ?;";
 
     @Override
     public void updateCatalog(Catalog catalog) {
         try(Connection connection = dataSource.getConnection()){
             PreparedStatement statement = connection.prepareStatement(CATALOG_UPDATE_QUERY);
             statement.setString(1,catalog.getName());
-            statement.setInt(2,catalog.getParent_id());
+            statement.setInt(2,catalog.getCatalog_id());
             statement.setInt(3,catalog.getId());
             statement.executeUpdate();
         }catch (SQLException e){
@@ -67,7 +66,7 @@ public class CatalogDaoJdbc implements CatalogDao {
     }
 
     private final String CATALOG_DELETE_QUERY =
-            "DELETE FROM catalogs where (id = ?) or (parent = ?)";
+            "DELETE FROM catalogs where (id = ?) or (catalog_id = ?)";
 
     @Override
     public void deleteCatalog(int catalogId) {
@@ -83,7 +82,7 @@ public class CatalogDaoJdbc implements CatalogDao {
 
 
     private final String CATALOG_SHOW_CATALOGS =
-            "SELECT id, name FROM catalogs WHERE parent =?";
+            "SELECT id, name FROM catalogs WHERE catalog_id =?";
 
     private List<Unit> getListCatalogs(int catalogId) {
         List<Unit> list = new ArrayList<>();
@@ -96,7 +95,7 @@ public class CatalogDaoJdbc implements CatalogDao {
                 unit.setId(rs.getInt(1));
                 unit.setName(rs.getString(2));
                 unit.setUnitType(UnitType.CATALOG);
-                unit.setParent_id(catalogId);
+                unit.setCatalog_id(catalogId);
                 list.add(unit);
             }
         } catch (SQLException e) {
@@ -127,7 +126,7 @@ public class CatalogDaoJdbc implements CatalogDao {
                 catalog = new Catalog();
                 catalog.setId(catalogId);
                 catalog.setName(rs.getString(2));
-                catalog.setParent_id(rs.getInt(3));
+                catalog.setCatalog_id(rs.getInt(3));
                 catalog.setContentList(getContentList(catalogId));
             }
         } catch (SQLException e) {

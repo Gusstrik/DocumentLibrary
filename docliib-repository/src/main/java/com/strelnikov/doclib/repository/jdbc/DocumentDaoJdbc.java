@@ -3,12 +3,14 @@ package com.strelnikov.doclib.repository.jdbc;
 import com.strelnikov.doclib.model.conception.Unit;
 import com.strelnikov.doclib.model.conception.UnitType;
 import com.strelnikov.doclib.model.documnets.DocumentVersion;
+import com.strelnikov.doclib.repository.DocTypeDao;
 import com.strelnikov.doclib.repository.DocVersionDao;
 import com.strelnikov.doclib.repository.DocumentDao;
 import com.strelnikov.doclib.model.documnets.Document;
 import com.strelnikov.doclib.model.documnets.DocumentType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -29,6 +31,10 @@ public class DocumentDaoJdbc implements DocumentDao {
     @Autowired
     private DocVersionDao docVersionDao;
 
+    @Autowired
+    @Qualifier("jdbc")
+    DocTypeDao docTypeDao;
+
     private final String DOCUMENT_ADD_QUERY = "INSERT INTO documents VALUES (nextval('documents_id_seq'),?,?,?,?)" +
             "RETURNING id;";
 
@@ -37,9 +43,9 @@ public class DocumentDaoJdbc implements DocumentDao {
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(DOCUMENT_ADD_QUERY);
             statement.setString(1, document.getName());
-            statement.setString(2, document.getDocumentType().getCurentType());
+            statement.setInt(2, document.getDocumentType().getId());
             statement.setInt(3, document.getActualVersion());
-            statement.setInt(4, document.getParent_id());
+            statement.setInt(4, document.getCatalog_id());
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
                 document.setId(rs.getInt(1));
@@ -54,7 +60,7 @@ public class DocumentDaoJdbc implements DocumentDao {
         return document;
     }
 
-    private final String DOCUMENT_UPDATE_QUERY = "UPDATE documents SET name=?, type=?, " +
+    private final String DOCUMENT_UPDATE_QUERY = "UPDATE documents SET name=?, type_id=?, " +
             "actual_version = ?, catalog_id = ? WHERE id = ?;";
 
     @Override
@@ -62,9 +68,9 @@ public class DocumentDaoJdbc implements DocumentDao {
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(DOCUMENT_UPDATE_QUERY);
             statement.setString(1, document.getName());
-            statement.setString(2, document.getDocumentType().getCurentType());
+            statement.setInt(2, document.getDocumentType().getId());
             statement.setInt(3, document.getActualVersion());
-            statement.setInt(4, document.getParent_id());
+            statement.setInt(4, document.getCatalog_id());
             statement.setInt(5, document.getId());
             statement.executeUpdate();
         } catch (SQLException e) {
@@ -87,7 +93,7 @@ public class DocumentDaoJdbc implements DocumentDao {
                 unit.setId(rs.getInt(1));
                 unit.setName(rs.getString(2));
                 unit.setUnitType(UnitType.DOCUMENT);
-                unit.setParent_id(catalogId);
+                unit.setCatalog_id(catalogId);
                 list.add(unit);
             }
         } catch (SQLException e) {
@@ -122,9 +128,10 @@ public class DocumentDaoJdbc implements DocumentDao {
                 document = new Document();
                 document.setId(rs.getInt(1));
                 document.setName(rs.getString(2));
-                document.setDocumentType(new DocumentType(rs.getString(3)));
+                DocumentType docType = docTypeDao.loadType(rs.getInt(3));
+                document.setDocumentType(docType);
                 document.setActualVersion(rs.getInt(4));
-                document.setParent_id(rs.getInt(5));
+                document.setCatalog_id(rs.getInt(5));
                 document.setVersionsList(docVersionDao.getDocVersionList(document));
             }
 

@@ -1,5 +1,7 @@
 import com.strelnikov.doclib.model.conception.Unit;
 import com.strelnikov.doclib.model.documnets.DocumentType;
+import com.strelnikov.doclib.model.documnets.DocumentVersion;
+import com.strelnikov.doclib.model.documnets.Importance;
 import com.strelnikov.doclib.repository.DocumentDao;
 import com.strelnikov.doclib.repository.jdbc.DatabaseCreatorJdbc;
 import com.strelnikov.doclib.model.documnets.Document;
@@ -9,6 +11,7 @@ import org.junit.*;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -60,8 +63,21 @@ public class DocumentDaoJdbcTest {
     public void insertDocumentTest(){
         Document document = new Document();
         document.setName("test doc 2");
-        document.setParent_id(1);
-        document.setDocumentType(new DocumentType("test_type"));
+        document.setCatalog_id(1);
+        DocumentType documentType = new DocumentType();
+        documentType.setCurentType("test_type");
+        documentType.setId(1);
+        document.setDocumentType(documentType);
+        DocumentVersion docVersion = new DocumentVersion();
+        docVersion.setDocumentId(0);
+        docVersion.setId(0);
+        docVersion.setFilesList(new ArrayList<>());
+        docVersion.setModerated(false);
+        docVersion.setDescription("test descrip");
+        docVersion.setImportance(Importance.LOW);
+        document.setActualVersion(0);
+        document.setVersionsList(new ArrayList<>());
+        document.getVersionsList().add(docVersion);
         document = documentDao.insertDocument(document);
         int actual = documentDao.getDocumentsList(1).size();
         documentDao.deleteDocument(document.getId());
@@ -72,7 +88,7 @@ public class DocumentDaoJdbcTest {
     public void deleteDocumentTest(){
         Document document = new Document();
         document.setName("test doc 2");
-        document.setParent_id(1);
+        document.setCatalog_id(1);
         document.setDocumentType(new DocumentType("test_type"));
         document = documentDao.insertDocument(document);
         documentDao.deleteDocument(document.getId());

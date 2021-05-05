@@ -1,9 +1,11 @@
 
+import com.strelnikov.doclib.model.documnets.DocumentType;
 import com.strelnikov.doclib.repository.DocTypeDao;
 import com.strelnikov.doclib.repository.configuration.RepositoryConfiguration;
 import com.strelnikov.doclib.repository.jdbc.DatabaseCreatorJdbc;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.*;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -13,7 +15,7 @@ import java.util.List;
 public class DocTypeDaoJdbcTest {
 
     private static final ApplicationContext appContext = new AnnotationConfigApplicationContext(RepositoryConfiguration.class);
-    private final DocTypeDao docTypeDao = appContext.getBean(DocTypeDao.class);
+    private final DocTypeDao docTypeDao = appContext.getBean("jdbc", DocTypeDao.class);
     private List<String> expected;
 
     private static final DatabaseCreatorJdbc creator = appContext.getBean(DatabaseCreatorJdbc.class);
@@ -30,14 +32,9 @@ public class DocTypeDaoJdbcTest {
 
     @Before
     public void beforeEachTypeDaoTest() {
-        docTypeDao.insertType("test_type");
         expected = docTypeDao.getTypesList();
     }
 
-    @After
-    public void afterEachTypeDaoTest() {
-        docTypeDao.deleteType("test_type");
-    }
 
     @Test
     public void getTypeListTest() {
@@ -56,11 +53,16 @@ public class DocTypeDaoJdbcTest {
 
     @Test
     public void deleteTypeTest() {
-        docTypeDao.deleteType("test_type");
+        docTypeDao.insertType("test_adding_type");
+        docTypeDao.deleteType("test_adding_type");
         List<String> actual = docTypeDao.getTypesList();
-        expected.remove("test_type");
-        docTypeDao.insertType("test_type");
         Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void loadTypeTest(){
+        DocumentType docType = docTypeDao.loadType(1);
+        Assert.assertEquals("test_type",docType.getCurentType());
     }
 
 }
