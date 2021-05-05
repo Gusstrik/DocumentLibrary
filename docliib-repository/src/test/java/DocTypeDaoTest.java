@@ -12,10 +12,10 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import java.util.List;
 
 @Slf4j
-public class DocTypeDaoJdbcTest {
+public class DocTypeDaoTest {
 
     private static final ApplicationContext appContext = new AnnotationConfigApplicationContext(RepositoryConfiguration.class);
-    private final DocTypeDao docTypeDao = appContext.getBean("jdbc", DocTypeDao.class);
+    private final DocTypeDao docTypeDao = appContext.getBean("jpa", DocTypeDao.class);
     private List<String> expected;
 
     private static final DatabaseCreatorJdbc creator = appContext.getBean(DatabaseCreatorJdbc.class);
