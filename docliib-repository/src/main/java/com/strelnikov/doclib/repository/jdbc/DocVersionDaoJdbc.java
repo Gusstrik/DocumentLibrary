@@ -6,6 +6,7 @@ import com.strelnikov.doclib.model.documnets.DocumentVersion;
 import com.strelnikov.doclib.model.documnets.Importance;
 import com.strelnikov.doclib.repository.DocVersionDao;
 import com.strelnikov.doclib.repository.DocFileDao;
+import com.strelnikov.doclib.repository.DocumentDao;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -24,6 +25,9 @@ public class DocVersionDaoJdbc implements DocVersionDao {
     @Autowired
     @Qualifier("DocFileJdbc")
     private DocFileDao fileDao;
+
+    @Autowired
+    private DocumentDao docDao;
 
     private final DataSource dataSource;
 
@@ -64,7 +68,7 @@ public class DocVersionDaoJdbc implements DocVersionDao {
     public DocumentVersion insertDocVersion(DocumentVersion documentVersion) {
         try (Connection connection = dataSource.getConnection()){
             PreparedStatement statement = connection.prepareStatement(VERSION_ADD_QUERY);
-            statement.setInt(1,documentVersion.getDocumentId());
+            statement.setInt(1,documentVersion.getParentDocument().getId());
             statement.setInt(2,documentVersion.getVersion());
             statement.setString(3,documentVersion.getDescription());
             statement.setString(4,documentVersion.getImportance().toString());
@@ -74,7 +78,7 @@ public class DocVersionDaoJdbc implements DocVersionDao {
                 documentVersion.setId(rs.getInt(1));
             }
             for (DocumentFile file:documentVersion.getFilesList()){
-                file.setDocVersionId(documentVersion.getId());
+                file.setDocVersion(documentVersion);
                 fileDao.insertFile(file);
             }
         }catch (SQLException e){
@@ -107,8 +111,8 @@ public class DocVersionDaoJdbc implements DocVersionDao {
             ResultSet rs = statement.executeQuery();
             while(rs.next()){
                 DocumentVersion docVersion = new DocumentVersion();
-                docVersion.setId(rs.getInt(1));
-                docVersion.setDocumentId(rs.getInt(2));
+                docVersion.setId(rs.getInt(1));;
+                docVersion.setParentDocument(document);
                 docVersion.setVersion(rs.getInt(3));
                 docVersion.setDescription(rs.getString(4));
                 docVersion.setImportance(Importance.valueOf(rs.getString(5)));

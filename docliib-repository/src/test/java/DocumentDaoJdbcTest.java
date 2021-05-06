@@ -69,7 +69,7 @@ public class DocumentDaoJdbcTest {
         documentType.setId(1);
         document.setDocumentType(documentType);
         DocumentVersion docVersion = new DocumentVersion();
-        docVersion.setDocumentId(0);
+        docVersion.setParentDocument(document);
         docVersion.setId(0);
         docVersion.setFilesList(new ArrayList<>());
         docVersion.setModerated(false);

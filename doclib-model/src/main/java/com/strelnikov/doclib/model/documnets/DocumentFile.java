@@ -20,9 +20,9 @@ public class DocumentFile {
     @Column(name = "name", nullable = false)
     private String fileName;
 
-    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY,targetEntity = DocumentVersion.class)
+    @ManyToOne(cascade = CascadeType.PERSIST,fetch = FetchType.LAZY,targetEntity = DocumentVersion.class)
     @JoinColumn(name="document_id")
-    private int docVersionId;
+    private DocumentVersion docVersion;
 
     @Column(name = "path", nullable = false)
     private String filePath;

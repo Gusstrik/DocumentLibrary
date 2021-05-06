@@ -40,7 +40,9 @@ public class DocVersionDaoTest {
         expected+=1;
         DocumentVersion documentVersion = new DocumentVersion();
         documentVersion.setVersion(1);
-        documentVersion.setDocumentId(1);
+        Document document = new Document();
+        document.setId(1);
+        documentVersion.setParentDocument(document);
         documentVersion.setDescription("another version of testDoc");
         documentVersion.setImportance(Importance.IMPORTANT);
         documentVersion.setModerated(false);
@@ -54,7 +56,9 @@ public class DocVersionDaoTest {
     public void deleteDocVersionTest(){
         DocumentVersion documentVersion = new DocumentVersion();
         documentVersion.setVersion(1);
-        documentVersion.setDocumentId(1);
+        Document document = new Document();
+        document.setId(1);
+        documentVersion.setParentDocument(document);
         documentVersion.setDescription("another version of testDoc");
         documentVersion.setImportance(Importance.IMPORTANT);
         documentVersion.setModerated(false);

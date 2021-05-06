@@ -51,7 +51,7 @@ public class DocumentDaoJdbc implements DocumentDao {
                 document.setId(rs.getInt(1));
             }
             for(DocumentVersion docVersion:document.getVersionsList()){
-                docVersion.setDocumentId(document.getId());
+                docVersion.setParentDocument(document);
                 docVersionDao.insertDocVersion(docVersion);
             }
         } catch (SQLException e) {

@@ -33,7 +33,7 @@ public class DocFileDaoJdbc implements DocFileDao {
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(FILE_ADD_QUERY);
             statement.setString(1, file.getFileName());
-            statement.setInt(2, file.getDocVersionId());
+            statement.setInt(2, file.getDocVersion().getId());
             statement.setString(3, file.getFilePath());
             ResultSet rs = statement.executeQuery();
             if(rs.next()){

@@ -19,9 +19,9 @@ public class DocumentVersion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY,targetEntity = Document.class)
+    @ManyToOne(cascade = CascadeType.PERSIST,fetch = FetchType.LAZY,targetEntity = Document.class)
     @JoinColumn(name="document_id")
-    private int documentId;
+    Document parentDocument;
 
     @Column(name="description")
     private String description;
@@ -29,11 +29,11 @@ public class DocumentVersion {
     @Column(name="version",nullable = false)
     private int version;
 
-    @Column(name = "importance",nullable = false)
+    @Column(name = "importance")
     @Enumerated(EnumType.STRING)
     private Importance importance;
 
-    @OneToMany(mappedBy = "docVersionId", fetch = FetchType.LAZY, orphanRemoval = true)
+    @Transient
     private List<DocumentFile> filesList = new ArrayList<>();
 
     @Column(name="is_moderated",nullable = false)
