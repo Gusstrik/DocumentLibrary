@@ -16,7 +16,7 @@ public class DocTypeImpl implements DocTypeActions {
     private final DocTypeDao docTypeDao;
     private final DtoMapper dtoMapper;
 
-    public DocTypeImpl(@Qualifier("docTypeDaoJdbc") DocTypeDao docTypeDao, @Autowired DtoMapper dtoMapper) {
+    public DocTypeImpl(@Qualifier("DocTypeJpa") DocTypeDao docTypeDao, @Autowired DtoMapper dtoMapper) {
         this.docTypeDao = docTypeDao;
         this.dtoMapper = dtoMapper;
     }

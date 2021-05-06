@@ -42,9 +42,10 @@ public class CatalogImplTest {
     public void saveCatalogTest() throws UnitIsAlreadyExistException, UnitNotFoundException {
         CatalogDto mainCat = catalogAction.loadCatalog(1);
         int expected = mainCat.getContentList().size();
-        Catalog catalog = new Catalog();
-        catalog.setName("test catalog");
-        catalog.setParent_id(1);
+        Catalog catalog = dtoMapper.mapCatalog(mainCat);
+        catalog.setId(0);
+        catalog.setName("test_catalog1");
+        catalog.setCatalogId(1);
         CatalogDto catalogDto = catalogAction.saveCatalog(dtoMapper.mapCatalog(catalog));
         expected += 1;
         mainCat = catalogAction.loadCatalog(1);
@@ -57,9 +58,10 @@ public class CatalogImplTest {
     public void deleteCatalogTest() throws UnitNotFoundException, UnitIsAlreadyExistException {
         CatalogDto mainCat = catalogAction.loadCatalog(1);
         int expected = mainCat.getContentList().size();
-        Catalog catalog = new Catalog();
-        catalog.setName("test catalog");
-        catalog.setParent_id(1);
+        Catalog catalog = dtoMapper.mapCatalog(mainCat);
+        catalog.setName("test catalog1");
+        catalog.setId(0);
+        catalog.setCatalogId(1);
         CatalogDto catalogDto = catalogAction.saveCatalog(dtoMapper.mapCatalog(catalog));
         catalogAction.deleteCatalog(catalogDto);
         mainCat = catalogAction.loadCatalog(1);
@@ -75,23 +77,28 @@ public class CatalogImplTest {
 
     @Test
     public void editCatalogTest() throws UnitIsAlreadyExistException, UnitNotFoundException {
-        Catalog catalog = new Catalog();
-        catalog.setName("test catalog");
-        catalog.setParent_id(1);
-        CatalogDto catalogDto = catalogAction.saveCatalog(dtoMapper.mapCatalog(catalog));
-        catalog = new Catalog();
-        catalog.setName("test for del 1");
-        catalog.setParent_id(catalogDto.getId());
-        catalogAction.saveCatalog(dtoMapper.mapCatalog(catalog));
-        catalog = new Catalog();
-        catalog.setName("test for del 2");
-        catalog.setParent_id(catalogDto.getId());
-        catalogAction.saveCatalog(dtoMapper.mapCatalog(catalog));
-        catalogDto = catalogAction.loadCatalog(catalogDto.getId());
-        catalogDto.getContentList().remove(0);
-        catalogDto= catalogAction.saveCatalog(catalogDto);
-        int actual = catalogAction.loadCatalog(catalogDto.getId()).getContentList().size();
-        catalogAction.deleteCatalog(catalogDto);
+        CatalogDto mainCat = catalogAction.loadCatalog(1);
+        Catalog testCat1 = dtoMapper.mapCatalog(mainCat);
+        testCat1.setId(0);
+        testCat1.setName("test for del 1");
+        testCat1.setCatalogId(1);
+        CatalogDto testCat1Dto = catalogAction.saveCatalog(dtoMapper.mapCatalog(testCat1));
+        Catalog testCat2 = dtoMapper.mapCatalog(mainCat);
+        testCat2.setId(0);
+        testCat2.setName("test for del 2");
+        testCat2.setCatalogId(testCat1Dto.getId());
+        catalogAction.saveCatalog(dtoMapper.mapCatalog(testCat2));
+        Catalog testCat3 = dtoMapper.mapCatalog(mainCat);
+        testCat3.setId(0);
+        testCat3.setName("test for del 3");
+        testCat3.setCatalogId(testCat1Dto.getId());
+        catalogAction.saveCatalog(dtoMapper.mapCatalog(testCat3));
+
+        testCat1Dto = catalogAction.loadCatalog(testCat1Dto.getId());
+        testCat1Dto.getContentList().remove(0);
+        testCat1Dto= catalogAction.saveCatalog(testCat1Dto);
+        int actual = catalogAction.loadCatalog(testCat1Dto.getId()).getContentList().size();
+        catalogAction.deleteCatalog(testCat1Dto);
         Assert.assertEquals(1,actual);
     }
 

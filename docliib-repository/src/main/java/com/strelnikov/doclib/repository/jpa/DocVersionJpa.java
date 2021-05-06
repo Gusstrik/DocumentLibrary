@@ -70,6 +70,7 @@ public class DocVersionJpa implements DocVersionDao {
         EntityManager em = getEntityManager();
         DocumentVersion docVer = em.find(DocumentVersion.class,docVerId);
         em.close();
+        docVer.setFilesList(docFileDao.getFilesList(docVer));
         return docVer;
     }
 }

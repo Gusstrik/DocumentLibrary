@@ -18,6 +18,7 @@ import com.strelnikov.doclib.service.exceptions.UnitIsAlreadyExistException;
 import com.strelnikov.doclib.service.exceptions.UnitNotFoundException;
 import com.strelnikov.doclib.service.exceptions.VersionIsAlreadyExistException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -32,8 +33,8 @@ public class DocumentImpl implements DocumentActions {
     private final DocVersionActions docVerActions;
     private final DocFileDao docFileDao;
 
-    public DocumentImpl(@Autowired DocumentDao documentDao, @Autowired DocVersionActions docVerActions,
-                        @Autowired DtoMapper dtoMapper, @Autowired CatalogDao catalogDao, @Autowired DocFileDao docFileDao) {
+    public DocumentImpl(@Qualifier("DocumentJpa") DocumentDao documentDao, @Autowired DocVersionActions docVerActions,
+                        @Autowired DtoMapper dtoMapper, @Qualifier("CatalogJpa") CatalogDao catalogDao, @Qualifier("DocFileJpa") DocFileDao docFileDao) {
         this.documentDao = documentDao;
         this.docVerActions = docVerActions;
         this.dtoMapper = dtoMapper;

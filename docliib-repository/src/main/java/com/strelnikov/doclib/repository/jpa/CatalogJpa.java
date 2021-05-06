@@ -46,9 +46,11 @@ public class CatalogJpa implements CatalogDao {
         EntityManager entityManager = getEntityManager();
         Catalog cat = entityManager.find(Catalog.class,catalogId);
         entityManager.close();
-        cat.setContentList(new ArrayList<>());
-        cat.getContentList().addAll(getCatalogList(catalogId));
-        cat.getContentList().addAll(documentDao.getDocumentsList(catalogId));
+        if(cat!=null) {
+            cat.setContentList(new ArrayList<>());
+            cat.getContentList().addAll(getCatalogList(catalogId));
+            cat.getContentList().addAll(documentDao.getDocumentsList(catalogId));
+        }
         return cat;
     }
 
@@ -56,8 +58,13 @@ public class CatalogJpa implements CatalogDao {
     public void deleteCatalog(int catalogId) {
         EntityManager em=getEntityManager();
         Catalog cat = em.find(Catalog.class,catalogId);
+        Query query = em.createQuery("SELECT cat FROM Catalog cat WHERE cat.catalogId="+cat.getId());
+        List<Catalog> removeList = query.getResultList();
         em.getTransaction().begin();
         em.remove(cat);
+        for (Catalog c:removeList){
+            em.remove(c);
+        }
         em.getTransaction().commit();
         em.close();
     }

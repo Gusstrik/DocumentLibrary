@@ -12,7 +12,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import java.util.ArrayList;
 
 @Slf4j
-public class CatalogDaoTest {
+public class CatalogDaoJdbcTest {
 
     private static final ApplicationContext appContext = new AnnotationConfigApplicationContext(RepositoryConfiguration.class);
 
