@@ -42,8 +42,8 @@ CREATE TABLE IF NOT EXISTS doc_files
     PRIMARY KEY (id),
     FOREIGN KEY (document_id) references documents_versions (id) on update cascade on delete cascade
 );
-INSERT INTO catalogs(id, name)
-    SELECT 1, '/'
+INSERT INTO catalogs(id, name, catalog_id)
+    SELECT 1, '/',0
 WHERE NOT EXISTS (
     SELECT 1 FROM catalogs WHERE name='/'
 );

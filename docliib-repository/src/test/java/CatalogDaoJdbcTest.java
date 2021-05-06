@@ -17,16 +17,13 @@ public class CatalogDaoJdbcTest {
     private static final ApplicationContext appContext = new AnnotationConfigApplicationContext(RepositoryConfiguration.class);
 
     private ArrayList<String> expected;
-    private final CatalogDao catalogDao = appContext.getBean(CatalogDao.class);
+    private final CatalogDao catalogDao = appContext.getBean("CatalogJpa",CatalogDao.class);
     private static final DatabaseCreatorJdbc databaseCreatorJdbc=appContext.getBean(DatabaseCreatorJdbc.class);
 
     private static Catalog parentCat;
 
     @BeforeClass
     public static void beforeFileDaoTest() {
-        parentCat=new Catalog();
-        parentCat.setId(1);
-        parentCat.setName("/");
         databaseCreatorJdbc.runScript("src/test/resources/insertestdb.sql");
     }
 
@@ -42,7 +39,7 @@ public class CatalogDaoJdbcTest {
 
 
     private ArrayList<String> getNamesFromContentList() {
-        parentCat=catalogDao.loadCatalog(parentCat.getId());
+        parentCat=catalogDao.loadCatalog(1);
         ArrayList<String> list;
         list = new ArrayList<>();
         for (Unit e : parentCat.getContentList()) {

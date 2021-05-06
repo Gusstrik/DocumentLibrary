@@ -18,7 +18,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-@Repository
+@Repository("CatalogJdbc")
 @Slf4j
 public class CatalogDaoJdbc implements CatalogDao {
 

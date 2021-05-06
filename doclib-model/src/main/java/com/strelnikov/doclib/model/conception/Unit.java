@@ -2,7 +2,9 @@ package com.strelnikov.doclib.model.conception;
 
 import java.util.ArrayList;
 
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 
 import javax.persistence.*;
