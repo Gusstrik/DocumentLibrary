@@ -4,8 +4,11 @@ import com.strelnikov.doclib.model.conception.Unit;
 import com.strelnikov.doclib.model.documnets.Document;
 import com.strelnikov.doclib.model.documnets.DocumentType;
 import com.strelnikov.doclib.model.documnets.DocumentVersion;
+import com.strelnikov.doclib.repository.DocVersionDao;
 import com.strelnikov.doclib.repository.DocumentDao;
 import com.strelnikov.doclib.repository.configuration.RepositoryConfiguration;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Repository;
@@ -17,6 +20,10 @@ import java.util.List;
 
 @Repository("DocumentJpa")
 public class DocumentJpa implements DocumentDao {
+
+    @Autowired
+    @Qualifier("DocVersionJpa")
+    private DocVersionDao docVersionDao;
 
     private EntityManager getEntityManager(){
         ApplicationContext appContext = new AnnotationConfigApplicationContext(RepositoryConfiguration.class);
@@ -40,6 +47,7 @@ public class DocumentJpa implements DocumentDao {
         EntityManager entityManager = getEntityManager();
         Document doc = entityManager.find(Document.class,docId);
         entityManager.close();
+        doc.setVersionsList(docVersionDao.getDocVersionList(doc));
         return doc;
     }
 

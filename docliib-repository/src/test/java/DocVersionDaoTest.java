@@ -15,7 +15,7 @@ public class DocVersionDaoTest {
 
     private static final ApplicationContext appContext = new AnnotationConfigApplicationContext(RepositoryConfiguration.class);
     DocVersionDao docVersionDao = appContext.getBean("DocVersionJpa",DocVersionDao.class);
-    private static final DocumentDao docDao = appContext.getBean(DocumentDao.class);
+    private static final DocumentDao docDao = appContext.getBean("DocumentJpa",DocumentDao.class);
     private static final DatabaseCreatorJdbc creator = appContext.getBean(DatabaseCreatorJdbc.class);
     private static Document document;
     private int expected;

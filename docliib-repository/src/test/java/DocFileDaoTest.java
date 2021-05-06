@@ -22,7 +22,7 @@ public class DocFileDaoTest {
     private static final DatabaseCreatorJdbc creator = appContext.getBean(DatabaseCreatorJdbc.class);
     private List<String> expected;
     private static final DocFileDao docFileDao = appContext.getBean("DocFileJpa", DocFileDao.class);
-    private static final DocumentDao docDao = appContext.getBean(DocumentDao.class);
+    private static final DocumentDao docDao = appContext.getBean("DocumentJpa",DocumentDao.class);
     private static DocumentVersion documentVersion = new DocumentVersion();
 
     @BeforeClass

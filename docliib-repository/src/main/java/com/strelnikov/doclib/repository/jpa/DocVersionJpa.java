@@ -3,8 +3,11 @@ package com.strelnikov.doclib.repository.jpa;
 import com.strelnikov.doclib.model.documnets.Document;
 import com.strelnikov.doclib.model.documnets.DocumentFile;
 import com.strelnikov.doclib.model.documnets.DocumentVersion;
+import com.strelnikov.doclib.repository.DocFileDao;
 import com.strelnikov.doclib.repository.DocVersionDao;
 import com.strelnikov.doclib.repository.configuration.RepositoryConfiguration;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Repository;
@@ -16,6 +19,10 @@ import java.util.List;
 
 @Repository("DocVersionJpa")
 public class DocVersionJpa implements DocVersionDao {
+
+    @Autowired
+    @Qualifier("DocFileJpa")
+    private DocFileDao docFileDao;
 
     private EntityManager getEntityManager(){
         ApplicationContext appContext = new AnnotationConfigApplicationContext(RepositoryConfiguration.class);
@@ -51,6 +58,9 @@ public class DocVersionJpa implements DocVersionDao {
         EntityManager em = getEntityManager();
         Query query = em.createQuery("SELECT docVer FROM DocumentVersion docVer WHERE docVer.parentDocument.id="+document.getId());
         List<DocumentVersion> result = query.getResultList();
+        for (DocumentVersion docVer:result){
+            docVer.setFilesList(docFileDao.getFilesList(docVer));
+        }
         em.close();
         return result;
     }
