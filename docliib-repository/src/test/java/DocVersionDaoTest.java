@@ -2,6 +2,7 @@ import com.strelnikov.doclib.model.documnets.Document;
 import com.strelnikov.doclib.model.documnets.DocumentVersion;
 import com.strelnikov.doclib.model.documnets.Importance;
 import com.strelnikov.doclib.repository.DocVersionDao;
+import com.strelnikov.doclib.repository.DocumentDao;
 import com.strelnikov.doclib.repository.configuration.RepositoryConfiguration;
 import com.strelnikov.doclib.repository.jdbc.DatabaseCreatorJdbc;
 import org.junit.*;
@@ -13,16 +14,16 @@ import java.util.List;
 public class DocVersionDaoTest {
 
     private static final ApplicationContext appContext = new AnnotationConfigApplicationContext(RepositoryConfiguration.class);
-    DocVersionDao docVersionDao = appContext.getBean(DocVersionDao.class);
+    DocVersionDao docVersionDao = appContext.getBean("DocVersionJpa",DocVersionDao.class);
+    private static final DocumentDao docDao = appContext.getBean(DocumentDao.class);
     private static final DatabaseCreatorJdbc creator = appContext.getBean(DatabaseCreatorJdbc.class);
     private static Document document;
     private int expected;
 
     @BeforeClass
     public static void beforeFileDaoTest() {
-        document= new Document();
-        document.setId(1);
         creator.runScript("src/test/resources/insertestdb.sql");
+        document= docDao.loadDocument(1);
     }
 
     @AfterClass

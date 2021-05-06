@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-@Repository
+@Repository("DocVersionJdbc")
 @Slf4j
 public class DocVersionDaoJdbc implements DocVersionDao {
 
