@@ -15,11 +15,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-public class DocumentDaoJdbcTest {
+public class DocumentDaoTest {
 
     private static final ApplicationContext appContext = new AnnotationConfigApplicationContext(RepositoryConfiguration.class);
 
-    private final DocumentDao documentDao = appContext.getBean(DocumentDao.class);
+    private final DocumentDao documentDao = appContext.getBean("DocumentJpa",DocumentDao.class);
     private static final DatabaseCreatorJdbc creator = appContext.getBean(DatabaseCreatorJdbc.class);
 
     @BeforeClass
@@ -63,7 +63,7 @@ public class DocumentDaoJdbcTest {
     public void insertDocumentTest(){
         Document document = new Document();
         document.setName("test doc 2");
-        document.setCatalog_id(1);
+        document.setCatalogId(1);
         DocumentType documentType = new DocumentType();
         documentType.setCurentType("test_type");
         documentType.setId(1);
@@ -88,8 +88,21 @@ public class DocumentDaoJdbcTest {
     public void deleteDocumentTest(){
         Document document = new Document();
         document.setName("test doc 2");
-        document.setCatalog_id(1);
-        document.setDocumentType(new DocumentType("test_type"));
+        document.setCatalogId(1);
+        DocumentType documentType = new DocumentType();
+        documentType.setCurentType("test_type");
+        documentType.setId(1);
+        document.setDocumentType(documentType);
+        DocumentVersion docVersion = new DocumentVersion();
+        docVersion.setParentDocument(document);
+        docVersion.setId(0);
+        docVersion.setFilesList(new ArrayList<>());
+        docVersion.setModerated(false);
+        docVersion.setDescription("test descrip");
+        docVersion.setImportance(Importance.LOW);
+        document.setActualVersion(0);
+        document.setVersionsList(new ArrayList<>());
+        document.getVersionsList().add(docVersion);
         document = documentDao.insertDocument(document);
         documentDao.deleteDocument(document.getId());
         int actual = documentDao.getDocumentsList(1).size();

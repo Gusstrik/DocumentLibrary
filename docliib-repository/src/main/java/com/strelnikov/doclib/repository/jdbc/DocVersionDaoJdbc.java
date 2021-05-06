@@ -27,6 +27,7 @@ public class DocVersionDaoJdbc implements DocVersionDao {
     private DocFileDao fileDao;
 
     @Autowired
+    @Qualifier("DocumentJdbc")
     private DocumentDao docDao;
 
     private final DataSource dataSource;

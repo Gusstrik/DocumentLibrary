@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-@Repository
+@Repository("DocumentJdbc")
 public class DocumentDaoJdbc implements DocumentDao {
 
     private final DataSource dataSource;
@@ -46,7 +46,7 @@ public class DocumentDaoJdbc implements DocumentDao {
             statement.setString(1, document.getName());
             statement.setInt(2, document.getDocumentType().getId());
             statement.setInt(3, document.getActualVersion());
-            statement.setInt(4, document.getCatalog_id());
+            statement.setInt(4, document.getCatalogId());
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
                 document.setId(rs.getInt(1));
@@ -71,7 +71,7 @@ public class DocumentDaoJdbc implements DocumentDao {
             statement.setString(1, document.getName());
             statement.setInt(2, document.getDocumentType().getId());
             statement.setInt(3, document.getActualVersion());
-            statement.setInt(4, document.getCatalog_id());
+            statement.setInt(4, document.getCatalogId());
             statement.setInt(5, document.getId());
             statement.executeUpdate();
         } catch (SQLException e) {
@@ -94,7 +94,7 @@ public class DocumentDaoJdbc implements DocumentDao {
                 unit.setId(rs.getInt(1));
                 unit.setName(rs.getString(2));
                 unit.setUnitType(UnitType.DOCUMENT);
-                unit.setCatalog_id(catalogId);
+                unit.setCatalogId(catalogId);
                 list.add(unit);
             }
         } catch (SQLException e) {
@@ -132,7 +132,7 @@ public class DocumentDaoJdbc implements DocumentDao {
                 DocumentType docType = docTypeDao.loadType(rs.getInt(3));
                 document.setDocumentType(docType);
                 document.setActualVersion(rs.getInt(4));
-                document.setCatalog_id(rs.getInt(5));
+                document.setCatalogId(rs.getInt(5));
                 document.setVersionsList(docVersionDao.getDocVersionList(document));
             }
 

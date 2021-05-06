@@ -55,7 +55,7 @@ public class CatalogDaoJdbcTest {
     @Test
     public void addCatalogTest() {
         Catalog catalog = new Catalog();
-        catalog.setCatalog_id(1);
+        catalog.setCatalogId(1);
         catalog.setName("test_1");
         catalog = catalogDao.insertCatalog(catalog);
         int amount = expected.size()+1;
@@ -67,7 +67,7 @@ public class CatalogDaoJdbcTest {
     @Test
     public void deleteCatalogTest() {
         Catalog catalog = new Catalog();
-        catalog.setCatalog_id(1);
+        catalog.setCatalogId(1);
         catalog.setName("test_1");
         catalog = catalogDao.insertCatalog(catalog);
         catalogDao.deleteCatalog(catalog.getId());
@@ -85,7 +85,7 @@ public class CatalogDaoJdbcTest {
     public void updateCatalogTest(){
         Catalog catalog = new Catalog();
         catalog.setName("test catalog");
-        catalog.setCatalog_id(1);
+        catalog.setCatalogId(1);
         catalog=catalogDao.insertCatalog(catalog);
         catalog.setName("changed_name");
         catalogDao.updateCatalog(catalog);

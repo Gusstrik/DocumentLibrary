@@ -22,7 +22,7 @@ public class Document extends Unit {
     @Column(name = "actual_version", nullable = false)
     private int actualVersion;
 
-    @ManyToOne(cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.MERGE,fetch = FetchType.EAGER)
     @JoinColumn(name="type_id")
     private DocumentType documentType = new DocumentType();
 

@@ -18,7 +18,7 @@ public abstract class Unit {
     private int id;
 
     @Column (name="catalog_id")
-    private int catalog_id;
+    private int catalogId;
 
     @Column(name="name",nullable = false)
     private String name;
