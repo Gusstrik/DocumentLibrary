@@ -70,6 +70,12 @@ public class DocVersionDaoTest {
     }
 
     @Test
+    public void loadDocVersionTest(){
+        DocumentVersion docVer = docVersionDao.loadDocVersion(1);
+        Assert.assertEquals("IMPORTANT",docVer.getImportance().toString());
+    }
+
+    @Test
     public void getDocVersionsListTest(){
         List<DocumentVersion> list = docVersionDao.getDocVersionList(document);
         Assert.assertEquals("test description",list.get(0).getDescription());

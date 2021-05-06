@@ -36,31 +36,30 @@ public class DocVersionDaoJdbc implements DocVersionDao {
         this.dataSource = dataSource;
     }
 
-//    private final String VERSION_LOAD_QUERY = "SELECT * FROM documents_versions WHERE " +
-//            "document_id = ? AND version = ?;";
-//
-//    @Override
-//    public DocumentVersion loadDocVersion(int documentId, int docVersion) {
-//        DocumentVersion documentVersion = null;
-//        try (Connection connection = dataSource.getConnection()) {
-//            PreparedStatement statement = connection.prepareStatement(VERSION_LOAD_QUERY);
-//            statement.setInt(1, documentId);
-//            statement.setInt(2, docVersion);
-//            ResultSet rs = statement.executeQuery();
-//            if (rs.next()) {
-//                documentVersion = new DocumentVersion();
-//                documentVersion.setVersion(rs.getInt("version"));
-//                documentVersion.setModerated(rs.getBoolean("is_moderated"));
-//                documentVersion.setDescription(rs.getString("description"));
-//                documentVersion.setImportance(Importance.valueOf(rs.getString("importance")));
-//                documentVersion.setFilesList(fileDao.getFilesList(getDocVersionId(documentVersion, documentId)));
-//            }
-//
-//        } catch (SQLException e) {
-//            log.error(e.getMessage(), e);
-//        }
-//        return documentVersion;
-//    }
+    private final String VERSION_LOAD_QUERY = "SELECT * FROM documents_versions WHERE " +
+            "document_id = ?";
+
+    @Override
+    public DocumentVersion loadDocVersion(int documentId) {
+        DocumentVersion documentVersion = null;
+        try (Connection connection = dataSource.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement(VERSION_LOAD_QUERY);
+            statement.setInt(1, documentId);
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                documentVersion = new DocumentVersion();
+                documentVersion.setVersion(rs.getInt("version"));
+                documentVersion.setModerated(rs.getBoolean("is_moderated"));
+                documentVersion.setDescription(rs.getString("description"));
+                documentVersion.setImportance(Importance.valueOf(rs.getString("importance")));
+                documentVersion.setFilesList(fileDao.getFilesList(documentVersion));
+            }
+
+        } catch (SQLException e) {
+            log.error(e.getMessage(), e);
+        }
+        return documentVersion;
+    }
 
     private final String VERSION_ADD_QUERY = "INSERT INTO documents_versions " +
             "VALUES (nextval('documents_versions_id_seq'),?,?,?,?,?) RETURNING id;";

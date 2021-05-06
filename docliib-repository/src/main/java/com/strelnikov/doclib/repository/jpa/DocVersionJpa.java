@@ -64,4 +64,12 @@ public class DocVersionJpa implements DocVersionDao {
         em.close();
         return result;
     }
+
+    @Override
+    public DocumentVersion loadDocVersion(int docVerId) {
+        EntityManager em = getEntityManager();
+        DocumentVersion docVer = em.find(DocumentVersion.class,docVerId);
+        em.close();
+        return docVer;
+    }
 }
