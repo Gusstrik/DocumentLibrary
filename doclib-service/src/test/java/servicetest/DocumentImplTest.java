@@ -158,4 +158,20 @@ public class DocumentImplTest {
         Assert.assertEquals(1, actual);
     }
 
+    @Test
+    public void createAndDeleteDocVerTest() throws UnitNotFoundException, VersionIsAlreadyExistException, UnitIsAlreadyExistException {
+        Document doc = dtoMapper.mapDocument(documentActions.loadDocument(1));
+        DocumentVersion docVer = doc.getVersionsList().get(0);
+        docVer.setId(0);
+        docVer.setVersion(1);
+        docVer.getFilesList().get(0).setDocVersion(docVer);
+        docVer.getFilesList().get(0).setId(0);
+        doc.getVersionsList().remove(0);
+        doc.getVersionsList().add(docVer);
+        DocumentDto docDto = documentActions.saveDocument(dtoMapper.mapDocument(doc));
+        int actual = docDto.getVersionList().get(0).getVersion();
+
+        Assert.assertEquals(1,actual);
+    }
+
 }

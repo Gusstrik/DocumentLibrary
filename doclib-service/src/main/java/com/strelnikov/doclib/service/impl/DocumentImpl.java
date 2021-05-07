@@ -1,5 +1,6 @@
 package com.strelnikov.doclib.service.impl;
 
+import com.strelnikov.doclib.dto.DocVersionDto;
 import com.strelnikov.doclib.dto.DocumentDto;
 import com.strelnikov.doclib.model.conception.Unit;
 import com.strelnikov.doclib.model.conception.UnitType;
@@ -80,7 +81,12 @@ public class DocumentImpl implements DocumentActions {
         if (checkIfDocumentExist(document)) {
             throw new UnitIsAlreadyExistException(catalogDao.loadCatalog(document.getCatalogId()), document);
         } else {
-            return dtoMapper.mapDocument(documentDao.insertDocument(document));
+            document = documentDao.insertDocument(document);
+            for (DocumentVersion docVer:document.getVersionsList()){
+                docVer.setParentDocument(document);
+                docVer.setId(docVerActions.saveDocVersion(dtoMapper.mapDocVersion(docVer)).getId());
+            }
+            return dtoMapper.mapDocument(document);
         }
     }
 
@@ -95,22 +101,19 @@ public class DocumentImpl implements DocumentActions {
         return idListForDelete;
     }
 
-    private Document insertVerList(Document document) throws VersionIsAlreadyExistException {
+    private Document insertVersions(Document document) throws VersionIsAlreadyExistException{
         Document dbDoc = documentDao.loadDocument(document.getId());
-        List<DocumentVersion> listForInsert = new ArrayList<>();
         for (DocumentVersion docVersion : document.getVersionsList()) {
             if (!dbDoc.isVersionExist(docVersion)) {
-                docVersion.setId(docVerActions.saveDocVersion(dtoMapper.mapDocVersion(docVersion)).getId());
+                DocVersionDto verDto = dtoMapper.mapDocVersion(docVersion);
+                docVersion.setId(docVerActions.saveDocVersion(verDto).getId());
             }
         }
         return document;
     }
 
-
-
     private void editDocuemnt(Document document) throws VersionIsAlreadyExistException {
-        document = insertVerList(document);
-
+        document = insertVersions(document);
         List<Integer> deleteList = getVerListForDelete(document);
         for (int id : deleteList) {
             docVerActions.deleteDocVersion(id);

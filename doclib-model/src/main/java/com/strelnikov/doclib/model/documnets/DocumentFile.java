@@ -20,7 +20,7 @@ public class DocumentFile {
     @Column(name = "name", nullable = false)
     private String fileName;
 
-    @ManyToOne(cascade = CascadeType.MERGE,fetch = FetchType.LAZY,targetEntity = DocumentVersion.class)
+    @ManyToOne(cascade = CascadeType.MERGE,fetch = FetchType.EAGER,targetEntity = DocumentVersion.class)
     @JoinColumn(name="document_id")
     private DocumentVersion docVersion;
 

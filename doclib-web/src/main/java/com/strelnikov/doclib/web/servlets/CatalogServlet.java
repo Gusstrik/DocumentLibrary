@@ -13,11 +13,12 @@ import com.strelnikov.doclib.web.servlets.utils.ServletUtils;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-
+@WebServlet
 public class CatalogServlet extends HttpServlet {
 
     private DtoMapper dtoMapper = null;

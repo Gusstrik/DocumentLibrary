@@ -116,6 +116,9 @@ public class DtoMapperImpl implements DtoMapper {
         docFile.setFilePath(docFileDto.getPath());
         if (docFileDto.getDocVerId() != 0)
             docFile.setDocVersion(docVerDao.loadDocVersion(docFileDto.getDocVerId()));
+        else{
+            docFile.setDocVersion(new DocumentVersion());
+        }
         return docFile;
     }
 

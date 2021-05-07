@@ -2,6 +2,7 @@ package com.strelnikov.doclib.service.impl;
 
 import com.strelnikov.doclib.dto.DocVersionDto;
 import com.strelnikov.doclib.model.documnets.Document;
+import com.strelnikov.doclib.model.documnets.DocumentFile;
 import com.strelnikov.doclib.model.documnets.DocumentVersion;
 import com.strelnikov.doclib.repository.DocVersionDao;
 import com.strelnikov.doclib.repository.DocumentDao;
@@ -15,16 +16,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class DocVersionImpl implements DocVersionActions {
 
-    private final DocVersionDao docVersionDao;
-    private final DtoMapper dtoMapper;
-    private final DocumentDao documentDao;
+    @Autowired
+    @Qualifier("DocVersionJpa")
+    private  DocVersionDao docVersionDao;
+    @Autowired
+    private  DtoMapper dtoMapper;
+    @Autowired
+    private  DocFileImpl fileAct;
 
-    public DocVersionImpl(@Qualifier("DocVersionJpa") DocVersionDao docVersionDao, @Autowired DtoMapper dtoMapper,
-                          @Qualifier("DocumentJpa") DocumentDao documentDao) {
-        this.docVersionDao = docVersionDao;
-        this.dtoMapper = dtoMapper;
-        this.documentDao=documentDao;
-    }
 
     private boolean checkIsVersionExist(DocumentVersion documentVersion) {
         Document document = documentVersion.getParentDocument();
@@ -42,7 +41,12 @@ public class DocVersionImpl implements DocVersionActions {
         if(checkIsVersionExist(documentVersion)){
             throw new VersionIsAlreadyExistException(documentVersion);
         }else {
-            return dtoMapper.mapDocVersion(docVersionDao.insertDocVersion(documentVersion));
+            documentVersion = docVersionDao.insertDocVersion(documentVersion);
+            for (DocumentFile docFile:documentVersion.getFilesList()){
+                docFile.setDocVersion(documentVersion);
+                docFile.setId(fileAct.createNewFile(dtoMapper.mapDocFile(docFile)).getId());
+            }
+            return dtoMapper.mapDocVersion(documentVersion);
         }
     }
 

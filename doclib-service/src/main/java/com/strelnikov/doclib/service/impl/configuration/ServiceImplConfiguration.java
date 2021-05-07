@@ -10,7 +10,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.*;
 
 @Configuration
-@Import({RepositoryConfiguration.class,DtoMapperConfiguration.class})
+@Import(DtoMapperConfiguration.class)
 @ComponentScan(basePackages = "com.strelnikov.doclib.service.impl")
 public class ServiceImplConfiguration {
 
