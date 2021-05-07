@@ -75,7 +75,7 @@ public class DocumentImpl implements DocumentActions {
         return false;
     }
 
-    private DocumentDto createNewDocument(DocumentDto documentDto) throws UnitIsAlreadyExistException {
+    private DocumentDto createNewDocument(DocumentDto documentDto) throws UnitIsAlreadyExistException, VersionIsAlreadyExistException {
         Document document = dtoMapper.mapDocument(documentDto);
         if (checkIfDocumentExist(document)) {
             throw new UnitIsAlreadyExistException(catalogDao.loadCatalog(document.getCatalogId()), document);

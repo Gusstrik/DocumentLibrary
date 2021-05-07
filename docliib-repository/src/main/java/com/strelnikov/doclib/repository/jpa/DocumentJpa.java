@@ -39,6 +39,10 @@ public class DocumentJpa implements DocumentDao {
         em.persist(document);
         em.getTransaction().commit();
         em.close();
+        for (DocumentVersion docVer:document.getVersionsList()){
+            docVer.setParentDocument(document);
+            docVersionDao.insertDocVersion(docVer);
+        }
         return document;
     }
 
@@ -47,7 +51,9 @@ public class DocumentJpa implements DocumentDao {
         EntityManager entityManager = getEntityManager();
         Document doc = entityManager.find(Document.class,docId);
         entityManager.close();
-        doc.setVersionsList(docVersionDao.getDocVersionList(doc));
+        if(doc!=null) {
+            doc.setVersionsList(docVersionDao.getDocVersionList(doc));
+        }
         return doc;
     }
 

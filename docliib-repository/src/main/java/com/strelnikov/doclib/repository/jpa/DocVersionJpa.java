@@ -34,12 +34,14 @@ public class DocVersionJpa implements DocVersionDao {
     @Override
     public DocumentVersion insertDocVersion(DocumentVersion documentVersion) {
         EntityManager em = getEntityManager();
-        Document doc = em.find(Document.class, documentVersion.getParentDocument().getId());
-        documentVersion.setParentDocument(doc);
         em.getTransaction().begin();
         em.persist(documentVersion);
         em.getTransaction().commit();
         em.close();
+        for (DocumentFile docFile:documentVersion.getFilesList()){
+            docFile.setDocVersion(documentVersion);
+            docFile.setId(docFileDao.insertFile(docFile).getId());
+        }
         return documentVersion;
     }
 

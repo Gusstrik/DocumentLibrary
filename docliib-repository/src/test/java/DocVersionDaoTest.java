@@ -1,4 +1,5 @@
 import com.strelnikov.doclib.model.documnets.Document;
+import com.strelnikov.doclib.model.documnets.DocumentFile;
 import com.strelnikov.doclib.model.documnets.DocumentVersion;
 import com.strelnikov.doclib.model.documnets.Importance;
 import com.strelnikov.doclib.repository.DocVersionDao;
@@ -39,14 +40,20 @@ public class DocVersionDaoTest {
     @Test
     public void insertDocVersionTest(){
         expected+=1;
-        DocumentVersion documentVersion = new DocumentVersion();
+        DocumentVersion documentVersion = docVersionDao.loadDocVersion(1);
+        documentVersion.setId(0);
         documentVersion.setVersion(1);
-        Document document = new Document();
-        document.setId(1);
         documentVersion.setParentDocument(document);
         documentVersion.setDescription("another version of testDoc");
         documentVersion.setImportance(Importance.IMPORTANT);
         documentVersion.setModerated(false);
+        DocumentFile docFile = new DocumentFile();
+        docFile.setFileName("test file 2");
+        docFile.setDocVersion(documentVersion);
+        docFile.setId(0);
+        docFile.setFilePath("test path");
+        documentVersion.getFilesList().add(docFile);
+        documentVersion.getFilesList().get(0).setId(0);
         documentVersion= docVersionDao.insertDocVersion(documentVersion);
         int actual = docVersionDao.getDocVersionList(document).size();
         docVersionDao.deleteDocVersion(documentVersion.getId());

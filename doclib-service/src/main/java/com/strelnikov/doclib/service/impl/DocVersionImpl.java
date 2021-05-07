@@ -42,7 +42,7 @@ public class DocVersionImpl implements DocVersionActions {
         if(checkIsVersionExist(documentVersion)){
             throw new VersionIsAlreadyExistException(documentVersion);
         }else {
-            return dtoMapper.mapDocVersion(docVersionDao.insertDocVersion(dtoMapper.mapDocVersion(docVersionDto)));
+            return dtoMapper.mapDocVersion(docVersionDao.insertDocVersion(documentVersion));
         }
     }
 

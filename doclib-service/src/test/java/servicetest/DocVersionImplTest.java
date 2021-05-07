@@ -8,7 +8,9 @@ import com.strelnikov.doclib.repository.configuration.RepositoryConfiguration;
 import com.strelnikov.doclib.repository.jdbc.DatabaseCreatorJdbc;
 import com.strelnikov.doclib.service.DocTypeActions;
 import com.strelnikov.doclib.service.DocVersionActions;
+import com.strelnikov.doclib.service.DocumentActions;
 import com.strelnikov.doclib.service.dtomapper.DtoMapper;
+import com.strelnikov.doclib.service.exceptions.UnitNotFoundException;
 import com.strelnikov.doclib.service.exceptions.VersionIsAlreadyExistException;
 import com.strelnikov.doclib.service.impl.configuration.ServiceImplConfiguration;
 import org.junit.*;
@@ -21,9 +23,10 @@ public class DocVersionImplTest {
     private static final ApplicationContext appContext = new AnnotationConfigApplicationContext(ServiceImplConfiguration.class, RepositoryConfiguration.class);
 
     private static final DatabaseCreatorJdbc creator = appContext.getBean(DatabaseCreatorJdbc.class);
+    private final DocumentActions documentActions = appContext.getBean(DocumentActions.class);
     private final DocVersionActions docVerActions = appContext.getBean(DocVersionActions.class);
     private final DtoMapper dtoMapper = appContext.getBean(DtoMapper.class);
-    private final DocVersionDao docVerDao = appContext.getBean(DocVersionDao.class);
+    private final DocVersionDao docVerDao = appContext.getBean("DocVersionJpa",DocVersionDao.class);
 
     private int expected;
     private static Document document;
@@ -46,10 +49,13 @@ public class DocVersionImplTest {
     }
 
     @Test
-    public void saveDocVersionTest() throws VersionIsAlreadyExistException {
+    public void saveDocVersionTest() throws VersionIsAlreadyExistException, UnitNotFoundException {
         DocumentVersion docVersion = docVerDao.getDocVersionList(document).get(0);
+        docVersion.setId(0);
         docVersion.setVersion(1);
         docVersion.setDescription("another test version");
+        docVersion.getFilesList().get(0).setDocVersion(docVersion);
+        docVersion.getFilesList().get(0).setId(0);
         DocVersionDto docVerDto = docVerActions.saveDocVersion(dtoMapper.mapDocVersion(docVersion));
         int actual = docVerDao.getDocVersionList(document).size();
         docVerActions.deleteDocVersion(docVerDto.getId());
@@ -59,8 +65,11 @@ public class DocVersionImplTest {
     @Test
     public void deleteDocVersionTest() throws VersionIsAlreadyExistException {
         DocumentVersion docVersion = docVerDao.getDocVersionList(document).get(0);
+        docVersion.setId(0);
         docVersion.setVersion(1);
         docVersion.setDescription("another test version");
+        docVersion.getFilesList().get(0).setDocVersion(docVersion);
+        docVersion.getFilesList().get(0).setId(0);
         DocVersionDto docVerDto = docVerActions.saveDocVersion(dtoMapper.mapDocVersion(docVersion));
         docVerActions.deleteDocVersion(docVerDto.getId());
         int actual = docVerDao.getDocVersionList(document).size();

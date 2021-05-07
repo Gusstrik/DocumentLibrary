@@ -14,7 +14,7 @@ public class DocumentDto {
     @NonNull
     private String name;
     @NonNull
-    private String type;
+    private int type;
 
     private int actualVersion;
 

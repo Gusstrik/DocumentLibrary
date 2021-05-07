@@ -19,7 +19,7 @@ public class DocumentVersion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToOne(cascade = CascadeType.PERSIST,fetch = FetchType.LAZY,targetEntity = Document.class)
+    @ManyToOne(cascade = CascadeType.MERGE,fetch = FetchType.EAGER,targetEntity = Document.class)
     @JoinColumn(name="document_id")
     Document parentDocument;
 

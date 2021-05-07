@@ -20,7 +20,7 @@ public class DocFileImplTest {
     private static final ApplicationContext appContext = new AnnotationConfigApplicationContext(ServiceImplConfiguration.class);
 
     private static final DatabaseCreatorJdbc creator = appContext.getBean(DatabaseCreatorJdbc.class);
-    private final DocFileDao docFileDao = appContext.getBean(DocFileDao.class);
+    private final DocFileDao docFileDao = appContext.getBean("DocFileJpa",DocFileDao.class);
     private final DocFileActions fileActions = appContext.getBean(DocFileActions.class);
     private int expected;
     private  static DocumentVersion docVersion;

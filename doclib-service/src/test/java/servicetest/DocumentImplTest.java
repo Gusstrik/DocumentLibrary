@@ -31,7 +31,6 @@ public class DocumentImplTest {
     private final DtoMapper dtoMapper = appContext.getBean(DtoMapper.class);
 
 
-
     @BeforeClass
     public static void beforCataloImpTests() {
         creator.runScript("src/test/resources/insertestdb.sql");
@@ -43,26 +42,31 @@ public class DocumentImplTest {
     }
 
     @Before
-    public void beforeEachDocumentImlTest(){
+    public void beforeEachDocumentImlTest() {
 
     }
 
     @Test
     public void loadDocTest() throws UnitNotFoundException {
         DocumentDto documentDto = documentActions.loadDocument(1);
-        Assert.assertEquals("test description",documentDto.getVersionList().get(0).getDescription());
+        Assert.assertEquals("test description", documentDto.getVersionList().get(0).getDescription());
     }
 
     @Test
     public void addNewDocTest() throws VersionIsAlreadyExistException, UnitIsAlreadyExistException, UnitNotFoundException {
         Document document = new Document();
-        document.setName("test doc 2");
-        document.setDocumentType(new DocumentType("test_type"));
         document.setId(0);
+        document.setName("test doc 2");
+        DocumentType docType = new DocumentType();
+        docType.setId(1);
+        docType.setCurentType("test_type");
+        document.setDocumentType(docType);
+        document.setActualVersion(0);
         document.setCatalogId(1);
         document.setVersionsList(new ArrayList<>());
         document.setActualVersion(0);
         DocumentVersion docVersion = new DocumentVersion();
+        docVersion.setId(0);
         docVersion.setParentDocument(document);
         docVersion.setVersion(0);
         docVersion.setDescription("testers");
@@ -71,18 +75,21 @@ public class DocumentImplTest {
         docVersion.setFilesList(new ArrayList<>());
         document.getVersionsList().add(docVersion);
         DocumentDto documentDto = dtoMapper.mapDocument(document);
-        documentDto=documentActions.saveDocument(documentDto);
-        documentDto =documentActions.loadDocument(documentDto.getId());
+        documentDto = documentActions.saveDocument(documentDto);
+        documentDto = documentActions.loadDocument(documentDto.getId());
         int actual = documentDto.getVersionList().size();
         documentActions.deleteDocument(documentDto.getId());
-        Assert.assertEquals(1,actual);
+        Assert.assertEquals(1, actual);
     }
 
     @Test
     public void editDocTest() throws VersionIsAlreadyExistException, UnitIsAlreadyExistException {
         Document document = new Document();
         document.setName("test doc 2");
-        document.setDocumentType(new DocumentType("test_type"));
+        DocumentType docType = new DocumentType();
+        docType.setId(1);
+        docType.setCurentType("test_type");
+        document.setDocumentType(docType);
         document.setId(0);
         document.setCatalogId(1);
         document.setVersionsList(new ArrayList<>());
@@ -96,7 +103,8 @@ public class DocumentImplTest {
         docVersion.setFilesList(new ArrayList<>());
         document.getVersionsList().add(docVersion);
         DocumentDto documentDto = dtoMapper.mapDocument(document);
-        documentDto=documentActions.saveDocument(documentDto);
+        documentDto = documentActions.saveDocument(documentDto);
+        document = dtoMapper.mapDocument(documentDto);
         docVersion = new DocumentVersion();
         docVersion.setParentDocument(document);
         docVersion.setVersion(1);
@@ -105,17 +113,20 @@ public class DocumentImplTest {
         docVersion.setModerated(false);
         docVersion.setFilesList(new ArrayList<>());
         documentDto.getVersionList().add(dtoMapper.mapDocVersion(docVersion));
-        documentDto=documentActions.saveDocument(documentDto);
+        documentDto = documentActions.saveDocument(documentDto);
         int actual = documentDto.getVersionList().size();
         documentActions.deleteDocument(documentDto.getId());
-        Assert.assertEquals(2,actual);
+        Assert.assertEquals(2, actual);
     }
 
     @Test
     public void deleteVerDocTest() throws VersionIsAlreadyExistException, UnitIsAlreadyExistException, UnitNotFoundException {
         Document document = new Document();
         document.setName("test doc 2");
-        document.setDocumentType(new DocumentType("test_type"));
+        DocumentType docType = new DocumentType();
+        docType.setId(1);
+        docType.setCurentType("test_type");
+        document.setDocumentType(docType);
         document.setId(0);
         document.setCatalogId(1);
         document.setVersionsList(new ArrayList<>());
@@ -129,7 +140,8 @@ public class DocumentImplTest {
         docVersion.setFilesList(new ArrayList<>());
         document.getVersionsList().add(docVersion);
         DocumentDto documentDto = dtoMapper.mapDocument(document);
-        documentDto=documentActions.saveDocument(documentDto);
+        documentDto = documentActions.saveDocument(documentDto);
+        document = dtoMapper.mapDocument(documentDto);
         docVersion = new DocumentVersion();
         docVersion.setParentDocument(document);
         docVersion.setVersion(1);
@@ -139,11 +151,11 @@ public class DocumentImplTest {
         docVersion.setFilesList(new ArrayList<>());
         documentDto.getVersionList().add(dtoMapper.mapDocVersion(docVersion));
         documentDto.getVersionList().remove(0);
-        documentDto=documentActions.saveDocument(documentDto);
-        documentDto=documentActions.loadDocument(documentDto.getId());
+        documentDto = documentActions.saveDocument(documentDto);
+        documentDto = documentActions.loadDocument(documentDto.getId());
         int actual = documentDto.getVersionList().get(0).getVersion();
         documentActions.deleteDocument(documentDto.getId());
-        Assert.assertEquals(1,actual);
+        Assert.assertEquals(1, actual);
     }
 
 }
