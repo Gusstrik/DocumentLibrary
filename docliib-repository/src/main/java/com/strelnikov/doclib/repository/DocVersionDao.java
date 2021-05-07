@@ -14,4 +14,6 @@ public interface DocVersionDao {
 
     List<DocumentVersion> getDocVersionList(Document document);
 
+    DocumentVersion loadDocVersion(int docVerId);
+
 }

@@ -1,3 +1,5 @@
+package servlet.test;
+
 import com.strelnikov.doclib.dto.CatalogDto;
 import com.strelnikov.doclib.dto.DocumentDto;
 import com.strelnikov.doclib.dto.UnitDto;
@@ -20,11 +22,12 @@ public class DocumentServletTests {
     private static Server server;
 
     private static final ApplicationContext appContext = new AnnotationConfigApplicationContext(ServiceImplConfiguration.class);
+
     private static final DatabaseCreatorJdbc creator = appContext.getBean(DatabaseCreatorJdbc.class);
 
     @BeforeClass
     public static void beforeServletTests()throws Exception{
-        creator.runScript("src/test/resources/insertestdb.sql");
+        creator.runScript("src/test/resources/dbscripts/insertestdb.sql");
         server = new Server(12135);
         WebAppContext wcon = new WebAppContext();
         wcon.setContextPath("/doclib-app");
@@ -36,7 +39,7 @@ public class DocumentServletTests {
     }
     @AfterClass
     public static void afterServletTests()throws Exception{
-        creator.runScript("src/test/resources/deletedb.sql");
+        creator.runScript("src/test/resources/dbscripts/deletedb.sql");
         server.stop();
     }
 

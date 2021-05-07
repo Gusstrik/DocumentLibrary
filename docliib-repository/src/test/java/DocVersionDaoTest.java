@@ -1,7 +1,9 @@
 import com.strelnikov.doclib.model.documnets.Document;
+import com.strelnikov.doclib.model.documnets.DocumentFile;
 import com.strelnikov.doclib.model.documnets.DocumentVersion;
 import com.strelnikov.doclib.model.documnets.Importance;
 import com.strelnikov.doclib.repository.DocVersionDao;
+import com.strelnikov.doclib.repository.DocumentDao;
 import com.strelnikov.doclib.repository.configuration.RepositoryConfiguration;
 import com.strelnikov.doclib.repository.jdbc.DatabaseCreatorJdbc;
 import org.junit.*;
@@ -13,16 +15,16 @@ import java.util.List;
 public class DocVersionDaoTest {
 
     private static final ApplicationContext appContext = new AnnotationConfigApplicationContext(RepositoryConfiguration.class);
-    DocVersionDao docVersionDao = appContext.getBean(DocVersionDao.class);
+    DocVersionDao docVersionDao = appContext.getBean("DocVersionJpa",DocVersionDao.class);
+    private static final DocumentDao docDao = appContext.getBean("DocumentJpa",DocumentDao.class);
     private static final DatabaseCreatorJdbc creator = appContext.getBean(DatabaseCreatorJdbc.class);
     private static Document document;
     private int expected;
 
     @BeforeClass
     public static void beforeFileDaoTest() {
-        document= new Document();
-        document.setId(1);
         creator.runScript("src/test/resources/insertestdb.sql");
+        document= docDao.loadDocument(1);
     }
 
     @AfterClass
@@ -38,12 +40,20 @@ public class DocVersionDaoTest {
     @Test
     public void insertDocVersionTest(){
         expected+=1;
-        DocumentVersion documentVersion = new DocumentVersion();
+        DocumentVersion documentVersion = docVersionDao.loadDocVersion(1);
+        documentVersion.setId(0);
         documentVersion.setVersion(1);
-        documentVersion.setDocumentId(1);
+        documentVersion.setParentDocument(document);
         documentVersion.setDescription("another version of testDoc");
         documentVersion.setImportance(Importance.IMPORTANT);
         documentVersion.setModerated(false);
+        DocumentFile docFile = new DocumentFile();
+        docFile.setFileName("test file 2");
+        docFile.setDocVersion(documentVersion);
+        docFile.setId(0);
+        docFile.setFilePath("test path");
+        documentVersion.getFilesList().add(docFile);
+        documentVersion.getFilesList().get(0).setId(0);
         documentVersion= docVersionDao.insertDocVersion(documentVersion);
         int actual = docVersionDao.getDocVersionList(document).size();
         docVersionDao.deleteDocVersion(documentVersion.getId());
@@ -54,7 +64,9 @@ public class DocVersionDaoTest {
     public void deleteDocVersionTest(){
         DocumentVersion documentVersion = new DocumentVersion();
         documentVersion.setVersion(1);
-        documentVersion.setDocumentId(1);
+        Document document = new Document();
+        document.setId(1);
+        documentVersion.setParentDocument(document);
         documentVersion.setDescription("another version of testDoc");
         documentVersion.setImportance(Importance.IMPORTANT);
         documentVersion.setModerated(false);
@@ -62,6 +74,12 @@ public class DocVersionDaoTest {
         docVersionDao.deleteDocVersion(documentVersion.getId());
         int actual = docVersionDao.getDocVersionList(document).size();
         Assert.assertEquals(expected,actual);
+    }
+
+    @Test
+    public void loadDocVersionTest(){
+        DocumentVersion docVer = docVersionDao.loadDocVersion(1);
+        Assert.assertEquals("IMPORTANT",docVer.getImportance().toString());
     }
 
     @Test

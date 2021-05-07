@@ -2,25 +2,33 @@ package com.strelnikov.doclib.model.conception;
 
 import java.util.ArrayList;
 
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Transient;
+import javax.persistence.*;
 
 @Getter
 @Setter
+
+@MappedSuperclass
 public abstract class Unit {
 
-    public Unit(){}
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    private int parent_id;
+    @Column (name="catalog_id")
+    private int catalogId;
 
+    @Column(name="name",nullable = false)
     private String name;
 
+    @Transient
     private UnitType unitType;
+
+    public Unit(){}
 
     @Override
     public boolean equals(Object o){

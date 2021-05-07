@@ -1,6 +1,5 @@
 import com.strelnikov.doclib.model.catalogs.Catalog;
-import com.strelnikov.doclib.repository.jdbc.CatalogDaoJdbc;
-import com.strelnikov.doclib.repository.jdbc.DatabaseConnectorJdbc;
+import com.strelnikov.doclib.repository.CatalogDao;
 import com.strelnikov.doclib.repository.jdbc.DatabaseCreatorJdbc;
 
 import com.strelnikov.doclib.model.conception.Unit;
@@ -8,6 +7,8 @@ import com.strelnikov.doclib.repository.configuration.RepositoryConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -25,27 +26,19 @@ public class DatabaseCreatorJdbcTest {
 
     private static final DatabaseCreatorJdbc creator = appContext.getBean(DatabaseCreatorJdbc.class);
 
+    private static final CatalogDao catalogDao = appContext.getBean("CatalogJpa",CatalogDao.class);
+
     @Test
     public void createDatabaseTest() {
         creator.createDatabse();
-        String homeCatName = "";
-        log.info("Database was successfully created");
-        try(Connection connection = DatabaseConnectorJdbc.getConnectionFromPool()) {
-            Statement statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery("Select name from catalogs where name='/'");
-            rs.next();
-            homeCatName = rs.getString(1);
-        } catch (SQLException e) {
-            log.error(e.getMessage(), e.getSQLState());
-        }
-        Assert.assertEquals("/", homeCatName);
+        Catalog homeCat = catalogDao.loadCatalog(1);
+        Assert.assertEquals("/", homeCat.getName());
     }
 
     @Test
     public void runScriptTest(){
         creator.runScript("src/test/resources/insertestdb.sql");
-        CatalogDaoJdbc catalogDaoJdbc = appContext.getBean(CatalogDaoJdbc.class);
-        Catalog catalog = catalogDaoJdbc.loadCatalog(1);
+        Catalog catalog = catalogDao.loadCatalog(1);
         List<Unit> list = catalog.getContentList();
         List<String> expected = new ArrayList<>();
         expected.add("test_catalog");

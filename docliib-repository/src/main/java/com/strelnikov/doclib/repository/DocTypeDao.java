@@ -9,5 +9,7 @@ public interface DocTypeDao {
 
     void deleteType(String type);
 
+    DocumentType loadType(int typeId);
+
     List<String> getTypesList();
 }

@@ -10,7 +10,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @Slf4j
 public class CatalogDaoJdbcTest {
@@ -18,16 +17,13 @@ public class CatalogDaoJdbcTest {
     private static final ApplicationContext appContext = new AnnotationConfigApplicationContext(RepositoryConfiguration.class);
 
     private ArrayList<String> expected;
-    private final CatalogDao catalogDao = appContext.getBean(CatalogDao.class);
+    private final CatalogDao catalogDao = appContext.getBean("CatalogJpa",CatalogDao.class);
     private static final DatabaseCreatorJdbc databaseCreatorJdbc=appContext.getBean(DatabaseCreatorJdbc.class);
 
     private static Catalog parentCat;
 
     @BeforeClass
     public static void beforeFileDaoTest() {
-        parentCat=new Catalog();
-        parentCat.setId(1);
-        parentCat.setName("/");
         databaseCreatorJdbc.runScript("src/test/resources/insertestdb.sql");
     }
 
@@ -43,7 +39,7 @@ public class CatalogDaoJdbcTest {
 
 
     private ArrayList<String> getNamesFromContentList() {
-        parentCat=catalogDao.loadCatalog(parentCat.getId());
+        parentCat=catalogDao.loadCatalog(1);
         ArrayList<String> list;
         list = new ArrayList<>();
         for (Unit e : parentCat.getContentList()) {
@@ -56,7 +52,7 @@ public class CatalogDaoJdbcTest {
     @Test
     public void addCatalogTest() {
         Catalog catalog = new Catalog();
-        catalog.setParent_id(1);
+        catalog.setCatalogId(1);
         catalog.setName("test_1");
         catalog = catalogDao.insertCatalog(catalog);
         int amount = expected.size()+1;
@@ -68,7 +64,7 @@ public class CatalogDaoJdbcTest {
     @Test
     public void deleteCatalogTest() {
         Catalog catalog = new Catalog();
-        catalog.setParent_id(1);
+        catalog.setCatalogId(1);
         catalog.setName("test_1");
         catalog = catalogDao.insertCatalog(catalog);
         catalogDao.deleteCatalog(catalog.getId());
@@ -86,7 +82,7 @@ public class CatalogDaoJdbcTest {
     public void updateCatalogTest(){
         Catalog catalog = new Catalog();
         catalog.setName("test catalog");
-        catalog.setParent_id(1);
+        catalog.setCatalogId(1);
         catalog=catalogDao.insertCatalog(catalog);
         catalog.setName("changed_name");
         catalogDao.updateCatalog(catalog);

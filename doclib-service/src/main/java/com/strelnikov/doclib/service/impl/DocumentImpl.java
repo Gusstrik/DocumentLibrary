@@ -1,5 +1,6 @@
 package com.strelnikov.doclib.service.impl;
 
+import com.strelnikov.doclib.dto.DocVersionDto;
 import com.strelnikov.doclib.dto.DocumentDto;
 import com.strelnikov.doclib.model.conception.Unit;
 import com.strelnikov.doclib.model.conception.UnitType;
@@ -18,6 +19,7 @@ import com.strelnikov.doclib.service.exceptions.UnitIsAlreadyExistException;
 import com.strelnikov.doclib.service.exceptions.UnitNotFoundException;
 import com.strelnikov.doclib.service.exceptions.VersionIsAlreadyExistException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -32,8 +34,8 @@ public class DocumentImpl implements DocumentActions {
     private final DocVersionActions docVerActions;
     private final DocFileDao docFileDao;
 
-    public DocumentImpl(@Autowired DocumentDao documentDao, @Autowired DocVersionActions docVerActions,
-                        @Autowired DtoMapper dtoMapper, @Autowired CatalogDao catalogDao, @Autowired DocFileDao docFileDao) {
+    public DocumentImpl(@Qualifier("DocumentJpa") DocumentDao documentDao, @Autowired DocVersionActions docVerActions,
+                        @Autowired DtoMapper dtoMapper, @Qualifier("CatalogJpa") CatalogDao catalogDao, @Qualifier("DocFileJpa") DocFileDao docFileDao) {
         this.documentDao = documentDao;
         this.docVerActions = docVerActions;
         this.dtoMapper = dtoMapper;
@@ -60,7 +62,7 @@ public class DocumentImpl implements DocumentActions {
     }
 
     private boolean checkIfDocumentExist(Document addingDocuemnt) {
-        Catalog parentCatlog = catalogDao.loadCatalog(addingDocuemnt.getParent_id());
+        Catalog parentCatlog = catalogDao.loadCatalog(addingDocuemnt.getCatalogId());
         for (Unit unit : parentCatlog.getContentList()) {
             if (unit.getUnitType().equals(UnitType.DOCUMENT)) {
                 Document existinDoc = documentDao.loadDocument(unit.getId());
@@ -74,12 +76,17 @@ public class DocumentImpl implements DocumentActions {
         return false;
     }
 
-    private DocumentDto createNewDocument(DocumentDto documentDto) throws UnitIsAlreadyExistException {
+    private DocumentDto createNewDocument(DocumentDto documentDto) throws UnitIsAlreadyExistException, VersionIsAlreadyExistException {
         Document document = dtoMapper.mapDocument(documentDto);
         if (checkIfDocumentExist(document)) {
-            throw new UnitIsAlreadyExistException(catalogDao.loadCatalog(document.getParent_id()), document);
+            throw new UnitIsAlreadyExistException(catalogDao.loadCatalog(document.getCatalogId()), document);
         } else {
-            return dtoMapper.mapDocument(documentDao.insertDocument(document));
+            document = documentDao.insertDocument(document);
+            for (DocumentVersion docVer:document.getVersionsList()){
+                docVer.setParentDocument(document);
+                docVer.setId(docVerActions.saveDocVersion(dtoMapper.mapDocVersion(docVer)).getId());
+            }
+            return dtoMapper.mapDocument(document);
         }
     }
 
@@ -94,22 +101,19 @@ public class DocumentImpl implements DocumentActions {
         return idListForDelete;
     }
 
-    private Document insertVerList(Document document) throws VersionIsAlreadyExistException {
+    private Document insertVersions(Document document) throws VersionIsAlreadyExistException{
         Document dbDoc = documentDao.loadDocument(document.getId());
-        List<DocumentVersion> listForInsert = new ArrayList<>();
         for (DocumentVersion docVersion : document.getVersionsList()) {
             if (!dbDoc.isVersionExist(docVersion)) {
-                docVersion.setId(docVerActions.saveDocVersion(dtoMapper.mapDocVersion(docVersion)).getId());
+                DocVersionDto verDto = dtoMapper.mapDocVersion(docVersion);
+                docVersion.setId(docVerActions.saveDocVersion(verDto).getId());
             }
         }
         return document;
     }
 
-
-
     private void editDocuemnt(Document document) throws VersionIsAlreadyExistException {
-        document = insertVerList(document);
-
+        document = insertVersions(document);
         List<Integer> deleteList = getVerListForDelete(document);
         for (int id : deleteList) {
             docVerActions.deleteDocVersion(id);

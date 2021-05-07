@@ -1,7 +1,7 @@
 {
   "id": 1,
   "name": "test_doc",
-  "type": "test_type",
+  "type": 1,
   "actualVersion": 0,
   "catalogId": 1,
   "versionList": [

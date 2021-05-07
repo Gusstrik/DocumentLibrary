@@ -13,6 +13,7 @@ import com.strelnikov.doclib.service.CatalogActions;
 
 import com.strelnikov.doclib.service.exceptions.UnitNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -25,7 +26,8 @@ public class CatalogImpl implements CatalogActions {
     private final DocumentDao documentDao;
     private final DtoMapper dtoMapper;
 
-    public CatalogImpl(@Autowired CatalogDao catalogDao,@Autowired DtoMapper dtoMapper, @Autowired  DocumentDao documentDao) {
+    public CatalogImpl(@Qualifier("CatalogJpa") CatalogDao catalogDao, @Autowired  DtoMapper dtoMapper,
+                       @Qualifier("DocumentJpa") DocumentDao documentDao) {
         this.catalogDao = catalogDao;
         this.dtoMapper = dtoMapper;
         this.documentDao = documentDao;
@@ -33,8 +35,8 @@ public class CatalogImpl implements CatalogActions {
 
 
     private boolean checkIfCatalogExist(Unit addingUnit) {
-        if(addingUnit.getParent_id()!=0) {
-            Catalog parentCatlog = catalogDao.loadCatalog(addingUnit.getParent_id());
+        if(addingUnit.getId()!=0) {
+            Catalog parentCatlog = catalogDao.loadCatalog(addingUnit.getCatalogId());
             for (Unit unit : parentCatlog.getContentList()) {
                 if (unit.getUnitType().equals(UnitType.CATALOG) &&
                         unit.getName().equals(addingUnit.getName()) &&
@@ -42,17 +44,14 @@ public class CatalogImpl implements CatalogActions {
                     return true;
                 }
             }
-            return false;
         }
-        else {
-            return false;
-        }
+        return false;
     }
 
     private CatalogDto createNewCatalog(CatalogDto catalogDto) throws UnitIsAlreadyExistException{
         Catalog catalog = dtoMapper.mapCatalog(catalogDto);
         if (checkIfCatalogExist(catalog)){
-            throw new UnitIsAlreadyExistException(catalogDao.loadCatalog(catalog.getParent_id()),catalog);
+            throw new UnitIsAlreadyExistException(catalogDao.loadCatalog(catalog.getCatalogId()),catalog);
         }else {
             return dtoMapper.mapCatalog(catalogDao.insertCatalog(catalog));
         }
@@ -86,7 +85,7 @@ public class CatalogImpl implements CatalogActions {
 
     private void editCatalog(Catalog catalog) throws UnitIsAlreadyExistException {
         if(checkIfCatalogExist(catalog)){
-            throw new UnitIsAlreadyExistException(catalogDao.loadCatalog(catalog.getParent_id()),catalog);
+            throw new UnitIsAlreadyExistException(catalogDao.loadCatalog(catalog.getCatalogId()),catalog);
         }else {
             deleteContent(catalog);
             catalogDao.updateCatalog(catalog);

@@ -1,13 +1,13 @@
 INSERT INTO doc_types (id, name)
-VALUES (nextval('doc_types_id_seq'), 'test_type')
+VALUES (1, 'test_type')
 on conflict (name) do nothing;
 
-INSERT INTO catalogs (id, name, parent)
+INSERT INTO catalogs (id, name, catalog_id)
 VALUES (2, 'test_catalog', 1)
 on conflict do nothing;
 
-INSERT INTO documents (id, name, type, actual_version, catalog_id)
-VALUES (1, 'test_doc', 'test_type', 0,1)
+INSERT INTO documents (id, name, type_id, actual_version, catalog_id)
+VALUES (1, 'test_doc', 1, 0,1)
 on conflict do nothing;
 
 INSERT INTO documents_versions(id, document_id,version,description,importance,is_moderated)
