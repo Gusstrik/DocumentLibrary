@@ -38,10 +38,6 @@ public class DocVersionJpa implements DocVersionDao {
         em.persist(documentVersion);
         em.getTransaction().commit();
         em.close();
-        for (DocumentFile docFile:documentVersion.getFilesList()){
-            docFile.setDocVersion(documentVersion);
-            docFile.setId(docFileDao.insertFile(docFile).getId());
-        }
         return documentVersion;
     }
 
