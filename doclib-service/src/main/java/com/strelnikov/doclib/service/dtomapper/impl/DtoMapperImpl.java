@@ -93,12 +93,13 @@ public class DtoMapperImpl implements DtoMapper {
 
     @Override
     public DocTypeDto mapDocType(DocumentType documentType) {
-        return new DocTypeDto(documentType.getCurentType());
+        return new DocTypeDto(documentType.getId(),documentType.getCurentType());
     }
 
     @Override
     public DocumentType mapDocType(DocTypeDto docTypeDto) {
         DocumentType documentType = new DocumentType();
+        documentType.setId(docTypeDto.getId());
         documentType.setCurentType(docTypeDto.getDocType());
         return documentType;
     }
