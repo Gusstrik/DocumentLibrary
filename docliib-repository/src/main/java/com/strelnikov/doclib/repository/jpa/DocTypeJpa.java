@@ -24,24 +24,21 @@ public class DocTypeJpa implements DocTypeDao {
     }
 
     @Override
-    public void insertType(String type) {
-        DocumentType docType = new DocumentType(type);
+    public DocumentType insertType(DocumentType docType) {
         EntityManager entityManager = getEntityManager();
         entityManager.getTransaction().begin();
         entityManager.persist(docType);
         entityManager.getTransaction().commit();
         entityManager.close();
+        return docType;
     }
 
     @Override
-    public void deleteType(String type) {
+    public void deleteType(int typeId) {
         EntityManager entityManager = getEntityManager();
-        Query query = entityManager.createQuery("SELECT docType FROM DocumentType docType " +
-                "WHERE docType.curentType='"+ type+"'");
-
-        DocumentType documentType = (DocumentType)query.getSingleResult();
+        DocumentType docType = entityManager.find(DocumentType.class,typeId);
         entityManager.getTransaction().begin();
-        entityManager.remove(documentType);
+        entityManager.remove(docType);
         entityManager.getTransaction().commit();
         entityManager.close();
     }
@@ -55,15 +52,12 @@ public class DocTypeJpa implements DocTypeDao {
     }
 
     @Override
-    public List<String> getTypesList() {
+    public List<DocumentType> getTypesList() {
         EntityManager entityManager = getEntityManager();
         Query query = entityManager.createQuery("SELECT docType FROM DocumentType docType");
         List<DocumentType> docTypeList= query.getResultList();
         List<String> result = new ArrayList<>();
-        for(DocumentType docType:docTypeList){
-           result.add(docType.getCurentType());
-        }
         entityManager.close();
-        return result;
+        return docTypeList;
     }
 }
