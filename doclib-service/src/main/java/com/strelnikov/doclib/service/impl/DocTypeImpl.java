@@ -35,7 +35,7 @@ public class DocTypeImpl implements DocTypeActions {
             docType=docTypeDao.insertType(docType);
             DocumentType.documentTypeList.add(docType);
             docTypeDto = dtoMapper.mapDocType(docType);
-            DocTypeDto.typesIndexes.add(docTypeDto);
+            DocTypeDto.typesList.add(docTypeDto);
             return docTypeDto;
         }
 
@@ -47,15 +47,15 @@ public class DocTypeImpl implements DocTypeActions {
         DocumentType docType = dtoMapper.mapDocType(docTypeDto);
         docTypeDao.deleteType(docTypeDto.getId());
         DocumentType.documentTypeList.remove(docType);
-        DocTypeDto.typesIndexes.remove(docTypeDto);
+        DocTypeDto.typesList.remove(docTypeDto);
     }
 
     @Override
     public void refreshListDocumentType() {
         DocumentType.documentTypeList=docTypeDao.getTypesList();
-        DocTypeDto.typesIndexes=new ArrayList<>();
+        DocTypeDto.typesList=new ArrayList<>();
         for (DocumentType docType:DocumentType.documentTypeList){
-            DocTypeDto.typesIndexes.add(dtoMapper.mapDocType(docType));
+            DocTypeDto.typesList.add(dtoMapper.mapDocType(docType));
         }
     }
 }

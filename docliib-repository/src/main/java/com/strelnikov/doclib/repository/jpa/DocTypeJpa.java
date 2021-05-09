@@ -56,7 +56,6 @@ public class DocTypeJpa implements DocTypeDao {
         EntityManager entityManager = getEntityManager();
         Query query = entityManager.createQuery("SELECT docType FROM DocumentType docType");
         List<DocumentType> docTypeList= query.getResultList();
-        List<String> result = new ArrayList<>();
         entityManager.close();
         return docTypeList;
     }

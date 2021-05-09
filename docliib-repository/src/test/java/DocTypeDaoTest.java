@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -30,32 +31,46 @@ public class DocTypeDaoTest {
         creator.runScript("src/test/resources/deletedb.sql");
     }
 
+    private List<String> convertToString(){
+        List<DocumentType> typeList = docTypeDao.getTypesList();
+        List<String> list = new ArrayList<>();
+        for(DocumentType docType: typeList){
+            list.add(docType.getCurentType());
+        }
+        return list;
+    }
+
+
     @Before
     public void beforeEachTypeDaoTest() {
-        expected = docTypeDao.getTypesList();
+        expected = convertToString();
     }
 
 
     @Test
     public void getTypeListTest() {
-        List<String> actual = docTypeDao.getTypesList();
+        List<String> actual = convertToString();
         Assert.assertEquals(expected, actual);
     }
 
     @Test
     public void addTypeTest() {
-        docTypeDao.insertType("test_adding_type");
+        DocumentType docType = new DocumentType();
+        docType.setCurentType("test_adding_type");
+        docType = docTypeDao.insertType(docType);
         expected.add("test_adding_type");
-        List<String> actual = docTypeDao.getTypesList();
-        docTypeDao.deleteType("test_adding_type");
+        List<String> actual = convertToString();
+        docTypeDao.deleteType(docType.getId());
         Assert.assertEquals(expected, actual);
     }
 
     @Test
     public void deleteTypeTest() {
-        docTypeDao.insertType("test_adding_type");
-        docTypeDao.deleteType("test_adding_type");
-        List<String> actual = docTypeDao.getTypesList();
+        DocumentType docType = new DocumentType();
+        docType.setCurentType("test_adding_type");
+        docType = docTypeDao.insertType(docType);
+        docTypeDao.deleteType(docType.getId());
+        List<String> actual = convertToString();
         Assert.assertEquals(expected, actual);
     }
 
