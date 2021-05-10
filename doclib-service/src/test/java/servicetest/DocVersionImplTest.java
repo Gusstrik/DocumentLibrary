@@ -54,8 +54,6 @@ public class DocVersionImplTest {
         docVersion.setId(0);
         docVersion.setVersion(1);
         docVersion.setDescription("another test version");
-        docVersion.getFilesList().get(0).setDocVersion(docVersion);
-        docVersion.getFilesList().get(0).setId(0);
         DocVersionDto docVerDto = docVerActions.saveDocVersion(dtoMapper.mapDocVersion(docVersion));
         int actual = docVerDao.getDocVersionList(document).size();
         docVerActions.deleteDocVersion(docVerDto.getId());
@@ -68,8 +66,6 @@ public class DocVersionImplTest {
         docVersion.setId(0);
         docVersion.setVersion(1);
         docVersion.setDescription("another test version");
-        docVersion.getFilesList().get(0).setDocVersion(docVersion);
-        docVersion.getFilesList().get(0).setId(0);
         DocVersionDto docVerDto = docVerActions.saveDocVersion(dtoMapper.mapDocVersion(docVersion));
         docVerActions.deleteDocVersion(docVerDto.getId());
         int actual = docVerDao.getDocVersionList(document).size();

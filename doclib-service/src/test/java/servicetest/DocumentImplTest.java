@@ -164,7 +164,6 @@ public class DocumentImplTest {
         DocumentVersion docVer = doc.getVersionsList().get(0);
         docVer.setId(0);
         docVer.setVersion(1);
-        docVer.getFilesList().get(0).setDocVersion(docVer);
         docVer.getFilesList().get(0).setId(0);
         doc.getVersionsList().remove(0);
         doc.getVersionsList().add(docVer);

@@ -42,10 +42,6 @@ public class DocVersionImpl implements DocVersionActions {
             throw new VersionIsAlreadyExistException(documentVersion);
         }else {
             documentVersion = docVersionDao.insertDocVersion(documentVersion);
-            for (DocumentFile docFile:documentVersion.getFilesList()){
-                docFile.setDocVersion(documentVersion);
-                docFile.setId(fileAct.createNewFile(dtoMapper.mapDocFile(docFile)).getId());
-            }
             return dtoMapper.mapDocVersion(documentVersion);
         }
     }

@@ -44,7 +44,7 @@ public class DocFileImplTest {
 
     @Test
     public void fileAddTest(){
-        DocFileDto fileDto = new DocFileDto(0,1,"test_file","test_path");
+        DocFileDto fileDto = new DocFileDto(0,"test_file","test_path");
         fileDto = fileActions.createNewFile(fileDto);
         int actual = docFileDao.getFilesList(docVersion).size();
         fileActions.deleteFile(fileDto);
@@ -54,7 +54,7 @@ public class DocFileImplTest {
 
     @Test
     public void fileDeleteTest(){
-        DocFileDto fileDto = new DocFileDto(0,1,"test_file","test_path");
+        DocFileDto fileDto = new DocFileDto(0,"test_file","test_path");
         fileDto = fileActions.createNewFile(fileDto);
         fileActions.deleteFile(fileDto);
         int actual = docFileDao.getFilesList(docVersion).size();

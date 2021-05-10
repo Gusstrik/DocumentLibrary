@@ -106,7 +106,7 @@ public class DtoMapperImpl implements DtoMapper {
 
     @Override
     public DocFileDto mapDocFile(DocumentFile docFile) {
-        return new DocFileDto(docFile.getId(), docFile.getDocVersion().getId(), docFile.getFileName(), docFile.getFileName());
+        return new DocFileDto(docFile.getId(), docFile.getFileName(), docFile.getFileName());
     }
 
     @Override
@@ -115,11 +115,6 @@ public class DtoMapperImpl implements DtoMapper {
         docFile.setId(docFileDto.getId());
         docFile.setFileName(docFileDto.getName());
         docFile.setFilePath(docFileDto.getPath());
-        if (docFileDto.getDocVerId() != 0)
-            docFile.setDocVersion(docVerDao.loadDocVersion(docFileDto.getDocVerId()));
-        else{
-            docFile.setDocVersion(new DocumentVersion());
-        }
         return docFile;
     }
 

@@ -56,6 +56,9 @@ public class DocVersionJpa implements DocVersionDao {
         EntityManager em = getEntityManager();
         Query query = em.createQuery("SELECT docVer FROM DocumentVersion docVer WHERE docVer.parentDocument.id="+document.getId());
         List<DocumentVersion> result = query.getResultList();
+        for(DocumentVersion docVer:result){
+            docVer.setFilesList(docFileDao.getFilesList(docVer));
+        }
         em.close();
         return result;
     }

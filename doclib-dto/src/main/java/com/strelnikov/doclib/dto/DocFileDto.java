@@ -11,7 +11,6 @@ public class DocFileDto {
 
     private int id;
 
-    private int docVerId;
     @NonNull
     private String name;
     @NonNull
