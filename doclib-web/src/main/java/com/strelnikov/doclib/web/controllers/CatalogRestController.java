@@ -8,7 +8,7 @@ import com.strelnikov.doclib.service.exceptions.UnitNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.function.EntityResponse;
+
 
 @RestController
 @RequestMapping(path = "catalog")
