@@ -28,25 +28,26 @@ public class CatalogRestController {
     }
 
     @PostMapping
-    public ResponseEntity<CatalogDto> postCatalog(@RequestBody CatalogDto catalogDto){
+    public ResponseEntity<Object> postCatalog(@RequestBody CatalogDto catalogDto){
         try{
             catalogDto = catalogAct.saveCatalog(catalogDto);
             return ResponseEntity.ok(catalogDto);
         }catch (UnitIsAlreadyExistException e) {
-            ResponseEntity.badRequest().body("Catalog is already exist");
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body("Catalog is already exist");
         }
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<CatalogDto> deleteCatalog(@PathVariable int id){
+    public ResponseEntity<Object> deleteCatalog(@PathVariable int id){
         try {
             CatalogDto catalogDto = catalogAct.loadCatalog(id);
             catalogAct.deleteCatalog(catalogDto);
             catalogDto = catalogAct.loadCatalog(catalogDto.getParentId());
             return ResponseEntity.ok(catalogDto);
-        } catch (UnitNotFoundException | CannotDeleteMainCatalogException e) {
-            return ResponseEntity.badRequest().build();
+        } catch (UnitNotFoundException e) {
+            return ResponseEntity.badRequest().body("There is no catalog with id = " + id);
+        }catch (CannotDeleteMainCatalogException e){
+            return ResponseEntity.badRequest().body("Can't delete main catalog");
         }
     }
 }
