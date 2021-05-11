@@ -1,15 +1,13 @@
 package com.strelnikov.doclib.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class DocTypeDto {
 
     public static List<DocTypeDto> typesList =new ArrayList<>();

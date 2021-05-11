@@ -55,14 +55,14 @@ public class DocTypeImplTest {
         docTypeActions.refreshListDocumentType();
         List<String> actual = convertToString();
         expected.add("test_type2");
-        docTypeActions.deleteDocumentType(typeDto);
+        docTypeActions.deleteDocumentType(typeDto.getId());
         Assert.assertEquals(expected,actual);
     }
     @Test
     public void deleteDocumentTypeTest() throws TypeIsAlreadyExistException {
         DocTypeDto typeDto = new DocTypeDto(0,"test_type2");
         typeDto=docTypeActions.addDocumentType(typeDto);
-        docTypeActions.deleteDocumentType(typeDto);
+        docTypeActions.deleteDocumentType(typeDto.getId());
         docTypeActions.refreshListDocumentType();
         List<String> actual = convertToString();
         Assert.assertEquals(expected,actual);

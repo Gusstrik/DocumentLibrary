@@ -7,7 +7,7 @@ import com.strelnikov.doclib.service.exceptions.TypeIsAlreadyExistException;
 public interface DocTypeActions {
     DocTypeDto addDocumentType(DocTypeDto docTypeDto) throws TypeIsAlreadyExistException;
 
-    void deleteDocumentType(DocTypeDto docTypeDto);
+    void deleteDocumentType(int id);
 
     void refreshListDocumentType();
 }
