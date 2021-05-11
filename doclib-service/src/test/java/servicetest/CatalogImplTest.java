@@ -3,6 +3,7 @@ package servicetest;
 import com.strelnikov.doclib.dto.CatalogDto;
 import com.strelnikov.doclib.service.dtomapper.DtoMapper;
 import com.strelnikov.doclib.service.dtomapper.configuration.DtoMapperConfiguration;
+import com.strelnikov.doclib.service.exceptions.CannotDeleteMainCatalogException;
 import com.strelnikov.doclib.service.exceptions.UnitIsAlreadyExistException;
 import com.strelnikov.doclib.repository.jdbc.DatabaseCreatorJdbc;
 import com.strelnikov.doclib.model.catalogs.Catalog;
@@ -39,7 +40,7 @@ public class CatalogImplTest {
     }
 
     @Test
-    public void saveCatalogTest() throws UnitIsAlreadyExistException, UnitNotFoundException {
+    public void saveCatalogTest() throws UnitIsAlreadyExistException, UnitNotFoundException, CannotDeleteMainCatalogException {
         CatalogDto mainCat = catalogAction.loadCatalog(1);
         int expected = mainCat.getContentList().size();
         Catalog catalog = dtoMapper.mapCatalog(mainCat);
@@ -55,7 +56,7 @@ public class CatalogImplTest {
     }
 
     @Test
-    public void deleteCatalogTest() throws UnitNotFoundException, UnitIsAlreadyExistException {
+    public void deleteCatalogTest() throws UnitNotFoundException, UnitIsAlreadyExistException, CannotDeleteMainCatalogException {
         CatalogDto mainCat = catalogAction.loadCatalog(1);
         int expected = mainCat.getContentList().size();
         Catalog catalog = dtoMapper.mapCatalog(mainCat);
@@ -76,7 +77,7 @@ public class CatalogImplTest {
     }
 
     @Test
-    public void editCatalogTest() throws UnitIsAlreadyExistException, UnitNotFoundException {
+    public void editCatalogTest() throws UnitIsAlreadyExistException, UnitNotFoundException, CannotDeleteMainCatalogException {
         CatalogDto mainCat = catalogAction.loadCatalog(1);
         Catalog testCat1 = dtoMapper.mapCatalog(mainCat);
         testCat1.setId(0);

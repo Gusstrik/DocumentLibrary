@@ -5,6 +5,7 @@ import com.strelnikov.doclib.dto.UnitDto;
 import com.strelnikov.doclib.model.conception.UnitType;
 import com.strelnikov.doclib.repository.DocumentDao;
 import com.strelnikov.doclib.service.dtomapper.DtoMapper;
+import com.strelnikov.doclib.service.exceptions.CannotDeleteMainCatalogException;
 import com.strelnikov.doclib.service.exceptions.UnitIsAlreadyExistException;
 import com.strelnikov.doclib.repository.CatalogDao;
 import com.strelnikov.doclib.model.catalogs.Catalog;
@@ -26,7 +27,7 @@ public class CatalogImpl implements CatalogActions {
     private final DocumentDao documentDao;
     private final DtoMapper dtoMapper;
 
-    public CatalogImpl(@Qualifier("CatalogJpa") CatalogDao catalogDao, @Autowired  DtoMapper dtoMapper,
+    public CatalogImpl(@Qualifier("CatalogJpa") CatalogDao catalogDao, @Autowired DtoMapper dtoMapper,
                        @Qualifier("DocumentJpa") DocumentDao documentDao) {
         this.catalogDao = catalogDao;
         this.dtoMapper = dtoMapper;
@@ -35,7 +36,7 @@ public class CatalogImpl implements CatalogActions {
 
 
     private boolean checkIfCatalogExist(Unit addingUnit) {
-        if(addingUnit.getId()!=0) {
+        if (addingUnit.getId() != 0 && addingUnit.getCatalogId() != 0) {
             Catalog parentCatlog = catalogDao.loadCatalog(addingUnit.getCatalogId());
             for (Unit unit : parentCatlog.getContentList()) {
                 if (unit.getUnitType().equals(UnitType.CATALOG) &&
@@ -48,26 +49,31 @@ public class CatalogImpl implements CatalogActions {
         return false;
     }
 
-    private CatalogDto createNewCatalog(CatalogDto catalogDto) throws UnitIsAlreadyExistException{
+    private CatalogDto createNewCatalog(CatalogDto catalogDto) throws UnitIsAlreadyExistException {
         Catalog catalog = dtoMapper.mapCatalog(catalogDto);
-        if (checkIfCatalogExist(catalog)){
-            throw new UnitIsAlreadyExistException(catalogDao.loadCatalog(catalog.getCatalogId()),catalog);
-        }else {
+        if (checkIfCatalogExist(catalog)) {
+            throw new UnitIsAlreadyExistException(catalogDao.loadCatalog(catalog.getCatalogId()), catalog);
+        } else {
             return dtoMapper.mapCatalog(catalogDao.insertCatalog(catalog));
         }
     }
 
     @Override
-    public void deleteCatalog(CatalogDto catalogDto) {
-        catalogDao.deleteCatalog(catalogDto.getId());
+    public void deleteCatalog(CatalogDto catalogDto) throws CannotDeleteMainCatalogException {
+        if (catalogDto.getId() != 1) {
+            catalogDao.deleteCatalog(catalogDto.getId());
+        }
+        else {
+            throw new CannotDeleteMainCatalogException();
+        }
     }
 
     @Override
     public CatalogDto loadCatalog(int catalogId) throws UnitNotFoundException {
         Catalog catalog = catalogDao.loadCatalog(catalogId);
-        if (catalog==null){
+        if (catalog == null) {
             throw new UnitNotFoundException(catalogId);
-        }else {
+        } else {
             return dtoMapper.mapCatalog(catalogDao.loadCatalog(catalogId));
         }
     }
@@ -77,34 +83,34 @@ public class CatalogImpl implements CatalogActions {
         try {
             loadCatalog(catalogDto.getId());
             editCatalog(dtoMapper.mapCatalog(catalogDto));
-        }catch (UnitNotFoundException e){
+        } catch (UnitNotFoundException e) {
             catalogDto = createNewCatalog(catalogDto);
         }
         return catalogDto;
     }
 
     private void editCatalog(Catalog catalog) throws UnitIsAlreadyExistException {
-        if(checkIfCatalogExist(catalog)){
-            throw new UnitIsAlreadyExistException(catalogDao.loadCatalog(catalog.getCatalogId()),catalog);
-        }else {
+        if (checkIfCatalogExist(catalog)) {
+            throw new UnitIsAlreadyExistException(catalogDao.loadCatalog(catalog.getCatalogId()), catalog);
+        } else {
             deleteContent(catalog);
             catalogDao.updateCatalog(catalog);
         }
     }
 
-    private void deleteUnit(Unit unit){
-        if (unit.getUnitType().equals(UnitType.CATALOG)){
+    private void deleteUnit(Unit unit) {
+        if (unit.getUnitType().equals(UnitType.CATALOG)) {
             catalogDao.deleteCatalog(unit.getId());
-        }else{
+        } else {
             documentDao.deleteDocument(unit.getId());
         }
     }
 
-    private List<Unit> deleteContent(Catalog inputCat){
+    private List<Unit> deleteContent(Catalog inputCat) {
         List<Unit> list = new ArrayList<>();
         Catalog catalogDb = catalogDao.loadCatalog(inputCat.getId());
-        for (Unit unit:catalogDb.getContentList()){
-            if (!inputCat.containUnit(unit)){
+        for (Unit unit : catalogDb.getContentList()) {
+            if (!inputCat.containUnit(unit)) {
                 deleteUnit(unit);
             }
         }
