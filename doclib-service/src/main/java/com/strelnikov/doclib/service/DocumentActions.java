@@ -14,4 +14,5 @@ public interface DocumentActions {
 
     DocumentDto saveDocument(DocumentDto catalogDto) throws UnitIsAlreadyExistException, VersionIsAlreadyExistException;
 
+    DocumentDto rollback(int id, int version) throws UnitNotFoundException, VersionIsAlreadyExistException;
 }

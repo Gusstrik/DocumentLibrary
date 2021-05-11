@@ -82,41 +82,27 @@ public class DocumentImpl implements DocumentActions {
             throw new UnitIsAlreadyExistException(catalogDao.loadCatalog(document.getCatalogId()), document);
         } else {
             document = documentDao.insertDocument(document);
-            for (DocumentVersion docVer:document.getVersionsList()){
-                docVer.setParentDocument(document);
-                docVer.setId(docVerActions.saveDocVersion(dtoMapper.mapDocVersion(docVer)).getId());
-            }
+            DocumentVersion docVer = document.getDocumentVersion();
+            docVer.setParentDocument(document);
+            docVer.setId(docVerActions.saveDocVersion(dtoMapper.mapDocVersion(docVer)).getId());
             return dtoMapper.mapDocument(document);
         }
     }
 
-    private List<Integer> getVerListForDelete(Document document) {
-        Document dbDoc = documentDao.loadDocument(document.getId());
-        List<Integer> idListForDelete = new ArrayList<>();
-        for (DocumentVersion dbDocVersion : dbDoc.getVersionsList()) {
-            if (!document.isVersionExist(dbDocVersion)) {
-                idListForDelete.add(dbDocVersion.getId());
-            }
+    private void editDocument(DocumentDto documentDto) throws VersionIsAlreadyExistException {
+        Document documentDb = documentDao.loadDocument(documentDto.getId());
+        Document document = dtoMapper.mapDocument(documentDto);
+        if (documentDb.getActualVersion()<document.getActualVersion()){
+            document.setActualVersion(documentDb.getActualVersion()+1);
+            DocumentVersion docVer = document.getVersionsList().get(0);
+            docVer.setVersion(document.getActualVersion());
+            docVerActions.saveDocVersion(dtoMapper.mapDocVersion(docVer));
         }
-        return idListForDelete;
-    }
-
-    private Document insertVersions(Document document) throws VersionIsAlreadyExistException{
-        Document dbDoc = documentDao.loadDocument(document.getId());
-        for (DocumentVersion docVersion : document.getVersionsList()) {
-            if (!dbDoc.isVersionExist(docVersion)) {
-                DocVersionDto verDto = dtoMapper.mapDocVersion(docVersion);
-                docVersion.setId(docVerActions.saveDocVersion(verDto).getId());
+        if(documentDb.getActualVersion()>document.getActualVersion()){
+            for (int i=documentDb.getActualVersion();i>document.getActualVersion();i--){
+                DocumentVersion docVer = documentDb.getDocumentVersion(i);
+                docVerActions.deleteDocVersion(docVer.getId());
             }
-        }
-        return document;
-    }
-
-    private void editDocuemnt(Document document) throws VersionIsAlreadyExistException {
-        document = insertVersions(document);
-        List<Integer> deleteList = getVerListForDelete(document);
-        for (int id : deleteList) {
-            docVerActions.deleteDocVersion(id);
         }
         documentDao.updateDocument(document);
     }
@@ -125,12 +111,23 @@ public class DocumentImpl implements DocumentActions {
     public DocumentDto saveDocument(DocumentDto documentDto) throws UnitIsAlreadyExistException, VersionIsAlreadyExistException {
         try {
             loadDocument(documentDto.getId());
-            Document document = dtoMapper.mapDocument(documentDto);
-            editDocuemnt(document);
+            editDocument(documentDto);
             documentDto = loadDocument(documentDto.getId());
         } catch (UnitNotFoundException e) {
             documentDto = createNewDocument(documentDto);
         }
         return documentDto;
+    }
+
+    @Override
+    public DocumentDto rollback(int id, int version) throws UnitNotFoundException, VersionIsAlreadyExistException {
+        Document document = documentDao.loadDocument(id);
+        if (document == null){
+            throw new UnitNotFoundException(id);
+        }else{
+            document.setActualVersion(version);
+            editDocument(dtoMapper.mapDocument(document));
+            return loadDocument(id);
+        }
     }
 }

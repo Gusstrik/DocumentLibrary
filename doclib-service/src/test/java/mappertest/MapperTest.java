@@ -113,13 +113,13 @@ public class MapperTest {
         Assert.assertEquals("test_doc",docDto.getName());
     }
 
-    @Test
-    public void documentMapTest(){
-        Document doc= docDao.loadDocument(1);
-        DocumentDto docDto= dtoMapper.mapDocument(doc);
-        doc = dtoMapper.mapDocument(docDto);
-        Assert.assertEquals("test_doc",doc.getName());
-    }
+//    @Test
+//    public void documentMapTest(){
+//        Document doc= docDao.loadDocument(1);
+//        DocumentDto docDto= dtoMapper.mapDocument(doc);
+//        doc = dtoMapper.mapDocument(docDto);
+//        Assert.assertEquals("test_doc",doc.getName());
+//    }
 
     @Test
     public void catalogDtoMapTest(){

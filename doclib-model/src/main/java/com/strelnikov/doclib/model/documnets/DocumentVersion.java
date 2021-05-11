@@ -1,6 +1,7 @@
 package com.strelnikov.doclib.model.documnets;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -10,6 +11,7 @@ import java.util.List;
 
 @Getter
 @Setter
+@NoArgsConstructor
 
 @Entity
 @Table(name = "documents_versions")
@@ -44,9 +46,8 @@ public class DocumentVersion {
     @Column(name="is_moderated",nullable = false)
     private boolean isModerated;
 
-    public DocumentVersion() {
 
-    }
+
 
     @Override
     public boolean equals(Object o){

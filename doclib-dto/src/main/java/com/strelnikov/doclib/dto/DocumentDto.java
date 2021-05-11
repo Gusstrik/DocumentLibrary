@@ -20,7 +20,7 @@ public class DocumentDto {
 
     private int catalogId;
     @NonNull
-    private List<DocVersionDto> versionList;
+    private DocVersionDto version;
 
     public DocumentDto(){}
 }
