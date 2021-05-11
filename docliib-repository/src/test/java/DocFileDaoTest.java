@@ -1,8 +1,5 @@
-import com.strelnikov.doclib.model.documnets.Document;
 import com.strelnikov.doclib.repository.DocFileDao;
-import com.strelnikov.doclib.repository.DocTypeDao;
 import com.strelnikov.doclib.repository.DocVersionDao;
-import com.strelnikov.doclib.repository.DocumentDao;
 import com.strelnikov.doclib.repository.jdbc.DatabaseCreatorJdbc;
 import com.strelnikov.doclib.model.documnets.DocumentFile;
 import com.strelnikov.doclib.model.documnets.DocumentVersion;
@@ -17,21 +14,15 @@ import java.util.List;
 
 @Slf4j
 public class DocFileDaoTest {
-    private static int document_id;
 
     private static final ApplicationContext appContext = new AnnotationConfigApplicationContext(RepositoryConfiguration.class);
     private static final DatabaseCreatorJdbc creator = appContext.getBean(DatabaseCreatorJdbc.class);
-    private List<String> expected;
     private static final DocFileDao docFileDao = appContext.getBean("DocFileJpa", DocFileDao.class);
-    private static final DocumentDao docDao = appContext.getBean("DocumentJpa",DocumentDao.class);
     private static final DocVersionDao docVerDao = appContext.getBean("DocVersionJpa", DocVersionDao.class);
-    private static DocumentVersion documentVersion = new DocumentVersion();
 
     @BeforeClass
     public static void beforeFileDaoTest() {
         creator.runScript("src/test/resources/insertestdb.sql");
-//        Document doc = docDao.loadDocument(1);
-//        documentVersion=doc.getVersionsList().get(0);
     }
 
     @AfterClass
@@ -39,40 +30,22 @@ public class DocFileDaoTest {
         creator.runScript("src/test/resources/deletedb.sql");
     }
 
-    private List<String> convertToStringList() {
-        documentVersion=docVerDao.loadDocVersion(1);
-        List<String> list= new ArrayList<>();
-        List<DocumentFile> fileList = docFileDao.getFilesList(documentVersion);
-
-        for (DocumentFile df : fileList) {
-            list.add(df.getFileName());
-        }
-        return list;
-    }
-
-    @Before
-    public void beforeEachFileDaoTest() {
-        expected = convertToStringList();
-    }
-
-
     @Test
     public void getFileListTest() {
+        DocumentVersion documentVersion =docVerDao.loadDocVersion(1);
         List<DocumentFile> list = docFileDao.getFilesList(documentVersion);
         Assert.assertEquals("test_file", list.get(0).getFileName());
     }
 
     @Test
     public void insertFileTest() {
-        expected.add("test_adding_file");
         DocumentFile documentFile = new DocumentFile("test_adding_file", "test_path");
         documentFile.setId(0);
         documentFile.setDocVersion(new ArrayList<>());
-        documentFile.getDocVersion().add(documentVersion);
         documentFile = docFileDao.insertFile(documentFile);
-        List<String> actual = convertToStringList();
+        String actual = docFileDao.getFile(documentFile.getId()).getFileName();
         docFileDao.deleteFile(documentFile.getId());
-        Assert.assertEquals(expected, actual);
+        Assert.assertEquals("test_adding_file", actual);
     }
 
     @Test
@@ -80,16 +53,20 @@ public class DocFileDaoTest {
         DocumentFile documentFile = new DocumentFile("test_adding_file", "test_path");
         documentFile.setId(0);
         documentFile.setDocVersion(new ArrayList<>());
-        documentFile.getDocVersion().add(documentVersion);
         documentFile = docFileDao.insertFile(documentFile);
         docFileDao.deleteFile(documentFile.getId());
-        List<String> actual = convertToStringList();
-        Assert.assertEquals(expected, actual);
+        Assert.assertNull(docFileDao.getFile(documentFile.getId()));
     }
 
     @Test
     public void loadFileTest(){
         DocumentFile docFile = docFileDao.getFile(1);
         Assert.assertEquals("test_file",docFile.getFileName());
+    }
+
+    @Test
+    public void loadFileByNameTest(){
+        DocumentFile docFile = docFileDao.getFile("test_file");
+        Assert.assertEquals(1,docFile.getId());
     }
 }
