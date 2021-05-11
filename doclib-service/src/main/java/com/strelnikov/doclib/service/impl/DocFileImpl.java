@@ -5,6 +5,8 @@ import com.strelnikov.doclib.model.documnets.DocumentFile;
 import com.strelnikov.doclib.repository.DocFileDao;
 import com.strelnikov.doclib.service.DocFileActions;
 import com.strelnikov.doclib.service.dtomapper.DtoMapper;
+import com.strelnikov.doclib.service.exceptions.FileIsAlreadyExistException;
+import com.strelnikov.doclib.service.exceptions.UnitIsAlreadyExistException;
 import com.strelnikov.doclib.service.exceptions.UnitNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -23,9 +25,23 @@ public class DocFileImpl implements DocFileActions {
         this.dtoMapper=dtoMapper;
     }
 
+    private boolean isFileExist(DocumentFile docFile){
+        docFile = docFileDao.getFile(docFile.getFileName());
+        if (docFile==null){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
     @Override
-    public DocFileDto createNewFile(DocFileDto docFileDto) {
-        return dtoMapper.mapDocFile(docFileDao.insertFile(dtoMapper.mapDocFile(docFileDto)));
+    public DocFileDto createNewFile(DocFileDto docFileDto) throws FileIsAlreadyExistException {
+        DocumentFile docFile = dtoMapper.mapDocFile(docFileDto);
+        if (isFileExist(docFile)){
+            throw new FileIsAlreadyExistException(docFile.getFileName());
+        }else{
+            return dtoMapper.mapDocFile(docFileDao.insertFile(docFile));
+        }
     }
 
     @Override
@@ -37,6 +53,16 @@ public class DocFileImpl implements DocFileActions {
             file.delete();
         }else{
             throw new UnitNotFoundException(id);
+        }
+    }
+
+    @Override
+    public DocFileDto loadFile(String name) throws UnitNotFoundException {
+        DocumentFile docFile = docFileDao.getFile(name);
+        if (docFile == null){
+            throw new UnitNotFoundException(0);
+        }else{
+            return dtoMapper.mapDocFile(docFile);
         }
     }
 }

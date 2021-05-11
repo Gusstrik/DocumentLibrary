@@ -106,7 +106,7 @@ public class DtoMapperImpl implements DtoMapper {
 
     @Override
     public DocFileDto mapDocFile(DocumentFile docFile) {
-        return new DocFileDto(docFile.getId(), docFile.getFileName(), docFile.getFileName());
+        return new DocFileDto(docFile.getId(), docFile.getFileName(), docFile.getFilePath());
     }
 
     @Override

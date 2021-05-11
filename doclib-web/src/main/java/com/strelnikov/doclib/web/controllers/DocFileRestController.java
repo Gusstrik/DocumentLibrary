@@ -2,12 +2,17 @@ package com.strelnikov.doclib.web.controllers;
 
 import com.strelnikov.doclib.dto.DocFileDto;
 import com.strelnikov.doclib.service.DocFileActions;
+import com.strelnikov.doclib.service.exceptions.FileIsAlreadyExistException;
 import com.strelnikov.doclib.service.exceptions.UnitNotFoundException;
+import org.eclipse.jetty.server.Dispatcher;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.DispatcherServlet;
 
+import javax.servlet.RequestDispatcher;
 import java.io.File;
 import java.io.IOException;
 
@@ -26,7 +31,7 @@ public class DocFileRestController {
             DocFileDto docFileDto = new DocFileDto(0,file.getOriginalFilename(),filePath);
             docFileDto = fileAct.createNewFile(docFileDto);
             return ResponseEntity.ok(docFileDto);
-        } catch (IOException e) {
+        } catch (IOException | FileIsAlreadyExistException e) {
             return ResponseEntity.badRequest().build();
         }
     }
@@ -39,5 +44,13 @@ public class DocFileRestController {
         } catch (UnitNotFoundException e) {
             return ResponseEntity.badRequest().body("File wasn't created");
         }
+    }
+
+    @GetMapping(value = "{name}",produces = "multipart/form-data")
+    @ResponseBody
+    public FileSystemResource getFile(@PathVariable String name) throws UnitNotFoundException {
+        DocFileDto docFileDto = fileAct.loadFile(name);
+        File responseFile = new File(docFileDto.getPath());
+        return new FileSystemResource(responseFile);
     }
 }

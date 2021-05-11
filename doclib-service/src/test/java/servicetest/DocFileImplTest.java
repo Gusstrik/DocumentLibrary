@@ -12,6 +12,7 @@ import com.strelnikov.doclib.service.DocVersionActions;
 import com.strelnikov.doclib.service.DocumentActions;
 import com.strelnikov.doclib.service.DocFileActions;
 import com.strelnikov.doclib.service.dtomapper.DtoMapper;
+import com.strelnikov.doclib.service.exceptions.FileIsAlreadyExistException;
 import com.strelnikov.doclib.service.exceptions.UnitNotFoundException;
 import com.strelnikov.doclib.service.exceptions.VersionIsAlreadyExistException;
 import com.strelnikov.doclib.service.impl.configuration.ServiceImplConfiguration;
@@ -51,7 +52,7 @@ public class DocFileImplTest {
     }
 
     @Test
-    public void fileAddTest() throws VersionIsAlreadyExistException, UnitNotFoundException {
+    public void fileAddTest() throws VersionIsAlreadyExistException, UnitNotFoundException, FileIsAlreadyExistException {
         DocFileDto fileDto = new DocFileDto(0,"test_file","test_path");
         fileDto = fileActions.createNewFile(fileDto);
         List<DocFileDto> fileList = new ArrayList<>();
@@ -66,7 +67,7 @@ public class DocFileImplTest {
     }
 
     @Test
-    public void fileDeleteTest() throws VersionIsAlreadyExistException, UnitNotFoundException {
+    public void fileDeleteTest() throws VersionIsAlreadyExistException, UnitNotFoundException, FileIsAlreadyExistException {
         DocFileDto fileDto = new DocFileDto(0,"test_file","test_path");
         fileDto = fileActions.createNewFile(fileDto);
         List<DocFileDto> fileList = new ArrayList<>();
