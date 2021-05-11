@@ -57,6 +57,7 @@ public class DocFileJpa implements DocFileDao {
     public DocumentFile getFile(int id) {
         EntityManager em = getEntityManager();
         DocumentFile docFile = em.find(DocumentFile.class,id);
+        em.close();
         return docFile;
     }
 
@@ -69,6 +70,7 @@ public class DocFileJpa implements DocFileDao {
         if(query.getResultList().size()!=0) {
              docFile = (DocumentFile) query.getSingleResult();
         }
+        em.close();
         return docFile;
     }
 }

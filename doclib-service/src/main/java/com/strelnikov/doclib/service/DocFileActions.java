@@ -8,6 +8,8 @@ import com.strelnikov.doclib.service.exceptions.UnitNotFoundException;
 
 public interface DocFileActions {
 
+    boolean isFileExist(DocumentFile docFile);
+
     DocFileDto createNewFile(DocFileDto docFileDto) throws FileIsAlreadyExistException;
 
     void deleteFile(int id) throws UnitNotFoundException;

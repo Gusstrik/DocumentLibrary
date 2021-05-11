@@ -25,7 +25,8 @@ public class DocFileImpl implements DocFileActions {
         this.dtoMapper=dtoMapper;
     }
 
-    private boolean isFileExist(DocumentFile docFile){
+    @Override
+    public boolean isFileExist(DocumentFile docFile){
         docFile = docFileDao.getFile(docFile.getFileName());
         if (docFile==null){
             return false;
