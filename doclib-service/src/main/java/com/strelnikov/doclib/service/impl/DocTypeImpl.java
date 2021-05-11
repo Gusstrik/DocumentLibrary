@@ -1,14 +1,17 @@
 package com.strelnikov.doclib.service.impl;
 
 import com.strelnikov.doclib.dto.DocTypeDto;
-import com.strelnikov.doclib.repository.CatalogDao;
 import com.strelnikov.doclib.repository.DocTypeDao;
 import com.strelnikov.doclib.model.documnets.DocumentType;
 import com.strelnikov.doclib.service.DocTypeActions;
 import com.strelnikov.doclib.service.dtomapper.DtoMapper;
+import com.strelnikov.doclib.service.exceptions.TypeIsAlreadyExistException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+
+import javax.print.Doc;
+import java.util.ArrayList;
 
 @Service
 public class DocTypeImpl implements DocTypeActions {
@@ -22,22 +25,37 @@ public class DocTypeImpl implements DocTypeActions {
     }
 
 
+
     @Override
-    public void addDocumentType(DocTypeDto docTypeDto) {
-        docTypeDao.insertType(docTypeDto.getDocType());
-        refreshListDocumentType();
+    public DocTypeDto addDocumentType(DocTypeDto docTypeDto) throws TypeIsAlreadyExistException {
+        DocumentType docType = dtoMapper.mapDocType(docTypeDto);
+        if(docType.isTypeExist()){
+            throw new TypeIsAlreadyExistException(docType);
+        }else{
+            docType=docTypeDao.insertType(docType);
+            DocumentType.documentTypeList.add(docType);
+            docTypeDto = dtoMapper.mapDocType(docType);
+            DocTypeDto.typesList.add(docTypeDto);
+            return docTypeDto;
+        }
+
 
     }
 
     @Override
     public void deleteDocumentType(DocTypeDto docTypeDto) {
-        docTypeDao.deleteType(docTypeDto.getDocType());
-        refreshListDocumentType();
+        DocumentType docType = dtoMapper.mapDocType(docTypeDto);
+        docTypeDao.deleteType(docTypeDto.getId());
+        DocumentType.documentTypeList.remove(docType);
+        DocTypeDto.typesList.remove(docTypeDto);
     }
 
     @Override
     public void refreshListDocumentType() {
         DocumentType.documentTypeList=docTypeDao.getTypesList();
-        DocTypeDto.typesList=docTypeDao.getTypesList();
+        DocTypeDto.typesList=new ArrayList<>();
+        for (DocumentType docType:DocumentType.documentTypeList){
+            DocTypeDto.typesList.add(dtoMapper.mapDocType(docType));
+        }
     }
 }

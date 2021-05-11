@@ -10,6 +10,7 @@ import org.junit.*;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DocVersionDaoTest {
@@ -47,13 +48,6 @@ public class DocVersionDaoTest {
         documentVersion.setDescription("another version of testDoc");
         documentVersion.setImportance(Importance.IMPORTANT);
         documentVersion.setModerated(false);
-        DocumentFile docFile = new DocumentFile();
-        docFile.setFileName("test file 2");
-        docFile.setDocVersion(documentVersion);
-        docFile.setId(0);
-        docFile.setFilePath("test path");
-        documentVersion.getFilesList().add(docFile);
-        documentVersion.getFilesList().get(0).setId(0);
         documentVersion= docVersionDao.insertDocVersion(documentVersion);
         int actual = docVersionDao.getDocVersionList(document).size();
         docVersionDao.deleteDocVersion(documentVersion.getId());
@@ -62,10 +56,9 @@ public class DocVersionDaoTest {
 
     @Test
     public void deleteDocVersionTest(){
-        DocumentVersion documentVersion = new DocumentVersion();
+        DocumentVersion documentVersion = docVersionDao.loadDocVersion(1);
+        documentVersion.setId(0);
         documentVersion.setVersion(1);
-        Document document = new Document();
-        document.setId(1);
         documentVersion.setParentDocument(document);
         documentVersion.setDescription("another version of testDoc");
         documentVersion.setImportance(Importance.IMPORTANT);

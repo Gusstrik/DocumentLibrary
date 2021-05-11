@@ -33,8 +33,13 @@ public class DocumentVersion {
     @Enumerated(EnumType.STRING)
     private Importance importance;
 
-    @Transient
-    private List<DocumentFile> filesList = new ArrayList<>();
+    @ManyToMany(cascade = CascadeType.MERGE)
+    @JoinTable(
+            name = "files_versions",
+            joinColumns = @JoinColumn(name = "version_id"),
+            inverseJoinColumns = @JoinColumn(name = "file_id")
+    )
+    private List<DocumentFile> filesList;
 
     @Column(name="is_moderated",nullable = false)
     private boolean isModerated;

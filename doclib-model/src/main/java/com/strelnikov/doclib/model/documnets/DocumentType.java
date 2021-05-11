@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.print.Doc;
 import java.util.List;
 
 @Getter
@@ -15,7 +16,7 @@ import java.util.List;
 })
 public class DocumentType {
     @Transient
-    public static List<String> documentTypeList;
+    public static List<DocumentType> documentTypeList;
 
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
@@ -24,11 +25,17 @@ public class DocumentType {
     @Column(name = "name", nullable = false)
     private String curentType;
 
-    public DocumentType() {
-
-    }
-
+    public DocumentType() {}
     public DocumentType(String type) {
         curentType = type;
+    }
+
+    public boolean isTypeExist(){
+        for (DocumentType docType:documentTypeList){
+            if (this.curentType.equals(docType.getCurentType())){
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -1,13 +1,18 @@
 package servicetest;
 
 import com.strelnikov.doclib.dto.DocFileDto;
+import com.strelnikov.doclib.dto.DocVersionDto;
 import com.strelnikov.doclib.model.documnets.DocumentVersion;
+import com.strelnikov.doclib.model.documnets.Importance;
 import com.strelnikov.doclib.repository.DocFileDao;
 import com.strelnikov.doclib.repository.jdbc.DatabaseCreatorJdbc;
 import com.strelnikov.doclib.model.documnets.Document;
 import com.strelnikov.doclib.repository.configuration.RepositoryConfiguration;
+import com.strelnikov.doclib.service.DocVersionActions;
 import com.strelnikov.doclib.service.DocumentActions;
 import com.strelnikov.doclib.service.DocFileActions;
+import com.strelnikov.doclib.service.dtomapper.DtoMapper;
+import com.strelnikov.doclib.service.exceptions.VersionIsAlreadyExistException;
 import com.strelnikov.doclib.service.impl.configuration.ServiceImplConfiguration;
 import org.junit.*;
 import org.springframework.context.ApplicationContext;
@@ -22,6 +27,8 @@ public class DocFileImplTest {
     private static final DatabaseCreatorJdbc creator = appContext.getBean(DatabaseCreatorJdbc.class);
     private final DocFileDao docFileDao = appContext.getBean("DocFileJpa",DocFileDao.class);
     private final DocFileActions fileActions = appContext.getBean(DocFileActions.class);
+    private final DocVersionActions versionActions = appContext.getBean(DocVersionActions.class);
+    private final DtoMapper dtoMapper =appContext.getBean(DtoMapper.class);
     private int expected;
     private  static DocumentVersion docVersion;
 
@@ -43,22 +50,33 @@ public class DocFileImplTest {
     }
 
     @Test
-    public void fileAddTest(){
-        DocFileDto fileDto = new DocFileDto(0,1,"test_file","test_path");
+    public void fileAddTest() throws VersionIsAlreadyExistException {
+        DocFileDto fileDto = new DocFileDto(0,"test_file","test_path");
         fileDto = fileActions.createNewFile(fileDto);
-        int actual = docFileDao.getFilesList(docVersion).size();
+        List<DocFileDto> fileList = new ArrayList<>();
+        fileList.add(fileDto);
+        DocVersionDto docVersionDto = new DocVersionDto(0,1,1,"test_ver",
+                Importance.LOW.toString(),false,fileList);
+        docVersionDto = versionActions.saveDocVersion(docVersionDto);
+        int actual = docFileDao.getFilesList(dtoMapper.mapDocVersion(docVersionDto)).size();
         fileActions.deleteFile(fileDto);
-        expected++;
-        Assert.assertEquals(expected,actual);
+        versionActions.deleteDocVersion(docVersionDto.getId());
+        Assert.assertEquals(1,actual);
     }
 
     @Test
-    public void fileDeleteTest(){
-        DocFileDto fileDto = new DocFileDto(0,1,"test_file","test_path");
+    public void fileDeleteTest() throws VersionIsAlreadyExistException {
+        DocFileDto fileDto = new DocFileDto(0,"test_file","test_path");
         fileDto = fileActions.createNewFile(fileDto);
+        List<DocFileDto> fileList = new ArrayList<>();
+        fileList.add(fileDto);
+        DocVersionDto docVersionDto = new DocVersionDto(0,1,1,"test_ver",
+                Importance.LOW.toString(),false,fileList);
+        docVersionDto = versionActions.saveDocVersion(docVersionDto);
         fileActions.deleteFile(fileDto);
-        int actual = docFileDao.getFilesList(docVersion).size();
-        Assert.assertEquals(expected,actual);
+        int actual = docFileDao.getFilesList(dtoMapper.mapDocVersion(docVersionDto)).size();
+        versionActions.deleteDocVersion(docVersionDto.getId());
+        Assert.assertEquals(0,actual);
     }
 
 

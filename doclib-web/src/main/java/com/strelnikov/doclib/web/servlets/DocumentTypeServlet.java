@@ -33,17 +33,17 @@ public class DocumentTypeServlet extends HttpServlet {
         outputStream.write(str.getBytes());
         outputStream.flush();
     }
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String param = request.getParameter("type");
-        if (param!=null){
-            DocTypeDto docTypeDto = new DocTypeDto(param);
-            if(DocTypeDto.typesList.contains(docTypeDto.getDocType())){
-                docTypeActions.deleteDocumentType(docTypeDto);
-            }else{
-                docTypeActions.addDocumentType(docTypeDto);
-            }
-
-        }
-    }
+//    @Override
+//    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+//        String param = request.getParameter("type");
+//        if (param!=null){
+//            DocTypeDto docTypeDto = new DocTypeDto(param);
+//            if(DocTypeDto.typesList.contains(docTypeDto.getDocType())){
+//                docTypeActions.deleteDocumentType(docTypeDto);
+//            }else{
+//                docTypeActions.addDocumentType(docTypeDto);
+//            }
+//
+//        }
+//    }
 }

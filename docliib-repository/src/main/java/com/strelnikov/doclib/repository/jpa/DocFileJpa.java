@@ -26,8 +26,6 @@ public class DocFileJpa implements DocFileDao {
     @Override
     public DocumentFile insertFile(DocumentFile file) {
         EntityManager em = getEntityManager();
-        DocumentVersion docVer = em.find(DocumentVersion.class,file.getDocVersion().getId());
-        file.setDocVersion(docVer);
         em.getTransaction().begin();
         em.persist(file);
         em.getTransaction().commit();
@@ -48,7 +46,8 @@ public class DocFileJpa implements DocFileDao {
     @Override
     public List<DocumentFile> getFilesList(DocumentVersion documentVersion) {
         EntityManager em = getEntityManager();
-        Query query = em.createQuery("SELECT docFile FROM DocumentFile docFile WHERE docFile.docVersion.id="+documentVersion.getId());
+        Query query = em.createQuery("SELECT docFile FROM DocumentFile docFile WHERE docFile.docVersion.id=:id");
+        query.setParameter("id",documentVersion.getId());
         List<DocumentFile> result = query.getResultList();
         em.close();
         return result;

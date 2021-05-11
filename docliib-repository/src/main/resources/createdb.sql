@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS doc_types
 CREATE TABLE IF NOT EXISTS documents(
     id serial not null ,
     name varchar(20) not null,
-    type_id varchar(20) not null ,
+    type_id int not null ,
     actual_version int default (0) not null,
     catalog_id int not null,
     PRIMARY KEY (id),
@@ -33,6 +33,7 @@ CREATE TABLE IF NOT EXISTS  documents_versions(
     PRIMARY KEY (id),
     FOREIGN KEY  (document_id) references documents(id) on update cascade on delete cascade
 );
+
 CREATE TABLE IF NOT EXISTS doc_files
 (
     id          serial,
@@ -42,6 +43,16 @@ CREATE TABLE IF NOT EXISTS doc_files
     PRIMARY KEY (id),
     FOREIGN KEY (document_id) references documents_versions (id) on update cascade on delete cascade
 );
+
+CREATE TABLE IF NOT EXISTS files_versions
+(
+    file_id int not null,
+    version_id int not null,
+    PRIMARY KEY (file_id, version_id),
+    FOREIGN KEY (file_id) references doc_files(id) on update cascade on delete cascade,
+    FOREIGN KEY (version_id) references documents_versions(id) on update cascade on delete cascade
+);
+
 INSERT INTO catalogs(id, name, catalog_id)
     SELECT 1, '/',0
 WHERE NOT EXISTS (

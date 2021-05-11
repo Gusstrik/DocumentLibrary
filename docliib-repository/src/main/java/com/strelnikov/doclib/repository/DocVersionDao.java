@@ -2,6 +2,7 @@ package com.strelnikov.doclib.repository;
 
 
 import com.strelnikov.doclib.model.documnets.Document;
+import com.strelnikov.doclib.model.documnets.DocumentFile;
 import com.strelnikov.doclib.model.documnets.DocumentVersion;
 
 import java.util.List;
@@ -15,5 +16,7 @@ public interface DocVersionDao {
     List<DocumentVersion> getDocVersionList(Document document);
 
     DocumentVersion loadDocVersion(int docVerId);
+
+    List<DocumentFile> getFileList(DocumentVersion docVersion);
 
 }

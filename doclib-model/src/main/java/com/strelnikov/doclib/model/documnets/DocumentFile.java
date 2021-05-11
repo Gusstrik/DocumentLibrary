@@ -4,13 +4,14 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
 
 
 @Getter
 @Setter
 
 @Entity
-@Table(name="doc_files")
+@Table(name = "doc_files")
 public class DocumentFile {
 
     @Id
@@ -20,19 +21,18 @@ public class DocumentFile {
     @Column(name = "name", nullable = false)
     private String fileName;
 
-    @ManyToOne(cascade = CascadeType.MERGE,fetch = FetchType.EAGER,targetEntity = DocumentVersion.class)
-    @JoinColumn(name="document_id")
-    private DocumentVersion docVersion;
+    @ManyToMany(mappedBy = "filesList")
+    private List<DocumentVersion> docVersion;
 
     @Column(name = "path", nullable = false)
     private String filePath;
 
-    public DocumentFile(){
+    public DocumentFile() {
 
     }
 
-    public DocumentFile(String fileName, String filePath){
-        this.fileName=fileName;
-        this.filePath=filePath;
+    public DocumentFile(String fileName, String filePath) {
+        this.fileName = fileName;
+        this.filePath = filePath;
     }
 }

@@ -5,6 +5,7 @@ import com.strelnikov.doclib.repository.jdbc.DatabaseCreatorJdbc;
 import com.strelnikov.doclib.model.documnets.DocumentType;
 import com.strelnikov.doclib.repository.configuration.RepositoryConfiguration;
 import com.strelnikov.doclib.service.DocTypeActions;
+import com.strelnikov.doclib.service.exceptions.TypeIsAlreadyExistException;
 import com.strelnikov.doclib.service.impl.configuration.ServiceImplConfiguration;
 import org.junit.*;
 import org.springframework.context.ApplicationContext;
@@ -34,26 +35,36 @@ public class DocTypeImplTest {
     @Before
     public void beforeEachDocumentTypeImplTest(){
         docTypeActions.refreshListDocumentType();
-        expected=DocumentType.documentTypeList;
+        expected=convertToString();
+
+
+    }
+    private List<String> convertToString(){
+        List<DocumentType> typeList = DocumentType.documentTypeList;
+        List<String> list = new ArrayList<>();
+        for(DocumentType docType: typeList){
+            list.add(docType.getCurentType());
+        }
+        return list;
     }
 
     @Test
-    public void addDocumentTypeTest(){
-        DocTypeDto typeDto = new DocTypeDto("test_type2");
-        docTypeActions.addDocumentType(typeDto);
+    public void addDocumentTypeTest() throws TypeIsAlreadyExistException {
+        DocTypeDto typeDto = new DocTypeDto(0,"test_type2");
+        typeDto = docTypeActions.addDocumentType(typeDto);
         docTypeActions.refreshListDocumentType();
-        List<String> actual = DocumentType.documentTypeList;
+        List<String> actual = convertToString();
         expected.add("test_type2");
         docTypeActions.deleteDocumentType(typeDto);
         Assert.assertEquals(expected,actual);
     }
     @Test
-    public void deleteDocumentTypeTest(){
-        DocTypeDto typeDto = new DocTypeDto("test_type2");
-        docTypeActions.addDocumentType(typeDto);
+    public void deleteDocumentTypeTest() throws TypeIsAlreadyExistException {
+        DocTypeDto typeDto = new DocTypeDto(0,"test_type2");
+        typeDto=docTypeActions.addDocumentType(typeDto);
         docTypeActions.deleteDocumentType(typeDto);
         docTypeActions.refreshListDocumentType();
-        List<String> actual = DocumentType.documentTypeList;
+        List<String> actual = convertToString();
         Assert.assertEquals(expected,actual);
     }
 

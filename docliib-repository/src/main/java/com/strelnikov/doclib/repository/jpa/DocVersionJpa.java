@@ -56,7 +56,7 @@ public class DocVersionJpa implements DocVersionDao {
         EntityManager em = getEntityManager();
         Query query = em.createQuery("SELECT docVer FROM DocumentVersion docVer WHERE docVer.parentDocument.id="+document.getId());
         List<DocumentVersion> result = query.getResultList();
-        for (DocumentVersion docVer:result){
+        for(DocumentVersion docVer:result){
             docVer.setFilesList(docFileDao.getFilesList(docVer));
         }
         em.close();
@@ -67,8 +67,20 @@ public class DocVersionJpa implements DocVersionDao {
     public DocumentVersion loadDocVersion(int docVerId) {
         EntityManager em = getEntityManager();
         DocumentVersion docVer = em.find(DocumentVersion.class,docVerId);
-        em.close();
         docVer.setFilesList(docFileDao.getFilesList(docVer));
+        em.close();
         return docVer;
     }
+
+    @Override
+    public List<DocumentFile> getFileList(DocumentVersion docVersion) {
+        EntityManager em = getEntityManager();
+        em.getTransaction().begin();
+        List<DocumentFile> fileList = docVersion.getFilesList();
+        em.getTransaction().commit();
+        em.close();
+        return fileList;
+    }
+
+
 }
