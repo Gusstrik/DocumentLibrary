@@ -52,4 +52,11 @@ public class DocFileJpa implements DocFileDao {
         em.close();
         return result;
     }
+
+    @Override
+    public DocumentFile getFile(int id) {
+        EntityManager em = getEntityManager();
+        DocumentFile docFile = em.find(DocumentFile.class,id);
+        return docFile;
+    }
 }

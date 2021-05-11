@@ -12,4 +12,5 @@ public interface DocFileDao {
 
     List<DocumentFile> getFilesList(DocumentVersion documentVersion);
 
+    DocumentFile getFile(int id);
 }

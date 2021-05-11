@@ -12,6 +12,7 @@ import com.strelnikov.doclib.service.DocVersionActions;
 import com.strelnikov.doclib.service.DocumentActions;
 import com.strelnikov.doclib.service.DocFileActions;
 import com.strelnikov.doclib.service.dtomapper.DtoMapper;
+import com.strelnikov.doclib.service.exceptions.UnitNotFoundException;
 import com.strelnikov.doclib.service.exceptions.VersionIsAlreadyExistException;
 import com.strelnikov.doclib.service.impl.configuration.ServiceImplConfiguration;
 import org.junit.*;
@@ -50,7 +51,7 @@ public class DocFileImplTest {
     }
 
     @Test
-    public void fileAddTest() throws VersionIsAlreadyExistException {
+    public void fileAddTest() throws VersionIsAlreadyExistException, UnitNotFoundException {
         DocFileDto fileDto = new DocFileDto(0,"test_file","test_path");
         fileDto = fileActions.createNewFile(fileDto);
         List<DocFileDto> fileList = new ArrayList<>();
@@ -59,13 +60,13 @@ public class DocFileImplTest {
                 Importance.LOW.toString(),false,fileList);
         docVersionDto = versionActions.saveDocVersion(docVersionDto);
         int actual = docFileDao.getFilesList(dtoMapper.mapDocVersion(docVersionDto)).size();
-        fileActions.deleteFile(fileDto);
+        fileActions.deleteFile(fileDto.getId());
         versionActions.deleteDocVersion(docVersionDto.getId());
         Assert.assertEquals(1,actual);
     }
 
     @Test
-    public void fileDeleteTest() throws VersionIsAlreadyExistException {
+    public void fileDeleteTest() throws VersionIsAlreadyExistException, UnitNotFoundException {
         DocFileDto fileDto = new DocFileDto(0,"test_file","test_path");
         fileDto = fileActions.createNewFile(fileDto);
         List<DocFileDto> fileList = new ArrayList<>();
@@ -73,7 +74,7 @@ public class DocFileImplTest {
         DocVersionDto docVersionDto = new DocVersionDto(0,1,1,"test_ver",
                 Importance.LOW.toString(),false,fileList);
         docVersionDto = versionActions.saveDocVersion(docVersionDto);
-        fileActions.deleteFile(fileDto);
+        fileActions.deleteFile(fileDto.getId());
         int actual = docFileDao.getFilesList(dtoMapper.mapDocVersion(docVersionDto)).size();
         versionActions.deleteDocVersion(docVersionDto.getId());
         Assert.assertEquals(0,actual);

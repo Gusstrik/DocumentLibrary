@@ -1,12 +1,16 @@
 package com.strelnikov.doclib.service.impl;
 
 import com.strelnikov.doclib.dto.DocFileDto;
+import com.strelnikov.doclib.model.documnets.DocumentFile;
 import com.strelnikov.doclib.repository.DocFileDao;
 import com.strelnikov.doclib.service.DocFileActions;
 import com.strelnikov.doclib.service.dtomapper.DtoMapper;
+import com.strelnikov.doclib.service.exceptions.UnitNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+
+import java.io.File;
 
 @Service
 public class DocFileImpl implements DocFileActions {
@@ -25,7 +29,14 @@ public class DocFileImpl implements DocFileActions {
     }
 
     @Override
-    public void deleteFile(DocFileDto docFileDto) {
-        docFileDao.deleteFile(docFileDto.getId());
+    public void deleteFile(int id) throws UnitNotFoundException {
+        DocumentFile docFile = docFileDao.getFile(id);
+        if (docFile!=null){
+            docFileDao.deleteFile(id);
+            File file = new File(docFile.getFilePath());
+            file.delete();
+        }else{
+            throw new UnitNotFoundException(id);
+        }
     }
 }

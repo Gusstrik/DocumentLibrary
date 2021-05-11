@@ -41,7 +41,7 @@ public class DocumentRestController {
     @DeleteMapping("{id}")
     public ResponseEntity<Object> deleteDocument(@PathVariable int id){
         try {
-            DocumentDto documentDto = docAct.loadDocument(id);
+            docAct.loadDocument(id);
             docAct.deleteDocument(id);
             return ResponseEntity.ok("Document was successfully deleted");
         } catch (UnitNotFoundException e) {

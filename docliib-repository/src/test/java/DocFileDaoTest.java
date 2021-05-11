@@ -86,4 +86,10 @@ public class DocFileDaoTest {
         List<String> actual = convertToStringList();
         Assert.assertEquals(expected, actual);
     }
+
+    @Test
+    public void loadFileTest(){
+        DocumentFile docFile = docFileDao.getFile(1);
+        Assert.assertEquals("test_file",docFile.getFileName());
+    }
 }
