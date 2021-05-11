@@ -1,4 +1,4 @@
-package startjetty;
+package test.startjetty;
 
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jetty.server.Server;

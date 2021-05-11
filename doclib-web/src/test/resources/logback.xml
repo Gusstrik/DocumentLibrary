@@ -35,7 +35,7 @@
         <appender-ref ref="servlet-log"/>
     </logger>
 
-    <logger name="startjetty.StartJetty" level="debug">
+    <logger name="test.startjetty.StartJetty" level="debug">
         <appender-ref ref="servlet-log"/>
     </logger>
 </configuration>

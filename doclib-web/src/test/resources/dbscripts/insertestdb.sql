@@ -14,6 +14,10 @@ INSERT INTO documents_versions(id, document_id,version,description,importance,is
 VALUES (1,1,0,'test description','IMPORTANT',false)
 on conflict do nothing;
 
-INSERT INTO doc_files (id, name, document_id,path)
-VALUES (nextval('doc_files_id_seq'),'test_file',1,'test_path')
+INSERT INTO doc_files (id, name,path)
+VALUES (1,'test_file','test_path')
+on conflict do nothing;
+
+INSERT INTO files_versions
+VALUES (1,1)
 on conflict do nothing;

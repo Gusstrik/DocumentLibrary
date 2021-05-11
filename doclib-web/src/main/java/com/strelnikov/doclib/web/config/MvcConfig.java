@@ -1,6 +1,6 @@
 package com.strelnikov.doclib.web.config;
 
-import com.strelnikov.doclib.web.servlets.utils.ApplicationContextHolder;
+import com.strelnikov.doclib.service.impl.configuration.ServiceImplConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -17,7 +17,7 @@ import javax.servlet.ServletContext;
 
 @Configuration
 @EnableWebMvc
-@Import(ApplicationContextHolder.class)
+@Import(ServiceImplConfiguration.class)
 @ComponentScan(basePackages = "com.strelnikov.doclib.web.controllers")
 public class MvcConfig {
     @Autowired
