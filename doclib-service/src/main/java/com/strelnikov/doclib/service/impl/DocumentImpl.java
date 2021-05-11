@@ -18,10 +18,12 @@ import com.strelnikov.doclib.service.dtomapper.DtoMapper;
 import com.strelnikov.doclib.service.exceptions.UnitIsAlreadyExistException;
 import com.strelnikov.doclib.service.exceptions.UnitNotFoundException;
 import com.strelnikov.doclib.service.exceptions.VersionIsAlreadyExistException;
+import com.strelnikov.doclib.service.exceptions.VersionNotExistException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import javax.print.Doc;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +49,21 @@ public class DocumentImpl implements DocumentActions {
     @Override
     public void deleteDocument(int documentId) {
         documentDao.deleteDocument(documentId);
+    }
+
+    @Override
+    public DocumentDto loadDocument(int documentId, int version) throws UnitNotFoundException, VersionNotExistException {
+        Document document = documentDao.loadDocument(documentId);
+        if (document == null) {
+            throw new UnitNotFoundException(documentId);
+        } else if (version>document.getActualVersion()) {
+            throw new VersionNotExistException(documentId,version);
+        }else {
+            for (DocumentVersion documentVersion:document.getVersionsList()){
+                documentVersion.setFilesList(docFileDao.getFilesList(documentVersion));
+            }
+            return dtoMapper.mapDocument(document,version);
+        }
     }
 
     @Override

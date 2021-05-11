@@ -169,5 +169,11 @@ public class DtoMapperImpl implements DtoMapper {
         return new DocumentDto(document.getId(), document.getName(), document.getDocumentType().getId(),
                 document.getActualVersion(), document.getCatalogId(), docVersionDto);
     }
+    @Override
+    public DocumentDto mapDocument(Document document, int version) {
+        DocVersionDto docVersionDto = mapDocVersion(document.getDocumentVersion(version));
+        return new DocumentDto(document.getId(), document.getName(), document.getDocumentType().getId(),
+                document.getActualVersion(), document.getCatalogId(), docVersionDto);
+    }
 }
 
