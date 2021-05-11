@@ -17,6 +17,7 @@ import org.junit.*;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 
 public class DocVersionImplTest {
@@ -45,30 +46,30 @@ public class DocVersionImplTest {
 
     @Before
     public void beforeEachDocVersionImplTest() {
-        expected = docVerDao.getDocVersionList(document).size();
+        expected = docVerDao.getDocVersionList(document.getId()).size();
     }
 
     @Test
-    public void saveDocVersionTest() throws VersionIsAlreadyExistException, UnitNotFoundException {
-        DocumentVersion docVersion = docVerDao.getDocVersionList(document).get(0);
+    public void saveDocVersionTest() throws VersionIsAlreadyExistException, FileNotFoundException {
+        DocumentVersion docVersion = docVerDao.getDocVersionList(document.getId()).get(0);
         docVersion.setId(0);
         docVersion.setVersion(1);
         docVersion.setDescription("another test version");
         DocVersionDto docVerDto = docVerActions.saveDocVersion(dtoMapper.mapDocVersion(docVersion));
-        int actual = docVerDao.getDocVersionList(document).size();
+        int actual = docVerDao.getDocVersionList(document.getId()).size();
         docVerActions.deleteDocVersion(docVerDto.getId());
         expected++;
         Assert.assertEquals(expected, actual);
     }
     @Test
-    public void deleteDocVersionTest() throws VersionIsAlreadyExistException {
-        DocumentVersion docVersion = docVerDao.getDocVersionList(document).get(0);
+    public void deleteDocVersionTest() throws VersionIsAlreadyExistException, FileNotFoundException {
+        DocumentVersion docVersion = docVerDao.getDocVersionList(document.getId()).get(0);
         docVersion.setId(0);
         docVersion.setVersion(1);
         docVersion.setDescription("another test version");
         DocVersionDto docVerDto = docVerActions.saveDocVersion(dtoMapper.mapDocVersion(docVersion));
         docVerActions.deleteDocVersion(docVerDto.getId());
-        int actual = docVerDao.getDocVersionList(document).size();
+        int actual = docVerDao.getDocVersionList(document.getId()).size();
         Assert.assertEquals(expected, actual);
     }
 }

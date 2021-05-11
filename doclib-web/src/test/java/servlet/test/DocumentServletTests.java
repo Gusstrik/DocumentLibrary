@@ -89,7 +89,7 @@ public class DocumentServletTests {
         String response=new String(httpURLConnection.getInputStream().readAllBytes());
         DocumentDto documentDto = (DocumentDto) ServletUtils.convertToDtoDocument(response);
         httpURLConnection.disconnect();
-        Assert.assertEquals(1,documentDto.getVersionList().get(0).getVersion());
+        Assert.assertEquals(1,documentDto.getVersion().getVersion());
     }
 
     @Test
@@ -116,6 +116,6 @@ public class DocumentServletTests {
         response=new String(httpURLConnection.getInputStream().readAllBytes());
         DocumentDto documentDto = (DocumentDto) ServletUtils.convertToDtoDocument(response);
         httpURLConnection.disconnect();
-        Assert.assertEquals("test description of new test doc",documentDto.getVersionList().get(0).getDescription());
+        Assert.assertEquals("test description of new test doc",documentDto.getVersion().getDescription());
     }
 }

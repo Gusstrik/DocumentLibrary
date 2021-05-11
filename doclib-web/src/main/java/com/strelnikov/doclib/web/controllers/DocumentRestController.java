@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.FileNotFoundException;
+
 @RestController
 @RequestMapping("/document")
 public class DocumentRestController {
@@ -35,6 +37,8 @@ public class DocumentRestController {
             return ResponseEntity.badRequest().body("Version " + e.getDocVer().getVersion()+ " of document is already exist");
         } catch (UnitIsAlreadyExistException e) {
             return ResponseEntity.badRequest().body("Document is already exist in catalog");
+        } catch (FileNotFoundException e) {
+            return ResponseEntity.badRequest().body("One of the files doesn't exist");
         }
     }
 

@@ -20,6 +20,7 @@ import org.junit.*;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,7 +54,7 @@ public class DocumentImplTest {
     }
 
     @Test
-    public void addNewDocTest() throws VersionIsAlreadyExistException, UnitIsAlreadyExistException, UnitNotFoundException {
+    public void addNewDocTest() throws VersionIsAlreadyExistException, UnitIsAlreadyExistException, UnitNotFoundException, FileNotFoundException {
         DocumentDto documentDto = documentActions.loadDocument(1);
         Document document = dtoMapper.mapDocument(documentDto);
         document.setId(0);
@@ -69,7 +70,7 @@ public class DocumentImplTest {
     }
 
     @Test
-    public void editDocTest() throws VersionIsAlreadyExistException, UnitIsAlreadyExistException, UnitNotFoundException {
+    public void editDocTest() throws VersionIsAlreadyExistException, UnitIsAlreadyExistException, UnitNotFoundException, FileNotFoundException {
         DocumentDto documentDto = documentActions.loadDocument(1);
         Document document = dtoMapper.mapDocument(documentDto);
         document.setName("edit test");
@@ -84,7 +85,7 @@ public class DocumentImplTest {
     }
 
     @Test
-    public void editDocVerTest() throws UnitNotFoundException, VersionIsAlreadyExistException, UnitIsAlreadyExistException {
+    public void editDocVerTest() throws UnitNotFoundException, VersionIsAlreadyExistException, UnitIsAlreadyExistException, FileNotFoundException {
         DocumentDto documentDto = documentActions.loadDocument(1);
         Document document = dtoMapper.mapDocument(documentDto);
         document.setActualVersion(1);
@@ -101,7 +102,7 @@ public class DocumentImplTest {
         Assert.assertEquals("added version",actual );
     }
     @Test
-    public void rollbackDocTest() throws UnitNotFoundException, VersionIsAlreadyExistException, UnitIsAlreadyExistException {
+    public void rollbackDocTest() throws UnitNotFoundException, VersionIsAlreadyExistException, UnitIsAlreadyExistException, FileNotFoundException {
         DocumentDto documentDto = documentActions.loadDocument(1);
         Document document = dtoMapper.mapDocument(documentDto);
         document.setActualVersion(1);

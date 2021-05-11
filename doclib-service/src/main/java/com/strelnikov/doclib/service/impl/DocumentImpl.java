@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -76,7 +77,7 @@ public class DocumentImpl implements DocumentActions {
         return false;
     }
 
-    private DocumentDto createNewDocument(DocumentDto documentDto) throws UnitIsAlreadyExistException, VersionIsAlreadyExistException {
+    private DocumentDto createNewDocument(DocumentDto documentDto) throws UnitIsAlreadyExistException, VersionIsAlreadyExistException, FileNotFoundException {
         Document document = dtoMapper.mapDocument(documentDto);
         if (checkIfDocumentExist(document)) {
             throw new UnitIsAlreadyExistException(catalogDao.loadCatalog(document.getCatalogId()), document);
@@ -89,7 +90,7 @@ public class DocumentImpl implements DocumentActions {
         }
     }
 
-    private void editDocument(DocumentDto documentDto) throws VersionIsAlreadyExistException {
+    private void editDocument(DocumentDto documentDto) throws VersionIsAlreadyExistException, FileNotFoundException {
         Document documentDb = documentDao.loadDocument(documentDto.getId());
         Document document = dtoMapper.mapDocument(documentDto);
         if (documentDb.getActualVersion()<document.getActualVersion()){
@@ -108,7 +109,7 @@ public class DocumentImpl implements DocumentActions {
     }
 
     @Override
-    public DocumentDto saveDocument(DocumentDto documentDto) throws UnitIsAlreadyExistException, VersionIsAlreadyExistException {
+    public DocumentDto saveDocument(DocumentDto documentDto) throws UnitIsAlreadyExistException, VersionIsAlreadyExistException, FileNotFoundException {
         try {
             loadDocument(documentDto.getId());
             editDocument(documentDto);
@@ -120,7 +121,7 @@ public class DocumentImpl implements DocumentActions {
     }
 
     @Override
-    public DocumentDto rollback(int id, int version) throws UnitNotFoundException, VersionIsAlreadyExistException {
+    public DocumentDto rollback(int id, int version) throws UnitNotFoundException, VersionIsAlreadyExistException, FileNotFoundException {
         Document document = documentDao.loadDocument(id);
         if (document == null){
             throw new UnitNotFoundException(id);

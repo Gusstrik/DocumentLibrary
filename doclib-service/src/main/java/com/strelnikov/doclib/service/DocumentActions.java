@@ -6,13 +6,15 @@ import com.strelnikov.doclib.service.exceptions.UnitIsAlreadyExistException;
 import com.strelnikov.doclib.service.exceptions.UnitNotFoundException;
 import com.strelnikov.doclib.service.exceptions.VersionIsAlreadyExistException;
 
+import java.io.FileNotFoundException;
+
 public interface DocumentActions {
 
     void deleteDocument(int documentId);
 
     DocumentDto loadDocument(int documentId) throws UnitNotFoundException;
 
-    DocumentDto saveDocument(DocumentDto catalogDto) throws UnitIsAlreadyExistException, VersionIsAlreadyExistException;
+    DocumentDto saveDocument(DocumentDto catalogDto) throws UnitIsAlreadyExistException, VersionIsAlreadyExistException, FileNotFoundException;
 
-    DocumentDto rollback(int id, int version) throws UnitNotFoundException, VersionIsAlreadyExistException;
+    DocumentDto rollback(int id, int version) throws UnitNotFoundException, VersionIsAlreadyExistException, FileNotFoundException;
 }

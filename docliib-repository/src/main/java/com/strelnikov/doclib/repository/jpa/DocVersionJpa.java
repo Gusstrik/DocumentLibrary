@@ -1,6 +1,5 @@
 package com.strelnikov.doclib.repository.jpa;
 
-import com.strelnikov.doclib.model.documnets.Document;
 import com.strelnikov.doclib.model.documnets.DocumentFile;
 import com.strelnikov.doclib.model.documnets.DocumentVersion;
 import com.strelnikov.doclib.repository.DocFileDao;
@@ -52,9 +51,9 @@ public class DocVersionJpa implements DocVersionDao {
     }
 
     @Override
-    public List<DocumentVersion> getDocVersionList(Document document) {
+    public List<DocumentVersion> getDocVersionList(int docId) {
         EntityManager em = getEntityManager();
-        Query query = em.createQuery("SELECT docVer FROM DocumentVersion docVer WHERE docVer.parentDocument.id="+document.getId());
+        Query query = em.createQuery("SELECT docVer FROM DocumentVersion docVer WHERE docVer.parentDocument.id="+ docId);
         List<DocumentVersion> result = query.getResultList();
         for(DocumentVersion docVer:result){
             docVer.setFilesList(docFileDao.getFilesList(docVer));
