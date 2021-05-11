@@ -54,7 +54,7 @@ public class DocumentImplTest {
     }
 
     @Test
-    public void addNewDocTest() throws VersionIsAlreadyExistException, UnitIsAlreadyExistException, UnitNotFoundException, FileNotFoundException {
+    public void addNewDocTest() throws Exception {
         DocumentDto documentDto = documentActions.loadDocument(1);
         Document document = dtoMapper.mapDocument(documentDto);
         document.setId(0);
@@ -70,7 +70,7 @@ public class DocumentImplTest {
     }
 
     @Test
-    public void editDocTest() throws VersionIsAlreadyExistException, UnitIsAlreadyExistException, UnitNotFoundException, FileNotFoundException {
+    public void editDocTest() throws Exception{
         DocumentDto documentDto = documentActions.loadDocument(1);
         Document document = dtoMapper.mapDocument(documentDto);
         document.setName("edit test");
@@ -85,7 +85,7 @@ public class DocumentImplTest {
     }
 
     @Test
-    public void editDocVerTest() throws UnitNotFoundException, VersionIsAlreadyExistException, UnitIsAlreadyExistException, FileNotFoundException {
+    public void editDocVerTest() throws Exception {
         DocumentDto documentDto = documentActions.loadDocument(1);
         Document document = dtoMapper.mapDocument(documentDto);
         document.setActualVersion(1);
@@ -102,7 +102,7 @@ public class DocumentImplTest {
         Assert.assertEquals("added version",actual );
     }
     @Test
-    public void rollbackDocTest() throws UnitNotFoundException, VersionIsAlreadyExistException, UnitIsAlreadyExistException, FileNotFoundException {
+    public void rollbackDocTest() throws Exception{
         DocumentDto documentDto = documentActions.loadDocument(1);
         Document document = dtoMapper.mapDocument(documentDto);
         document.setActualVersion(1);

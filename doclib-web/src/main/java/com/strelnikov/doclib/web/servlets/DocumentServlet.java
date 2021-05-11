@@ -6,6 +6,7 @@ import com.strelnikov.doclib.service.dtomapper.DtoMapper;
 import com.strelnikov.doclib.service.exceptions.UnitIsAlreadyExistException;
 import com.strelnikov.doclib.service.exceptions.UnitNotFoundException;
 import com.strelnikov.doclib.service.exceptions.VersionIsAlreadyExistException;
+import com.strelnikov.doclib.service.exceptions.VersionNotExistException;
 import com.strelnikov.doclib.web.servlets.utils.ApplicationContextHolder;
 import com.strelnikov.doclib.web.servlets.utils.ServletUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -57,7 +58,7 @@ public class DocumentServlet extends HttpServlet {
         documentDto = (DocumentDto) ServletUtils.convertToDtoDocument(requestBody);
         try {
             documentDto = documentActions.saveDocument(documentDto);
-        } catch (UnitIsAlreadyExistException | VersionIsAlreadyExistException e) {
+        } catch (UnitIsAlreadyExistException | VersionIsAlreadyExistException | VersionNotExistException e) {
             e.printStackTrace();
         }
     }

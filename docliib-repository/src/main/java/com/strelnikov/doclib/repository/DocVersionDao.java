@@ -18,4 +18,6 @@ public interface DocVersionDao {
 
     List<DocumentFile> getFileList(DocumentVersion docVersion);
 
+    DocumentVersion updateVersion(DocumentVersion documentVersion);
+
 }

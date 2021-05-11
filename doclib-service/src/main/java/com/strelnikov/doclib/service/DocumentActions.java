@@ -17,7 +17,7 @@ public interface DocumentActions {
 
     DocumentDto loadDocument(int documentId) throws UnitNotFoundException;
 
-    DocumentDto saveDocument(DocumentDto catalogDto) throws UnitIsAlreadyExistException, VersionIsAlreadyExistException, FileNotFoundException;
+    DocumentDto saveDocument(DocumentDto catalogDto) throws UnitIsAlreadyExistException, VersionIsAlreadyExistException, FileNotFoundException, VersionNotExistException;
 
-    DocumentDto rollback(int id, int version) throws UnitNotFoundException, VersionIsAlreadyExistException, FileNotFoundException;
+    DocumentDto rollback(int id, int version) throws UnitNotFoundException, VersionNotExistException;
 }

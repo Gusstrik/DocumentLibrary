@@ -9,6 +9,7 @@ import com.strelnikov.doclib.repository.DocVersionDao;
 import com.strelnikov.doclib.repository.DocumentDao;
 import com.strelnikov.doclib.service.DocFileActions;
 import com.strelnikov.doclib.service.DocVersionActions;
+import com.strelnikov.doclib.service.DocumentActions;
 import com.strelnikov.doclib.service.dtomapper.DtoMapper;
 import com.strelnikov.doclib.service.exceptions.UnitNotFoundException;
 import com.strelnikov.doclib.service.exceptions.VersionIsAlreadyExistException;
@@ -30,6 +31,8 @@ public class DocVersionImpl implements DocVersionActions {
     private  DtoMapper dtoMapper;
     @Autowired
     private  DocFileActions fileAct;
+    @Autowired
+    private DocumentDao docDao;
 
 
     private boolean checkIsVersionExist(DocumentVersion documentVersion) {
@@ -69,7 +72,18 @@ public class DocVersionImpl implements DocVersionActions {
 
     @Override
     public void deleteDocVersion(int versionId) {
-        docVersionDao.deleteDocVersion(versionId);
+        DocumentVersion documentVersion = docVersionDao.loadDocVersion(versionId);
+        if(documentVersion!=null) {
+            Document document = documentVersion.getParentDocument();
+            List<DocumentVersion> docVerList = docVersionDao.getDocVersionList(document.getId());
+            for (int i = documentVersion.getVersion() + 1; i <= document.getActualVersion(); i++) {
+                docVerList.get(i).setVersion(i - 1);
+                docVersionDao.updateVersion(docVerList.get(i));
+            }
+            docVersionDao.deleteDocVersion(versionId);
+            document.setActualVersion(document.getActualVersion()-1);
+            docDao.updateDocument(document);
+        }
     }
 
     @Override

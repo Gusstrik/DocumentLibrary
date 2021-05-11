@@ -81,5 +81,15 @@ public class DocVersionJpa implements DocVersionDao {
         return fileList;
     }
 
+    @Override
+    public DocumentVersion updateVersion(DocumentVersion documentVersion) {
+       EntityManager em = getEntityManager();
+       em.getTransaction().begin();
+       em.merge(documentVersion);
+       em.getTransaction().commit();
+       em.close();
+       return documentVersion;
+    }
+
 
 }

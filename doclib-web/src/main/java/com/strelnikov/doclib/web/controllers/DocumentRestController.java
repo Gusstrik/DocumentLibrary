@@ -5,6 +5,7 @@ import com.strelnikov.doclib.service.DocumentActions;
 import com.strelnikov.doclib.service.exceptions.UnitIsAlreadyExistException;
 import com.strelnikov.doclib.service.exceptions.UnitNotFoundException;
 import com.strelnikov.doclib.service.exceptions.VersionIsAlreadyExistException;
+import com.strelnikov.doclib.service.exceptions.VersionNotExistException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +30,7 @@ public class DocumentRestController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> postDocument(@RequestBody DocumentDto documentDto){
+    public ResponseEntity<Object> postDocument(@RequestBody DocumentDto documentDto) throws VersionNotExistException {
         try {
             documentDto = docAct.saveDocument(documentDto);
             return ResponseEntity.ok(documentDto);
