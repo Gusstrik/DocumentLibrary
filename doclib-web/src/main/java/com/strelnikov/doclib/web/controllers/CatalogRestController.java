@@ -11,13 +11,13 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping(path = "catalog")
+@RequestMapping(path = "rest/catalog")
 public class CatalogRestController {
 
     @Autowired
     private CatalogActions catalogAct;
 
-    @GetMapping("{id}")
+    @GetMapping("get/{id}")
     public ResponseEntity<CatalogDto> getCatalog(@PathVariable int id){
         try {
             CatalogDto catalogDto = catalogAct.loadCatalog(id);
@@ -27,7 +27,7 @@ public class CatalogRestController {
         }
     }
 
-    @PostMapping
+    @PostMapping("post")
     public ResponseEntity<Object> postCatalog(@RequestBody CatalogDto catalogDto){
         try{
             catalogDto = catalogAct.saveCatalog(catalogDto);
@@ -37,7 +37,7 @@ public class CatalogRestController {
         }
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("delete/{id}")
     public ResponseEntity<Object> deleteCatalog(@PathVariable int id){
         try {
             CatalogDto catalogDto = catalogAct.loadCatalog(id);

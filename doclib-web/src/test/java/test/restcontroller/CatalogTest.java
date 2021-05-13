@@ -1,10 +1,8 @@
-package test.servlets;
+package test.restcontroller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.strelnikov.doclib.dto.CatalogDto;
-import com.strelnikov.doclib.model.catalogs.Catalog;
 import com.strelnikov.doclib.repository.jdbc.DatabaseCreatorJdbc;
-import com.strelnikov.doclib.service.dtomapper.DtoMapper;
 import com.strelnikov.doclib.service.impl.configuration.ServiceImplConfiguration;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.webapp.WebAppContext;
@@ -12,12 +10,8 @@ import org.junit.*;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-
-import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -26,9 +20,9 @@ public class CatalogTest {
 
     private static final ApplicationContext appContext = new AnnotationConfigApplicationContext(ServiceImplConfiguration.class);
     private static final DatabaseCreatorJdbc creator = appContext.getBean(DatabaseCreatorJdbc.class);
-    private final DtoMapper dtoMapper = appContext.getBean(DtoMapper.class);
 
     private static Server server;
+    private static String url = "http://localhost:12135/doclib-app/rest/catalog/";
 
     @BeforeClass
     public static void initDb() throws Exception {
@@ -51,21 +45,20 @@ public class CatalogTest {
 
     @After
     public void initMainCat() throws IOException {
-        HttpURLConnection connection = (HttpURLConnection) new URL("http://localhost:12135/doclib-app/catalog").openConnection();
-        ObjectMapper objectMapper = new ObjectMapper();
+        HttpURLConnection connection = (HttpURLConnection) new URL(url+"post").openConnection();
         byte[] requestBody = Files.readAllBytes(Paths.get("src/test/resources/JSON/CatalogTests/clearMainCat.json"));
         connection.setDoOutput(true);
         connection.setRequestMethod("POST");
         connection.setRequestProperty("Content-Type","application/json");
         connection.getOutputStream().write(requestBody);
         connection.getOutputStream().flush();
-        String responseBody = new String(connection.getInputStream().readAllBytes());
+        connection.getResponseCode();
         connection.disconnect();
     }
 
     @Test
     public void getCatalog() throws IOException {
-        HttpURLConnection connection = (HttpURLConnection) new URL("http://localhost:12135/doclib-app/catalog/1").openConnection();
+        HttpURLConnection connection = (HttpURLConnection) new URL(url + "get/1").openConnection();
         String responseBody = new String(connection.getInputStream().readAllBytes());
         ObjectMapper objectMapper = new ObjectMapper();
         CatalogDto catalogDto = objectMapper.readValue(responseBody, CatalogDto.class);
@@ -75,7 +68,7 @@ public class CatalogTest {
 
     @Test
     public void createNewCatalog() throws IOException {
-        HttpURLConnection connection = (HttpURLConnection) new URL("http://localhost:12135/doclib-app/catalog").openConnection();
+        HttpURLConnection connection = (HttpURLConnection) new URL(url+"post").openConnection();
         connection.setDoOutput(true);
         connection.setRequestMethod("POST");
         connection.setRequestProperty("Content-Type","application/json");
@@ -86,7 +79,7 @@ public class CatalogTest {
         connection.disconnect();
         ObjectMapper objectMapper = new ObjectMapper();
         CatalogDto catalogDto = objectMapper.readValue(responseBody, CatalogDto.class);
-        connection = (HttpURLConnection) new URL("http://localhost:12135/doclib-app/catalog/" + catalogDto.getId()).openConnection();
+        connection = (HttpURLConnection) new URL(url+"delete/" + catalogDto.getId()).openConnection();
         connection.setRequestMethod("DELETE");
         connection.getResponseCode();
         connection.disconnect();
@@ -95,7 +88,7 @@ public class CatalogTest {
 
     @Test
     public void editCatalogTest() throws IOException {
-        HttpURLConnection connection = (HttpURLConnection) new URL("http://localhost:12135/doclib-app/catalog").openConnection();
+        HttpURLConnection connection = (HttpURLConnection) new URL(url + "post").openConnection();
         ObjectMapper objectMapper = new ObjectMapper();
         byte[] requestBody = Files.readAllBytes(Paths.get("src/test/resources/JSON/CatalogTests/editCatalog.json"));
         connection.setDoOutput(true);
@@ -111,7 +104,7 @@ public class CatalogTest {
 
     @Test
     public void deleteCatalogTest() throws IOException {
-        HttpURLConnection connection = (HttpURLConnection) new URL("http://localhost:12135/doclib-app/catalog").openConnection();
+        HttpURLConnection connection = (HttpURLConnection) new URL(url + "post").openConnection();
         connection.setDoOutput(true);
         connection.setRequestMethod("POST");
         connection.setRequestProperty("Content-Type","application/json");
@@ -122,7 +115,7 @@ public class CatalogTest {
         connection.disconnect();
         ObjectMapper objectMapper = new ObjectMapper();
         CatalogDto catalogDto = objectMapper.readValue(responseBody, CatalogDto.class);
-        connection = (HttpURLConnection) new URL("http://localhost:12135/doclib-app/catalog/" + catalogDto.getId()).openConnection();
+        connection = (HttpURLConnection) new URL(url+"delete/" + catalogDto.getId()).openConnection();
         connection.setRequestMethod("DELETE");
         int actual = connection.getResponseCode();
         connection.disconnect();
