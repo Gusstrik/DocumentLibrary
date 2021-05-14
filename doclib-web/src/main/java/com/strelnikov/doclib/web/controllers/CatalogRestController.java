@@ -1,13 +1,17 @@
 package com.strelnikov.doclib.web.controllers;
 
 import com.strelnikov.doclib.dto.CatalogDto;
+import com.strelnikov.doclib.model.conception.Permission;
 import com.strelnikov.doclib.service.CatalogActions;
+import com.strelnikov.doclib.service.SecurityActions;
 import com.strelnikov.doclib.service.exceptions.CannotDeleteMainCatalogException;
 import com.strelnikov.doclib.service.exceptions.UnitIsAlreadyExistException;
 import com.strelnikov.doclib.service.exceptions.UnitNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -19,11 +23,19 @@ public class CatalogRestController {
     @Autowired
     private CatalogActions catalogAct;
 
+    @Autowired
+    private SecurityActions securityActions;
+
     @GetMapping("get/{id}")
     public ResponseEntity<CatalogDto> getCatalog(@PathVariable int id){
         try {
             CatalogDto catalogDto = catalogAct.loadCatalog(id);
-            return ResponseEntity.ok(catalogDto);
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            if (securityActions.checkPermission(id,catalogDto,auth.getName(), Permission.READING)) {
+                return ResponseEntity.ok(catalogDto);
+            }else{
+                return ResponseEntity.status(403).build();
+            }
         }catch (UnitNotFoundException e){
             return ResponseEntity.notFound().build();
         }
