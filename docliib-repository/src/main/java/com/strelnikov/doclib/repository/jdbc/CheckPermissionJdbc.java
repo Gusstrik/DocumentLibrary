@@ -67,7 +67,6 @@ public class CheckPermissionJdbc implements ICheckPermission {
     public boolean checkPermission(int objectId, Class clazz, Client client, Permission permission) {
         Integer id = getSecuredObjectId(objectId, clazz);
         int resultPermission = 0;
-        int result = 0;
         if (id!=null) {
             try (Connection connection = dataSource.getConnection()) {
                 PreparedStatement statement = connection.prepareStatement(GET_PERMISSION_QUERY);
@@ -80,21 +79,7 @@ public class CheckPermissionJdbc implements ICheckPermission {
             } catch (SQLException throwables) {
                 log.error(throwables.getMessage(), throwables);
             }
-            switch (permission){
-                case READING:
-                    result = resultPermission & 1;
-                    break;
-                case WRITING:
-                    result = resultPermission & 2;
-                    break;
-                case MODERATING:
-                    result = resultPermission & 4;
-                    break;
-            }
-            if (result!=0) {
-                return true;
-            }
         }
-        return false;
+        return permission.check(resultPermission);
     }
 }
