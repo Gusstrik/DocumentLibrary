@@ -18,10 +18,13 @@ import com.strelnikov.doclib.service.dtomapper.DtoMapper;
 import com.strelnikov.doclib.service.exceptions.UnitIsAlreadyExistException;
 import com.strelnikov.doclib.service.exceptions.UnitNotFoundException;
 import com.strelnikov.doclib.service.exceptions.VersionIsAlreadyExistException;
+import com.strelnikov.doclib.service.exceptions.VersionNotExistException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import javax.print.Doc;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,12 +52,27 @@ public class DocumentImpl implements DocumentActions {
     }
 
     @Override
+    public DocumentDto loadDocument(int documentId, int version) throws UnitNotFoundException, VersionNotExistException {
+        Document document = documentDao.loadDocument(documentId);
+        if (document == null) {
+            throw new UnitNotFoundException(documentId);
+        } else if (version > document.getActualVersion()) {
+            throw new VersionNotExistException(documentId, version);
+        } else {
+            for (DocumentVersion documentVersion : document.getVersionsList()) {
+                documentVersion.setFilesList(docFileDao.getFilesList(documentVersion));
+            }
+            return dtoMapper.mapDocument(document, version);
+        }
+    }
+
+    @Override
     public DocumentDto loadDocument(int documentId) throws UnitNotFoundException {
         Document document = documentDao.loadDocument(documentId);
         if (document == null) {
             throw new UnitNotFoundException(documentId);
         } else {
-            for (DocumentVersion documentVersion:document.getVersionsList()){
+            for (DocumentVersion documentVersion : document.getVersionsList()) {
                 documentVersion.setFilesList(docFileDao.getFilesList(documentVersion));
             }
             return dtoMapper.mapDocument(document);
@@ -67,8 +85,8 @@ public class DocumentImpl implements DocumentActions {
             if (unit.getUnitType().equals(UnitType.DOCUMENT)) {
                 Document existinDoc = documentDao.loadDocument(unit.getId());
                 if (existinDoc.getName().equals(addingDocuemnt.getName()) &&
-                        existinDoc.getDocumentType().getCurentType().equals(addingDocuemnt.getDocumentType().getCurentType())&&
-                        unit.getId()!=addingDocuemnt.getId()) {
+                        existinDoc.getDocumentType().getCurentType().equals(addingDocuemnt.getDocumentType().getCurentType()) &&
+                        unit.getId() != addingDocuemnt.getId()) {
                     return true;
                 }
             }
@@ -76,61 +94,62 @@ public class DocumentImpl implements DocumentActions {
         return false;
     }
 
-    private DocumentDto createNewDocument(DocumentDto documentDto) throws UnitIsAlreadyExistException, VersionIsAlreadyExistException {
+    private DocumentDto createNewDocument(DocumentDto documentDto) throws UnitIsAlreadyExistException, VersionIsAlreadyExistException, FileNotFoundException {
         Document document = dtoMapper.mapDocument(documentDto);
         if (checkIfDocumentExist(document)) {
             throw new UnitIsAlreadyExistException(catalogDao.loadCatalog(document.getCatalogId()), document);
         } else {
             document = documentDao.insertDocument(document);
-            for (DocumentVersion docVer:document.getVersionsList()){
-                docVer.setParentDocument(document);
-                docVer.setId(docVerActions.saveDocVersion(dtoMapper.mapDocVersion(docVer)).getId());
-            }
+            DocumentVersion docVer = document.getDocumentVersion();
+            docVer.setParentDocument(document);
+            docVer.setId(docVerActions.saveDocVersion(dtoMapper.mapDocVersion(docVer)).getId());
             return dtoMapper.mapDocument(document);
         }
     }
 
-    private List<Integer> getVerListForDelete(Document document) {
-        Document dbDoc = documentDao.loadDocument(document.getId());
-        List<Integer> idListForDelete = new ArrayList<>();
-        for (DocumentVersion dbDocVersion : dbDoc.getVersionsList()) {
-            if (!document.isVersionExist(dbDocVersion)) {
-                idListForDelete.add(dbDocVersion.getId());
-            }
+    private void editDocument(DocumentDto documentDto) throws VersionIsAlreadyExistException, FileNotFoundException, UnitNotFoundException, VersionNotExistException {
+        Document documentDb = documentDao.loadDocument(documentDto.getId());
+        Document document = dtoMapper.mapDocument(documentDto);
+        if (documentDb.getActualVersion() < document.getActualVersion()) {
+            document.setActualVersion(documentDb.getActualVersion() + 1);
+            DocumentVersion docVer = document.getVersionsList().get(0);
+            docVer.setVersion(document.getActualVersion());
+            docVerActions.saveDocVersion(dtoMapper.mapDocVersion(docVer));
         }
-        return idListForDelete;
-    }
-
-    private Document insertVersions(Document document) throws VersionIsAlreadyExistException{
-        Document dbDoc = documentDao.loadDocument(document.getId());
-        for (DocumentVersion docVersion : document.getVersionsList()) {
-            if (!dbDoc.isVersionExist(docVersion)) {
-                DocVersionDto verDto = dtoMapper.mapDocVersion(docVersion);
-                docVersion.setId(docVerActions.saveDocVersion(verDto).getId());
-            }
-        }
-        return document;
-    }
-
-    private void editDocuemnt(Document document) throws VersionIsAlreadyExistException {
-        document = insertVersions(document);
-        List<Integer> deleteList = getVerListForDelete(document);
-        for (int id : deleteList) {
-            docVerActions.deleteDocVersion(id);
+        if (documentDb.getActualVersion() > document.getActualVersion()) {
+            rollback(documentDb.getId(), document.getActualVersion());
         }
         documentDao.updateDocument(document);
     }
 
     @Override
-    public DocumentDto saveDocument(DocumentDto documentDto) throws UnitIsAlreadyExistException, VersionIsAlreadyExistException {
+    public DocumentDto saveDocument(DocumentDto documentDto) throws UnitIsAlreadyExistException, VersionIsAlreadyExistException, FileNotFoundException, VersionNotExistException {
         try {
             loadDocument(documentDto.getId());
-            Document document = dtoMapper.mapDocument(documentDto);
-            editDocuemnt(document);
+            editDocument(documentDto);
             documentDto = loadDocument(documentDto.getId());
         } catch (UnitNotFoundException e) {
             documentDto = createNewDocument(documentDto);
         }
         return documentDto;
+    }
+
+    @Override
+    public DocumentDto rollback(int id, int version) throws UnitNotFoundException, VersionNotExistException {
+        Document document = documentDao.loadDocument(id);
+        if (document == null) {
+            throw new UnitNotFoundException(id);
+        } else {
+            if (version > document.getActualVersion()) {
+                throw new VersionNotExistException(id, version);
+            }
+            for (int i = document.getActualVersion(); i > version; i--) {
+                DocumentVersion docVer = document.getDocumentVersion(i);
+                docVerActions.deleteDocVersion(docVer.getId());
+            }
+            document.setActualVersion(version);
+            documentDao.updateDocument(document);
+            return loadDocument(id);
+        }
     }
 }

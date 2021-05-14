@@ -43,11 +43,9 @@ public class DocTypeImpl implements DocTypeActions {
     }
 
     @Override
-    public void deleteDocumentType(DocTypeDto docTypeDto) {
-        DocumentType docType = dtoMapper.mapDocType(docTypeDto);
-        docTypeDao.deleteType(docTypeDto.getId());
-        DocumentType.documentTypeList.remove(docType);
-        DocTypeDto.typesList.remove(docTypeDto);
+    public void deleteDocumentType(int id) {
+        docTypeDao.deleteType(id);
+        refreshListDocumentType();
     }
 
     @Override

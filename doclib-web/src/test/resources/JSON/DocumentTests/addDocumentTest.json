@@ -1,6 +1,6 @@
 {
   "id": 0,
-  "name": "test_doc2",
+  "name": "doc",
   "type": 1,
   "actualVersion": 0,
   "catalogId": 1,
@@ -13,7 +13,7 @@
       "importance": "IMPORTANT",
       "fileList": [
         {
-          "id": 0,
+          "id": 1,
           "docVerId": 0,
           "name": "test_file",
           "path": "test_file"

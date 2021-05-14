@@ -2,6 +2,7 @@ package servicetest;
 
 import com.strelnikov.doclib.dto.DocFileDto;
 import com.strelnikov.doclib.dto.DocVersionDto;
+import com.strelnikov.doclib.model.documnets.DocumentFile;
 import com.strelnikov.doclib.model.documnets.DocumentVersion;
 import com.strelnikov.doclib.model.documnets.Importance;
 import com.strelnikov.doclib.repository.DocFileDao;
@@ -12,6 +13,8 @@ import com.strelnikov.doclib.service.DocVersionActions;
 import com.strelnikov.doclib.service.DocumentActions;
 import com.strelnikov.doclib.service.DocFileActions;
 import com.strelnikov.doclib.service.dtomapper.DtoMapper;
+import com.strelnikov.doclib.service.exceptions.FileIsAlreadyExistException;
+import com.strelnikov.doclib.service.exceptions.UnitNotFoundException;
 import com.strelnikov.doclib.service.exceptions.VersionIsAlreadyExistException;
 import com.strelnikov.doclib.service.impl.configuration.ServiceImplConfiguration;
 import org.junit.*;
@@ -50,33 +53,35 @@ public class DocFileImplTest {
     }
 
     @Test
-    public void fileAddTest() throws VersionIsAlreadyExistException {
-        DocFileDto fileDto = new DocFileDto(0,"test_file","test_path");
+    public void fileAddTest() throws VersionIsAlreadyExistException, UnitNotFoundException, FileIsAlreadyExistException {
+        DocFileDto fileDto = new DocFileDto(0,"test_add","test_path");
         fileDto = fileActions.createNewFile(fileDto);
-        List<DocFileDto> fileList = new ArrayList<>();
-        fileList.add(fileDto);
-        DocVersionDto docVersionDto = new DocVersionDto(0,1,1,"test_ver",
-                Importance.LOW.toString(),false,fileList);
-        docVersionDto = versionActions.saveDocVersion(docVersionDto);
-        int actual = docFileDao.getFilesList(dtoMapper.mapDocVersion(docVersionDto)).size();
-        fileActions.deleteFile(fileDto);
-        versionActions.deleteDocVersion(docVersionDto.getId());
-        Assert.assertEquals(1,actual);
+        String actual = fileActions.loadFile("test_add").getPath();
+        fileActions.deleteFile(fileDto.getId());
+        Assert.assertEquals("test_path",actual);
     }
 
     @Test
-    public void fileDeleteTest() throws VersionIsAlreadyExistException {
-        DocFileDto fileDto = new DocFileDto(0,"test_file","test_path");
+    public void fileDeleteTest() throws VersionIsAlreadyExistException, UnitNotFoundException, FileIsAlreadyExistException {
+        DocFileDto fileDto = new DocFileDto(0,"test_add","test_path");
         fileDto = fileActions.createNewFile(fileDto);
-        List<DocFileDto> fileList = new ArrayList<>();
-        fileList.add(fileDto);
-        DocVersionDto docVersionDto = new DocVersionDto(0,1,1,"test_ver",
-                Importance.LOW.toString(),false,fileList);
-        docVersionDto = versionActions.saveDocVersion(docVersionDto);
-        fileActions.deleteFile(fileDto);
-        int actual = docFileDao.getFilesList(dtoMapper.mapDocVersion(docVersionDto)).size();
-        versionActions.deleteDocVersion(docVersionDto.getId());
-        Assert.assertEquals(0,actual);
+        fileActions.deleteFile(fileDto.getId());
+        Assert.assertEquals(false,fileActions.isFileExist(dtoMapper.mapDocFile(fileDto)));
+    }
+
+    @Test
+    public void loadFileTest() throws UnitNotFoundException {
+        DocFileDto fileDto = fileActions.loadFile("test_file");
+        Assert.assertEquals(1,fileDto.getId());
+    }
+
+    @Test
+    public void isFileExistTest() {
+        DocumentFile docFile = new DocumentFile();
+        docFile.setId(1);
+        docFile.setFileName("test_file");
+        docFile.setFilePath("test_path");
+        Assert.assertEquals(true,fileActions.isFileExist(docFile));
     }
 
 

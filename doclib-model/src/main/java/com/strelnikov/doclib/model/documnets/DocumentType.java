@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import javax.print.Doc;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -16,7 +17,7 @@ import java.util.List;
 })
 public class DocumentType {
     @Transient
-    public static List<DocumentType> documentTypeList;
+    public static List<DocumentType> documentTypeList = new ArrayList<>();
 
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)

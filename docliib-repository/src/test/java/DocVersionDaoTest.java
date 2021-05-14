@@ -35,7 +35,7 @@ public class DocVersionDaoTest {
 
     @Before
     public void beforeEachDocVersionDaoTest(){
-        expected=docVersionDao.getDocVersionList(document).size();
+        expected=docVersionDao.getDocVersionList(document.getId()).size();
     }
 
     @Test
@@ -49,7 +49,7 @@ public class DocVersionDaoTest {
         documentVersion.setImportance(Importance.IMPORTANT);
         documentVersion.setModerated(false);
         documentVersion= docVersionDao.insertDocVersion(documentVersion);
-        int actual = docVersionDao.getDocVersionList(document).size();
+        int actual = docVersionDao.getDocVersionList(document.getId()).size();
         docVersionDao.deleteDocVersion(documentVersion.getId());
         Assert.assertEquals(expected,actual);
     }
@@ -65,7 +65,7 @@ public class DocVersionDaoTest {
         documentVersion.setModerated(false);
         documentVersion= docVersionDao.insertDocVersion(documentVersion);
         docVersionDao.deleteDocVersion(documentVersion.getId());
-        int actual = docVersionDao.getDocVersionList(document).size();
+        int actual = docVersionDao.getDocVersionList(document.getId()).size();
         Assert.assertEquals(expected,actual);
     }
 
@@ -77,7 +77,7 @@ public class DocVersionDaoTest {
 
     @Test
     public void getDocVersionsListTest(){
-        List<DocumentVersion> list = docVersionDao.getDocVersionList(document);
+        List<DocumentVersion> list = docVersionDao.getDocVersionList(document.getId());
         Assert.assertEquals("test description",list.get(0).getDescription());
     }
 }

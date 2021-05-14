@@ -52,4 +52,25 @@ public class DocFileJpa implements DocFileDao {
         em.close();
         return result;
     }
+
+    @Override
+    public DocumentFile getFile(int id) {
+        EntityManager em = getEntityManager();
+        DocumentFile docFile = em.find(DocumentFile.class,id);
+        em.close();
+        return docFile;
+    }
+
+    @Override
+    public DocumentFile getFile(String name) {
+        EntityManager em = getEntityManager();
+        Query query = em.createQuery("SELECT file FROM DocumentFile file WHERE file.fileName=:name");
+        query.setParameter("name",name);
+        DocumentFile docFile = null;
+        if(query.getResultList().size()!=0) {
+             docFile = (DocumentFile) query.getSingleResult();
+        }
+        em.close();
+        return docFile;
+    }
 }

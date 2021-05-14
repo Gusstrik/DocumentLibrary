@@ -106,7 +106,7 @@ public class DtoMapperImpl implements DtoMapper {
 
     @Override
     public DocFileDto mapDocFile(DocumentFile docFile) {
-        return new DocFileDto(docFile.getId(), docFile.getFileName(), docFile.getFileName());
+        return new DocFileDto(docFile.getId(), docFile.getFileName(), docFile.getFilePath());
     }
 
     @Override
@@ -158,22 +158,22 @@ public class DtoMapperImpl implements DtoMapper {
         document.setName(documentDto.getName());
         document.setCatalogId(documentDto.getCatalogId());
         document.setActualVersion(documentDto.getActualVersion());
-        List<DocumentVersion> list = new ArrayList<>();
-        for (DocVersionDto docVersionDto : documentDto.getVersionList()) {
-            list.add(mapDocVersion(docVersionDto));
-        }
-        document.setVersionsList(list);
+        document.setVersionsList(new ArrayList<>());
+        document.getVersionsList().add(mapDocVersion(documentDto.getVersion()));
         return document;
     }
 
     @Override
     public DocumentDto mapDocument(Document document) {
-        List<DocVersionDto> list = new ArrayList<>();
-        for (DocumentVersion version : document.getVersionsList()) {
-            list.add(mapDocVersion(version));
-        }
+        DocVersionDto docVersionDto = mapDocVersion(document.getDocumentVersion());
         return new DocumentDto(document.getId(), document.getName(), document.getDocumentType().getId(),
-                document.getActualVersion(), document.getCatalogId(), list);
+                document.getActualVersion(), document.getCatalogId(), docVersionDto);
+    }
+    @Override
+    public DocumentDto mapDocument(Document document, int version) {
+        DocVersionDto docVersionDto = mapDocVersion(document.getDocumentVersion(version));
+        return new DocumentDto(document.getId(), document.getName(), document.getDocumentType().getId(),
+                document.getActualVersion(), document.getCatalogId(), docVersionDto);
     }
 }
 

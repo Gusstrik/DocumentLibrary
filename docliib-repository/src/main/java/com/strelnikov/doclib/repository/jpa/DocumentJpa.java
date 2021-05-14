@@ -48,7 +48,7 @@ public class DocumentJpa implements DocumentDao {
         Document doc = entityManager.find(Document.class,docId);
         entityManager.close();
         if(doc!=null) {
-            doc.setVersionsList(docVersionDao.getDocVersionList(doc));
+            doc.setVersionsList(docVersionDao.getDocVersionList(doc.getId()));
         }
         return doc;
     }

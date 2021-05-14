@@ -32,6 +32,8 @@ public interface DtoMapper {
     DocVersionDto mapDocVersion(DocumentVersion documentVersion);
 
     Document mapDocument(DocumentDto documentDto);
+
     DocumentDto mapDocument (Document document);
 
+    DocumentDto mapDocument(Document document, int version);
 }
