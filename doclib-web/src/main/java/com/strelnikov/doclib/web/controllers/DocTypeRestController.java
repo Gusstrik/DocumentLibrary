@@ -10,19 +10,19 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/type")
+@RequestMapping("/rest/type")
 public class DocTypeRestController {
 
     @Autowired
     DocTypeActions docTypeAct;
 
-    @GetMapping
+    @GetMapping("/get")
     public ResponseEntity<List<DocTypeDto>> getTypeList(){
         docTypeAct.refreshListDocumentType();
         return ResponseEntity.ok(DocTypeDto.typesList);
     }
 
-    @PostMapping
+    @PostMapping("/post")
     public ResponseEntity<Object> postType(@RequestBody DocTypeDto docTypeDto){
         try {
             docTypeDto= docTypeAct.addDocumentType(docTypeDto);
@@ -32,7 +32,7 @@ public class DocTypeRestController {
         }
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("delete/{id}")
     public ResponseEntity<List<DocTypeDto>> deleteType (@PathVariable int id){
         docTypeAct.deleteDocumentType(id);
         return ResponseEntity.ok(DocTypeDto.typesList);

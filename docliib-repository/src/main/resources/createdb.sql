@@ -53,6 +53,13 @@ CREATE TABLE IF NOT EXISTS files_versions
     FOREIGN KEY (version_id) references documents_versions(id) on update cascade on delete cascade
 );
 
+CREATE TABLE IF NOT EXISTS clients
+(
+    id serial,
+    login varchar,
+    password varchar,
+);
+
 INSERT INTO catalogs(id, name, catalog_id)
     SELECT 1, '/',0
 WHERE NOT EXISTS (
