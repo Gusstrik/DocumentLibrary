@@ -8,18 +8,20 @@ import com.strelnikov.doclib.service.exceptions.VersionIsAlreadyExistException;
 import com.strelnikov.doclib.service.exceptions.VersionNotExistException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.FileNotFoundException;
 
 @RestController
-@RequestMapping("/document")
+@RequestMapping("rest/document")
+@Secured({"ROLE_USER", "ROLE_ADMIN"})
 public class DocumentRestController {
 
     @Autowired
     DocumentActions docAct;
 
-    @GetMapping("{id}")
+    @GetMapping("get/{id}")
     public ResponseEntity<DocumentDto> getDocument(@PathVariable int id){
         try{
             DocumentDto docDto = docAct.loadDocument(id);
@@ -29,7 +31,7 @@ public class DocumentRestController {
         }
     }
 
-    @PostMapping
+    @PostMapping("post")
     public ResponseEntity<Object> postDocument(@RequestBody DocumentDto documentDto) throws VersionNotExistException {
         try {
             documentDto = docAct.saveDocument(documentDto);
@@ -43,7 +45,7 @@ public class DocumentRestController {
         }
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("delete/{id}")
     public ResponseEntity<Object> deleteDocument(@PathVariable int id){
         try {
             docAct.loadDocument(id);

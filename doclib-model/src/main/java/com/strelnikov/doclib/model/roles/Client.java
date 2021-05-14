@@ -13,6 +13,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "clients")
+
 public class Client {
 
     @Id

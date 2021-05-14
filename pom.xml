@@ -37,6 +37,8 @@
         <thymeleaf.version>3.0.12.RELEASE</thymeleaf.version>
         <commons-fileupload.version>1.4</commons-fileupload.version>
         <spring-security.version>5.4.6</spring-security.version>
+        <echache.version>3.9.3</echache.version>
+        <spring-context.version>5.3.7</spring-context.version>
     </properties>
 
     <dependencyManagement>
@@ -159,6 +161,21 @@
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-taglibs</artifactId>
                 <version>${spring-security.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-acl</artifactId>
+                <version>${spring-security.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.ehcache</groupId>
+                <artifactId>ehcache</artifactId>
+                <version>${echache.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context-support</artifactId>
+                <version>${spring-context.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

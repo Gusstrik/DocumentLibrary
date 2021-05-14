@@ -7,11 +7,13 @@ import com.strelnikov.doclib.service.exceptions.UnitIsAlreadyExistException;
 import com.strelnikov.doclib.service.exceptions.UnitNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 
 @RestController
 @RequestMapping(path = "rest/catalog")
+@Secured({"ROLE_USER", "ROLE_ADMIN"})
 public class CatalogRestController {
 
     @Autowired

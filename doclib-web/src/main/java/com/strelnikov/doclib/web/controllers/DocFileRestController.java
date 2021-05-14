@@ -8,6 +8,7 @@ import org.eclipse.jetty.server.Dispatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.DispatcherServlet;
@@ -18,12 +19,13 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/file")
+@Secured({"ROLE_USER", "ROLE_ADMIN"})
 public class DocFileRestController {
 
     @Autowired
     private DocFileActions fileAct;
 
-    @PostMapping
+    @PostMapping("post")
     public ResponseEntity<DocFileDto> uploadFile(@RequestPart("file") MultipartFile file){
         String filePath = "doclib-web/src/main/resources/uploaded_files/"+file.getOriginalFilename();
         try {
@@ -36,7 +38,7 @@ public class DocFileRestController {
         }
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("delete/{id}")
     public ResponseEntity<String> deleteFile(@PathVariable int id){
         try{
             fileAct.deleteFile(id);
@@ -46,7 +48,7 @@ public class DocFileRestController {
         }
     }
 
-    @GetMapping(value = "{name}",produces = "multipart/form-data")
+    @GetMapping(value = "get/{name}",produces = "multipart/form-data")
     @ResponseBody
     public FileSystemResource getFile(@PathVariable String name) throws UnitNotFoundException {
         DocFileDto docFileDto = fileAct.loadFile(name);

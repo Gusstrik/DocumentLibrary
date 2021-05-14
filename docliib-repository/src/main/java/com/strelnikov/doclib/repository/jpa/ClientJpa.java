@@ -31,4 +31,23 @@ public class ClientJpa implements ClientDao {
         em.close();
         return client;
     }
+
+    @Override
+    public Client create(Client client) {
+        EntityManager em = getEntityManager();
+        em.getTransaction().begin();
+        em.persist(client);
+        em.getTransaction().commit();
+        em.close();
+        return client;
+    }
+
+    @Override
+    public void delete(Client client) {
+        EntityManager em = getEntityManager();
+        em.getTransaction().begin();
+        em.remove(client);
+        em.getTransaction().commit();
+        em.close();
+    }
 }

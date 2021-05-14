@@ -9,13 +9,15 @@ import com.strelnikov.doclib.service.exceptions.VersionIsAlreadyExistException;
 import com.strelnikov.doclib.service.exceptions.VersionNotExistException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.FileNotFoundException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/document/{id}/version")
+@RequestMapping("/rest/document/{id}/version")
+@Secured({"ROLE_USER", "ROLE_ADMIN"})
 public class DocVersionRestController {
 
     @Autowired
