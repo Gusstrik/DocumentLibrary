@@ -2,6 +2,7 @@ package com.strelnikov.doclib.web.controllers;
 
 import com.strelnikov.doclib.dto.CatalogDto;
 import com.strelnikov.doclib.dto.DocFileDto;
+import com.strelnikov.doclib.dto.DocumentDto;
 import com.strelnikov.doclib.dto.PermissionDto;
 import com.strelnikov.doclib.model.roles.PermissionType;
 import com.strelnikov.doclib.service.DocFileActions;
@@ -91,6 +92,18 @@ public class DocFileRestController {
             }
         } catch (UnitNotFoundException e) {
             return ResponseEntity.status(404).build();
+        }
+    }
+
+    @PostMapping("get/{name}/permissions/post")
+    @Secured({"ROLE_ADMIN"})
+    public ResponseEntity<List<PermissionDto>> postPermissionList(@RequestBody List<PermissionDto> permissionDtoList, @PathVariable String name){
+        try {
+            DocFileDto fileDto = fileAct.loadFile(name);
+            securityActions.updatePermissions(permissionDtoList);
+            return ResponseEntity.ok(securityActions.getObjectPermissions(fileDto));
+        } catch (UnitNotFoundException e) {
+            return ResponseEntity.notFound().build();
         }
     }
 }

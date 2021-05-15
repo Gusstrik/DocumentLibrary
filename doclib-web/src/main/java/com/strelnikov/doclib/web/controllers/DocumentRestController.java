@@ -99,4 +99,16 @@ public class DocumentRestController {
         }
     }
 
+    @PostMapping("get/{id}/permissions/post")
+    @Secured({"ROLE_ADMIN"})
+    public ResponseEntity<List<PermissionDto>> postPermissionList(@RequestBody List<PermissionDto> permissionDtoList, @PathVariable int id){
+        try {
+            DocumentDto documentDto = docAct.loadDocument(id);
+            securityActions.updatePermissions(permissionDtoList);
+            return ResponseEntity.ok(securityActions.getObjectPermissions(documentDto));
+        } catch (UnitNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 }

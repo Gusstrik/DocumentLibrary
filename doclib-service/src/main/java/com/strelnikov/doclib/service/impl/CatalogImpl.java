@@ -1,8 +1,10 @@
 package com.strelnikov.doclib.service.impl;
 
 import com.strelnikov.doclib.dto.CatalogDto;
-import com.strelnikov.doclib.dto.UnitDto;
 import com.strelnikov.doclib.model.conception.UnitType;
+import com.strelnikov.doclib.model.roles.Client;
+import com.strelnikov.doclib.model.roles.PermissionType;
+import com.strelnikov.doclib.model.roles.SecuredObject;
 import com.strelnikov.doclib.repository.DocumentDao;
 import com.strelnikov.doclib.service.SecurityActions;
 import com.strelnikov.doclib.service.dtomapper.DtoClassMapper;
@@ -98,6 +100,21 @@ public class CatalogImpl implements CatalogActions {
             catalogDto = createNewCatalog(catalogDto);
         }
         return catalogDto;
+    }
+
+    @Override
+    public CatalogDto filterContentList(CatalogDto catalogDto, String login, PermissionType permissionType) {
+        Catalog catalog = dtoMapper.mapCatalog(catalogDto);
+        List<SecuredObject> securedObjectList = new ArrayList<>();
+        for(Unit unit:catalog.getContentList()){
+            securedObjectList.add(unit);
+        }
+        securedObjectList = securityActions.filterList(securedObjectList,login,permissionType);
+        catalog.setContentList(new ArrayList<>());
+        for (SecuredObject securedObject:securedObjectList){
+            catalog.getContentList().add((Unit)securedObject);
+        }
+        return dtoMapper.mapCatalog(catalog);
     }
 
     private void editCatalog(Catalog catalog) throws UnitIsAlreadyExistException {

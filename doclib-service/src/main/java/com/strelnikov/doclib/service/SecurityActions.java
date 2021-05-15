@@ -1,8 +1,6 @@
 package com.strelnikov.doclib.service;
 
-import com.strelnikov.doclib.dto.CatalogDto;
 import com.strelnikov.doclib.dto.PermissionDto;
-import com.strelnikov.doclib.model.catalogs.Catalog;
 import com.strelnikov.doclib.model.roles.Client;
 import com.strelnikov.doclib.model.roles.PermissionType;
 import com.strelnikov.doclib.model.roles.SecuredObject;
@@ -27,5 +25,5 @@ public interface SecurityActions {
 
     void updatePermissions (List<PermissionDto> permissionDtoList);
 
-    List<SecuredObject> filterList (List<SecuredObject> securedObjectList, Client client, PermissionType permissionType);
+    List<SecuredObject> filterList (List<SecuredObject> securedObjectList, String login, PermissionType permissionType);
 }

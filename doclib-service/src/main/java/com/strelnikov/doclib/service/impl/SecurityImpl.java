@@ -1,7 +1,6 @@
 package com.strelnikov.doclib.service.impl;
 
 import com.strelnikov.doclib.dto.PermissionDto;
-import com.strelnikov.doclib.model.catalogs.Catalog;
 import com.strelnikov.doclib.model.roles.Client;
 import com.strelnikov.doclib.model.roles.Permission;
 import com.strelnikov.doclib.model.roles.PermissionType;
@@ -30,6 +29,9 @@ public class SecurityImpl implements SecurityActions {
 
     @Autowired
     private DtoMapper dtoMapper;
+
+    @Autowired
+    private ClientDao clientDao;
 
     @Override
     public boolean checkPermission(Object object, String login, PermissionType permissionType) {
@@ -86,13 +88,15 @@ public class SecurityImpl implements SecurityActions {
     }
 
     @Override
-    public List<SecuredObject> filterList(List<SecuredObject> securedObjectList, Client client, PermissionType permissionType) {
+    public List<SecuredObject> filterList(List<SecuredObject> securedObjectList, String login, PermissionType permissionType) {
+        Client client = clientDao.findBylogin(login);
+        List<SecuredObject> newSecuredObjectList = new ArrayList<>();
         for (SecuredObject securedObject:securedObjectList){
-            if(!permissionDao.checkPermission(securedObject,client,permissionType)){
-                securedObjectList.remove(securedObject);
+            if(permissionDao.checkPermission(securedObject,client,permissionType)){
+                newSecuredObjectList.add(securedObject);
             }
         }
-        return securedObjectList;
+        return newSecuredObjectList;
     }
 
 
