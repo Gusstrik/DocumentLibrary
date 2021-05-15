@@ -4,6 +4,7 @@ import com.strelnikov.doclib.dto.DocVersionDto;
 import com.strelnikov.doclib.dto.DocumentDto;
 import com.strelnikov.doclib.model.conception.Unit;
 import com.strelnikov.doclib.model.conception.UnitType;
+import com.strelnikov.doclib.model.documnets.DocumentFile;
 import com.strelnikov.doclib.repository.CatalogDao;
 
 import com.strelnikov.doclib.repository.DocFileDao;
@@ -110,6 +111,9 @@ public class DocumentImpl implements DocumentActions {
             docVer.setId(docVerActions.saveDocVersion(dtoMapper.mapDocVersion(docVer)).getId());
             securityActions.addObjectToSecureTable(document);
             securityActions.inheritPermissions(document,catalogDao.loadCatalog(document.getCatalogId()));
+            for (DocumentFile documentFile:docVer.getFilesList()){
+                securityActions.inheritPermissions(documentFile, docVer.getParentDocument());
+            }
             return dtoMapper.mapDocument(document);
         }
     }
@@ -122,6 +126,9 @@ public class DocumentImpl implements DocumentActions {
             DocumentVersion docVer = document.getVersionsList().get(0);
             docVer.setVersion(document.getActualVersion());
             docVerActions.saveDocVersion(dtoMapper.mapDocVersion(docVer));
+            for (DocumentFile documentFile:docVer.getFilesList()){
+                securityActions.inheritPermissions(documentFile, docVer.getParentDocument());
+            }
         }
         if (documentDb.getActualVersion() > document.getActualVersion()) {
             rollback(documentDb.getId(), document.getActualVersion());

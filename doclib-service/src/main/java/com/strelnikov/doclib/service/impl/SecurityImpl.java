@@ -50,7 +50,7 @@ public class SecurityImpl implements SecurityActions {
     }
 
     @Override
-    public void inheritPermissions(SecuredObject heir, Catalog parent) {
+    public void inheritPermissions(SecuredObject heir, SecuredObject parent) {
         List<Permission> permissionList = permissionDao.getPermissionsOfSecuredObject(parent);
         for (Permission permission : permissionList){
             permissionDao.updatePermission(heir,permission.getClient(),PermissionType.convertToInt(permission.getPermissionList()));

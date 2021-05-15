@@ -27,12 +27,12 @@ public class DocTypeRestController {
 
     @PostMapping("/post")
     @Secured({"ROLE_ADMIN"})
-    public ResponseEntity<Object> postType(@RequestBody DocTypeDto docTypeDto){
+    public ResponseEntity<DocTypeDto> postType(@RequestBody DocTypeDto docTypeDto){
         try {
             docTypeDto= docTypeAct.addDocumentType(docTypeDto);
             return ResponseEntity.ok(docTypeDto);
         } catch (TypeIsAlreadyExistException e) {
-            return ResponseEntity.badRequest().body("Type is already exist");
+            return ResponseEntity.badRequest().build();
         }
     }
 

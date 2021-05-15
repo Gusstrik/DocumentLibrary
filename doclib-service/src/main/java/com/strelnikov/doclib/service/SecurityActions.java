@@ -15,7 +15,7 @@ public interface SecurityActions {
 
     List<PermissionDto> getObjectPermissions (Object object);
 
-    void inheritPermissions (SecuredObject heir, Catalog parent);
+    void inheritPermissions (SecuredObject heir, SecuredObject parent);
 
     void addObjectToSecureTable(SecuredObject securedObject);
 
