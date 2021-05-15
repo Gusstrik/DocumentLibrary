@@ -1,6 +1,9 @@
+import com.strelnikov.doclib.model.roles.Authority;
+import com.strelnikov.doclib.model.roles.AuthorityType;
 import com.strelnikov.doclib.model.roles.Client;
 import com.strelnikov.doclib.repository.ClientDao;
 import com.strelnikov.doclib.repository.configuration.RepositoryConfiguration;
+import org.checkerframework.checker.units.qual.A;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
@@ -20,5 +23,35 @@ public class ClientDaoTest {
     public void getByIdTest(){
         Client client = clientDao.findById(1);
         Assert.assertEquals("root",client.getLogin());
+    }
+
+    @Test
+    public void addClientTest(){
+        Client client = new Client();
+        client.setLogin("test_user");
+        client.setPassword("1234");
+        Authority authority = new Authority();
+        authority.setId(1);
+        authority.setName(AuthorityType.ROLE_USER);
+        client.getAuthorities().add(authority);
+        client = clientDao.create(client);
+        String actual = clientDao.findById(client.getId()).getLogin();
+        clientDao.delete(client);
+        Assert.assertEquals("test_user",actual);
+    }
+
+    @Test
+    public void deleteClientTest(){
+        Client client = new Client();
+        client.setLogin("test_user");
+        client.setPassword("1234");
+        Authority authority = new Authority();
+        authority.setId(1);
+        authority.setName(AuthorityType.ROLE_USER);
+        client.getAuthorities().add(authority);
+        client = clientDao.create(client);
+        clientDao.delete(client);
+        Client actual = clientDao.findById(client.getId());
+        Assert.assertNull(actual);
     }
 }
