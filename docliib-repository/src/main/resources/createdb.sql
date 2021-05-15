@@ -65,3 +65,74 @@ INSERT INTO catalogs(id, name, catalog_id)
 WHERE NOT EXISTS (
     SELECT 1 FROM catalogs WHERE name='/'
 );
+CREATE TABLE IF NOT EXISTS authority
+(
+    id serial,
+    name varchar not null,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS client_authority
+(
+    client_id int not null ,
+    authority_id int not null,
+    primary key (client_id,authority_id),
+    FOREIGN KEY (client_id) REFERENCES clients(id) on delete cascade on update cascade,
+    FOREIGN KEY (authority_id) REFERENCES authority(id) on delete  cascade  on UPDATE  cascade
+);
+
+INSERT INTO authority (id, name) VALUES
+(1, 'ROLE_USER'),
+(2, 'ROLE_ADMIN') ON CONFLICT DO NOTHING ;
+
+INSERT INTO client_authority(client_id, authority_id)
+VALUES (1,2) ON CONFLICT DO NOTHING;
+
+CREATE TABLE IF NOT EXISTS sec_object_classes
+(
+    id   serial,
+    name varchar(255) not null,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS sec_object
+(
+    id              serial,
+    object_table_id int not null,
+    class_id        int not null,
+    PRIMARY KEY (id),
+    FOREIGN KEY (class_id) REFERENCES sec_object_classes (id) on update cascade on delete cascade
+);
+
+CREATE TABLE IF NOT EXISTS sec_permission
+(
+    id         serial,
+    object_id  int not null,
+    client_id  int not null,
+    permission int not null,
+    PRIMARY KEY (id),
+    FOREIGN KEY (client_id) REFERENCES clients (id) on update cascade on delete cascade,
+    FOREIGN KEY (object_id) REFERENCES sec_object (id) on update cascade on delete cascade
+);
+
+INSERT INTO sec_object_classes
+VALUES (1, 'Catalog')
+ON CONFLICT DO NOTHING;
+
+INSERT INTO sec_object_classes
+VALUES (2, 'Document')
+ON CONFLICT DO NOTHING;
+
+INSERT INTO sec_object_classes
+VALUES (3, 'DocumentFile')
+ON CONFLICT DO NOTHING;
+
+INSERT INTO sec_object
+VALUES (1, 1, 1)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO sec_permission
+VALUES (1, 1, 1, 7)
+ON CONFLICT DO NOTHING;
+
+
