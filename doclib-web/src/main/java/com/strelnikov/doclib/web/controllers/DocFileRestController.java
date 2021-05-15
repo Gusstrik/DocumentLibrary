@@ -1,6 +1,8 @@
 package com.strelnikov.doclib.web.controllers;
 
+import com.strelnikov.doclib.dto.CatalogDto;
 import com.strelnikov.doclib.dto.DocFileDto;
+import com.strelnikov.doclib.dto.PermissionDto;
 import com.strelnikov.doclib.model.roles.PermissionType;
 import com.strelnikov.doclib.service.DocFileActions;
 import com.strelnikov.doclib.service.DocumentActions;
@@ -21,10 +23,11 @@ import org.springframework.web.servlet.DispatcherServlet;
 import javax.servlet.RequestDispatcher;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/file")
-@Secured({"ROLE_ADMIN"})
+@Secured({"ROLE_USER", "ROLE_ADMIN"})
 public class DocFileRestController {
 
     @Autowired
@@ -37,7 +40,6 @@ public class DocFileRestController {
     private DocumentActions documentActions;
 
     @PostMapping("post")
-    @Secured({"ROLE_USER", "ROLE_ADMIN"})
     public ResponseEntity<DocFileDto> uploadFile(@RequestPart("file") MultipartFile file) {
         String filePath = "doclib-web/src/main/resources/uploaded_files/" + file.getOriginalFilename();
         try {
@@ -51,6 +53,7 @@ public class DocFileRestController {
     }
 
     @DeleteMapping("delete/{id}")
+    @Secured({"ROLE_ADMIN"})
     public ResponseEntity<String> deleteFile(@PathVariable int id) {
         try {
             fileAct.deleteFile(id);
@@ -62,7 +65,6 @@ public class DocFileRestController {
 
     @GetMapping(value = "get/{name}", produces = "multipart/form-data")
     @ResponseBody
-    @Secured({"ROLE_USER", "ROLE_ADMIN"})
     public ResponseEntity<FileSystemResource> getFile(@PathVariable String name) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         try {
@@ -72,6 +74,21 @@ public class DocFileRestController {
                 return ResponseEntity.ok(new FileSystemResource(responseFile));
             }
             return ResponseEntity.status(403).build();
+        } catch (UnitNotFoundException e) {
+            return ResponseEntity.status(404).build();
+        }
+    }
+
+    @GetMapping("get/{name}/permissions/get")
+    public ResponseEntity<List<PermissionDto>> getPermissionList(@PathVariable String name){
+        try {
+            DocFileDto fileDto = fileAct.loadFile(name);
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            if (securityActions.checkPermission(fileDto,auth.getName(),PermissionType.READING)) {
+                return ResponseEntity.ok(securityActions.getObjectPermissions(fileDto));
+            }else{
+                return ResponseEntity.status(403).build();
+            }
         } catch (UnitNotFoundException e) {
             return ResponseEntity.status(404).build();
         }

@@ -44,7 +44,7 @@ public class CatalogRestController {
         }
     }
 
-    @GetMapping("get/{id}/permissions")
+    @GetMapping("get/{id}/permissions/get")
     public ResponseEntity<List<PermissionDto>> getPermissionList(@PathVariable int id){
         try {
             CatalogDto catalogDto = catalogAct.loadCatalog(id);
@@ -56,6 +56,18 @@ public class CatalogRestController {
             }
         } catch (UnitNotFoundException e) {
             return ResponseEntity.status(404).build();
+        }
+    }
+
+    @PostMapping("get/{id}/permissions/post")
+    @Secured({"ROLE_ADMIN"})
+    public ResponseEntity<List<PermissionDto>> postPermissionList(@RequestBody List<PermissionDto> permissionDtoList, @PathVariable int id){
+        try {
+            CatalogDto catalogDto = catalogAct.loadCatalog(id);
+            securityActions.updatePermissions(permissionDtoList);
+            return ResponseEntity.ok(securityActions.getObjectPermissions(catalogDto));
+        } catch (UnitNotFoundException e) {
+            return ResponseEntity.notFound().build();
         }
     }
 

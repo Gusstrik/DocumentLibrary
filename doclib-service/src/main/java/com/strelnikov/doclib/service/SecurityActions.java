@@ -24,4 +24,8 @@ public interface SecurityActions {
     void addClientToSecureTable(Client client);
 
     void updatePermissions (SecuredObject securedObject, Client client, List<PermissionType> permissionTypeList);
+
+    void updatePermissions (List<PermissionDto> permissionDtoList);
+
+    List<SecuredObject> filterList (List<SecuredObject> securedObjectList, Client client, PermissionType permissionType);
 }

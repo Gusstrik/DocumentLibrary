@@ -77,5 +77,23 @@ public class SecurityImpl implements SecurityActions {
         permissionDao.updatePermission(securedObject,client,PermissionType.convertToInt(permissionTypeList));
     }
 
+    @Override
+    public void updatePermissions(List<PermissionDto> permissionDtoList) {
+        for(PermissionDto permissionDto:permissionDtoList){
+            Permission permission = dtoMapper.mapPermission(permissionDto);
+            permissionDao.updatePermission(permission.getSecuredObject(),permission.getClient(),PermissionType.convertToInt(permission.getPermissionList()));
+        }
+    }
+
+    @Override
+    public List<SecuredObject> filterList(List<SecuredObject> securedObjectList, Client client, PermissionType permissionType) {
+        for (SecuredObject securedObject:securedObjectList){
+            if(!permissionDao.checkPermission(securedObject,client,permissionType)){
+                securedObjectList.remove(securedObject);
+            }
+        }
+        return securedObjectList;
+    }
+
 
 }

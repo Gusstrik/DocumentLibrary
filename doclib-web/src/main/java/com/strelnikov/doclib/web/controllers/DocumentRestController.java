@@ -1,6 +1,8 @@
 package com.strelnikov.doclib.web.controllers;
 
+import com.strelnikov.doclib.dto.CatalogDto;
 import com.strelnikov.doclib.dto.DocumentDto;
+import com.strelnikov.doclib.dto.PermissionDto;
 import com.strelnikov.doclib.model.roles.PermissionType;
 import com.strelnikov.doclib.service.CatalogActions;
 import com.strelnikov.doclib.service.DocumentActions;
@@ -17,6 +19,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.FileNotFoundException;
+import java.util.List;
 
 @RestController
 @RequestMapping("rest/document")
@@ -37,7 +40,7 @@ public class DocumentRestController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         try{
             DocumentDto docDto = docAct.loadDocument(id);
-            if (securityActions.checkPermission(docDto,auth.getName(),PermissionType.WRITING)) {
+            if (securityActions.checkPermission(docDto,auth.getName(),PermissionType.READING)) {
                 return ResponseEntity.ok(docDto);
             }
             return ResponseEntity.status(403).build();
@@ -80,4 +83,20 @@ public class DocumentRestController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping("get/{id}/permissions/get")
+    public ResponseEntity<List<PermissionDto>> getPermissionList(@PathVariable int id){
+        try {
+            DocumentDto documentDto = docAct.loadDocument(id);
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            if (securityActions.checkPermission(documentDto,auth.getName(),PermissionType.READING)) {
+                return ResponseEntity.ok(securityActions.getObjectPermissions(documentDto));
+            }else{
+                return ResponseEntity.status(403).build();
+            }
+        } catch (UnitNotFoundException e) {
+            return ResponseEntity.status(404).build();
+        }
+    }
+
 }
