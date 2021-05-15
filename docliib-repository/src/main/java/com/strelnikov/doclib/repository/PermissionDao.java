@@ -13,9 +13,11 @@ public interface PermissionDao {
 
     boolean checkPermission (SecuredObject securedObject, Client client, PermissionType permissionType);
 
-    Integer getSecuredObjectId(SecuredObject securedObject);
+    Integer getObjectSecureId(SecuredObject securedObject);
 
     List<Permission> getClientPermissions(Client client);
 
-    List<Permission> getPermissionsByObj(SecuredObject securedObject);
+    List<Permission> getPermissionsOfSecuredObject(SecuredObject securedObject);
+
+    SecuredObject getSecuredObjectBySecureId(int id);
 }
