@@ -1,5 +1,6 @@
 package com.strelnikov.doclib.service.impl;
 
+import com.strelnikov.doclib.dto.CatalogDto;
 import com.strelnikov.doclib.dto.PermissionDto;
 import com.strelnikov.doclib.model.catalogs.Catalog;
 import com.strelnikov.doclib.model.roles.Permission;
@@ -49,4 +50,16 @@ public class SecurityImpl implements SecurityActions {
         }
         return permissionDtoList;
     }
+
+    @Override
+    public void inheritPermissions(Object heir, CatalogDto parent) {
+        SecuredObject securedHeir = dtoClassMapper.mapClass(heir);
+        Catalog secureParent = dtoMapper.mapCatalog(parent);
+        List<Permission> permissionList = checkPermission.getPermissionsOfSecuredObject(secureParent);
+        for (Permission permission : permissionList){
+            checkPermission.updatePermission(securedHeir,permission.getClient(),PermissionType.convertToInt(permission.getPermissionList()));
+        }
+    }
+
+
 }
