@@ -16,6 +16,7 @@ public class PermissionDaoTest {
     private PermissionDao checkPermission = appContext.getBean(PermissionDao.class);
     private ClientDao clientDao = appContext.getBean(ClientDao.class);
     private CatalogDao catalogDao = appContext.getBean(CatalogDao.class);
+    private  Catalog catalog = catalogDao.loadCatalog(1);
 
     @Test
     public void getClassIdTest(){
@@ -25,16 +26,16 @@ public class PermissionDaoTest {
 
     @Test
     public void getObjectIdTest(){
-        int actual = checkPermission.getSecuredObjectId(1,Catalog.class);
+        int actual = checkPermission.getSecuredObjectId(catalog);
         Assert.assertEquals(1,actual);
     }
 
     @Test
     public void checkPermissionTest(){
         boolean actual = true;
-        actual = actual && checkPermission.checkPermission(1,Catalog.class,clientDao.findBylogin("root"), PermissionType.MODERATING);
-        actual = actual && checkPermission.checkPermission(1,Catalog.class,clientDao.findBylogin("root"), PermissionType.WRITING);
-        actual = actual && checkPermission.checkPermission(1,Catalog.class,clientDao.findBylogin("root"), PermissionType.READING);
+        actual = actual && checkPermission.checkPermission(catalog,clientDao.findBylogin("root"), PermissionType.MODERATING);
+        actual = actual && checkPermission.checkPermission(catalog,clientDao.findBylogin("root"), PermissionType.WRITING);
+        actual = actual && checkPermission.checkPermission(catalog,clientDao.findBylogin("root"), PermissionType.READING);
         Assert.assertTrue(actual);
     }
 

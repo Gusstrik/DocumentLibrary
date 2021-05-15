@@ -15,7 +15,6 @@ public class FactorySecuredObject {
 
             case "DocumentFile":
                 return (DocumentFile)object;
-
         }
         return null;
     }

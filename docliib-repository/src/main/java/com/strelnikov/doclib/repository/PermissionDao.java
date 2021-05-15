@@ -11,9 +11,9 @@ public interface PermissionDao {
 
     Integer getClassId(Class clazz);
 
-    Integer getSecuredObjectId(int objectId, Class clazz);
+    boolean checkPermission (SecuredObject securedObject, Client client, PermissionType permissionType);
 
-    boolean checkPermission (int objectId, Class clazz, Client client, PermissionType permissionType);
+    Integer getSecuredObjectId(SecuredObject securedObject);
 
     List<Permission> getClientPermissions(Client client);
 

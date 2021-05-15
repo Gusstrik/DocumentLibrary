@@ -183,7 +183,8 @@ public class DtoMapperImpl implements DtoMapper {
 
     @Override
     public PermissionDto mapPermission(Permission permission) {
-        return null;
+        return new PermissionDto(permission.getClientId(),permission.getSecuredObject().getName(),
+                permission.getSecuredObject().getClass().getSimpleName(),permission.getPermissionList());
     }
 
     @Override
