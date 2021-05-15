@@ -19,7 +19,7 @@ import java.util.List;
 
 @Repository
 @Slf4j
-public class CheckPermissionDaoJdbc implements PermissionDao {
+public class PermissionJdbc implements PermissionDao {
 
     @Autowired
     private DataSource dataSource;

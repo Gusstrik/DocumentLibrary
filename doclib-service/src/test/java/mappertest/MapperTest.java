@@ -4,6 +4,8 @@ import com.strelnikov.doclib.dto.*;
 import com.strelnikov.doclib.model.catalogs.Catalog;
 import com.strelnikov.doclib.model.conception.Unit;
 import com.strelnikov.doclib.model.documnets.*;
+import com.strelnikov.doclib.model.roles.Permission;
+import com.strelnikov.doclib.model.roles.PermissionType;
 import com.strelnikov.doclib.repository.*;
 import com.strelnikov.doclib.repository.configuration.RepositoryConfiguration;
 import com.strelnikov.doclib.repository.jdbc.DatabaseCreatorJdbc;
@@ -20,6 +22,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import javax.print.Doc;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class MapperTest {
@@ -32,6 +35,7 @@ public class MapperTest {
     private DocFileDao docFileDao = appContext.getBean("DocFileJpa",DocFileDao.class);
     private DocumentDao docDao = appContext.getBean("DocumentJpa",DocumentDao.class);
     private CatalogDao catDao = appContext.getBean("CatalogJpa",CatalogDao.class);
+    private PermissionDao permissionDao = appContext.getBean(PermissionDao.class);
 
     @BeforeClass
     public static void initDataBase(){
@@ -113,14 +117,6 @@ public class MapperTest {
         Assert.assertEquals("test_doc",docDto.getName());
     }
 
-//    @Test
-//    public void documentMapTest(){
-//        Document doc= docDao.loadDocument(1);
-//        DocumentDto docDto= dtoMapper.mapDocument(doc);
-//        doc = dtoMapper.mapDocument(docDto);
-//        Assert.assertEquals("test_doc",doc.getName());
-//    }
-
     @Test
     public void catalogDtoMapTest(){
         Catalog cat= catDao.loadCatalog(1);
@@ -136,5 +132,21 @@ public class MapperTest {
         Assert.assertEquals("/",cat.getName());
     }
 
+    @Test
+    public void permissionMapTest(){
+        List<PermissionType> permissionList = new ArrayList<>();
+        permissionList.add(PermissionType.READING);
+        PermissionDto permissionDto = new PermissionDto(1,"/","Catalog",permissionList);
+        Permission permission = dtoMapper.mapPermission(permissionDto);
+        Assert.assertEquals("/",permission.getSecuredObject().getName());
+    }
+
+    @Test
+    public void permissionDtoMapTest(){
+        Catalog catalog = catDao.loadCatalog(1);
+        List<Permission> permissions =permissionDao.getPermissionsOfSecuredObject(catalog);
+        PermissionDto permissionDto = dtoMapper.mapPermission(permissions.get(0));
+        Assert.assertEquals("/",permissionDto.getObjectName());
+    }
 
 }

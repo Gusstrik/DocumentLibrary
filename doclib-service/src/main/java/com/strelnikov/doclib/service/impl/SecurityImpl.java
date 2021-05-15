@@ -4,6 +4,7 @@ import com.strelnikov.doclib.model.catalogs.Catalog;
 import com.strelnikov.doclib.model.roles.PermissionType;
 import com.strelnikov.doclib.model.documnets.Document;
 import com.strelnikov.doclib.model.documnets.DocumentFile;
+import com.strelnikov.doclib.model.roles.SecuredObject;
 import com.strelnikov.doclib.repository.ClientDao;
 import com.strelnikov.doclib.repository.PermissionDao;
 import com.strelnikov.doclib.service.SecurityActions;
@@ -19,23 +20,8 @@ public class SecurityImpl implements SecurityActions {
     private ClientDao client;
 
     @Override
-    public boolean checkPermission(int id, Object object, String login, PermissionType permissionType) {
-        Class clazz=null;
-        switch (object.getClass().getSimpleName()){
-            case "CatalogDto":
-                clazz = Catalog.class;
-                break;
-            case "DocumentDto":
-                clazz = Document.class;
-                break;
-            case "DocFileDto":
-                clazz = DocumentFile.class;
-                break;
-        }
-        if (clazz!=null) {
-            return checkPermission.checkPermission(id, clazz, client.findBylogin(login), permissionType);
-        }else {
-            return false;
-        }
+    public boolean checkPermission(SecuredObject securedObject, String login, PermissionType permissionType) {
+        return checkPermission.checkPermission(securedObject, client.findBylogin(login), permissionType);
+
     }
 }
