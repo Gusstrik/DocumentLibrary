@@ -22,4 +22,8 @@ public interface PermissionDao {
     List<Permission> getPermissionsOfSecuredObject(SecuredObject securedObject);
 
     SecuredObject getSecuredObjectBySecureId(int id);
+
+    void updatePermission(SecuredObject securedObject, Client client, int permission);
+
+    void addClientToSecureTables(Client client);
 }

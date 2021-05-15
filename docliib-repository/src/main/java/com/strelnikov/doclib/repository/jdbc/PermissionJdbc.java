@@ -9,11 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -165,6 +163,60 @@ public class PermissionJdbc implements PermissionDao {
         }
         return null;
     }
+
+
+    private final String UPDATE_PERMISSION_QUERY = "UPDATE sec_permission SET permission = ? " +
+            "WHERE object_id = ? AND client_id = ?;";
+
+    @Override
+    public void updatePermission(SecuredObject securedObject, Client client, int permission) {
+        int secureId = getObjectSecureId(securedObject);
+        try (Connection connection = dataSource.getConnection()){
+            PreparedStatement statement = connection.prepareStatement(UPDATE_PERMISSION_QUERY);
+            statement.setInt(1,permission);
+            statement.setInt(2,secureId);
+            statement.setInt(3,client.getId());
+            statement.executeUpdate();
+        } catch (SQLException throwables) {
+            log.error(throwables.getMessage(), throwables);
+        }
+    }
+
+
+    private List<Integer> getAllSecureId(){
+        List<Integer> idList = new ArrayList<>();
+        try (Connection connection = dataSource.getConnection()){
+            Statement statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery("SELECT id FROM sec_object");
+            while(rs.next()){
+                idList.add(rs.getInt(1));
+            }
+        } catch (SQLException throwables) {
+            log.error(throwables.getMessage(), throwables);
+        }
+        return idList;
+    }
+
+    private final String ADD_CLIENT_QUERY = "INSERT INTO sec_permission (object_id,client_id,permission) " +
+            "VALUES(?, ?, 0);";
+
+    @Override
+    public void addClientToSecureTables(Client client) {
+        List<Integer> idList = getAllSecureId();
+        int clientId = client.getId();
+        try (Connection connection = dataSource.getConnection()){
+            for (Integer id:idList){
+                PreparedStatement statement = connection.prepareStatement(ADD_CLIENT_QUERY);
+                statement.setInt(1,id);
+                statement.setInt(2,clientId);
+                statement.executeUpdate();
+            }
+        } catch (SQLException throwables) {
+            log.error(throwables.getMessage(), throwables);
+        }
+    }
+
+
     @Override
     public  SecuredObject getSecuredObjectByObjectName(String objectName, String type){
         switch (type){

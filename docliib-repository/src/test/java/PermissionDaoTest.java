@@ -1,4 +1,5 @@
 import com.strelnikov.doclib.model.catalogs.Catalog;
+import com.strelnikov.doclib.model.roles.Client;
 import com.strelnikov.doclib.model.roles.PermissionType;
 import com.strelnikov.doclib.repository.CatalogDao;
 import com.strelnikov.doclib.repository.ClientDao;
@@ -49,5 +50,26 @@ public class PermissionDaoTest {
     public void getObjPermissionTest(){
         int actual = checkPermission.getPermissionsOfSecuredObject(catalogDao.loadCatalog(1)).size();
         Assert.assertEquals(1,actual);
+    }
+
+    @Test
+    public void updatePermissionTest(){
+        checkPermission.updatePermission(catalogDao.loadCatalog(1),clientDao.findBylogin("root"),0);
+        boolean actual = checkPermission.checkPermission(catalogDao.loadCatalog(1),clientDao.findBylogin("root"),PermissionType.READING);
+        checkPermission.updatePermission(catalogDao.loadCatalog(1),clientDao.findBylogin("root"),7);
+        Assert.assertFalse(actual);
+    }
+
+    @Test
+    public void addClientTest(){
+        Client client = clientDao.findBylogin("root");
+        client.setId(0);
+        client.setLogin("test");
+        client = clientDao.create(client);
+        checkPermission.addClientToSecureTables(client);
+        checkPermission.updatePermission(catalogDao.loadCatalog(1),client,7);
+        boolean actual = checkPermission.checkPermission(catalogDao.loadCatalog(1),client,PermissionType.READING);
+        clientDao.delete(client);
+        Assert.assertTrue(actual);
     }
 }
