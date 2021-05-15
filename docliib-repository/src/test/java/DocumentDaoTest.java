@@ -11,6 +11,7 @@ import org.junit.*;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import javax.print.Doc;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +39,12 @@ public class DocumentDaoTest {
         unit.setId(1);
         Document document = documentDao.loadDocument(unit.getId());
         Assert.assertEquals("test_doc",document.getName());
+    }
+
+    @Test
+    public void findByNameTest(){
+        Document document = documentDao.findByName("test_doc");
+        Assert.assertEquals(1,document.getId());
     }
 
     @Test

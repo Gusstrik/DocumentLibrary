@@ -86,4 +86,13 @@ public class CatalogJpa implements CatalogDao {
         em.close();
         return result;
     }
+
+    @Override
+    public Catalog findCatalogByName(String name){
+        EntityManager em = getEntityManager();
+        Query query = em.createQuery("SELECT cat FROM Catalog cat WHERE cat.name=:name");
+        query.setParameter("name",name);
+        Catalog catalog = (Catalog)query.getSingleResult();
+        return catalog;
+    }
 }

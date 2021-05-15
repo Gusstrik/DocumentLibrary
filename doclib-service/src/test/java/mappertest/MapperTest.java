@@ -4,11 +4,14 @@ import com.strelnikov.doclib.dto.*;
 import com.strelnikov.doclib.model.catalogs.Catalog;
 import com.strelnikov.doclib.model.conception.Unit;
 import com.strelnikov.doclib.model.documnets.*;
+import com.strelnikov.doclib.model.roles.*;
 import com.strelnikov.doclib.repository.*;
 import com.strelnikov.doclib.repository.configuration.RepositoryConfiguration;
 import com.strelnikov.doclib.repository.jdbc.DatabaseCreatorJdbc;
 import com.strelnikov.doclib.service.dtomapper.DtoMapper;
 import com.strelnikov.doclib.service.dtomapper.configuration.DtoMapperConfiguration;
+import org.checkerframework.checker.units.qual.A;
+import org.checkerframework.checker.units.qual.C;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -20,6 +23,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import javax.print.Doc;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class MapperTest {
@@ -32,6 +36,8 @@ public class MapperTest {
     private DocFileDao docFileDao = appContext.getBean("DocFileJpa",DocFileDao.class);
     private DocumentDao docDao = appContext.getBean("DocumentJpa",DocumentDao.class);
     private CatalogDao catDao = appContext.getBean("CatalogJpa",CatalogDao.class);
+    private PermissionDao permissionDao = appContext.getBean(PermissionDao.class);
+    private ClientDao clientDao = appContext.getBean(ClientDao.class);
 
     @BeforeClass
     public static void initDataBase(){
@@ -113,14 +119,6 @@ public class MapperTest {
         Assert.assertEquals("test_doc",docDto.getName());
     }
 
-//    @Test
-//    public void documentMapTest(){
-//        Document doc= docDao.loadDocument(1);
-//        DocumentDto docDto= dtoMapper.mapDocument(doc);
-//        doc = dtoMapper.mapDocument(docDto);
-//        Assert.assertEquals("test_doc",doc.getName());
-//    }
-
     @Test
     public void catalogDtoMapTest(){
         Catalog cat= catDao.loadCatalog(1);
@@ -136,5 +134,39 @@ public class MapperTest {
         Assert.assertEquals("/",cat.getName());
     }
 
+    @Test
+    public void permissionMapTest(){
+        List<PermissionType> permissionList = new ArrayList<>();
+        permissionList.add(PermissionType.READING);
+        PermissionDto permissionDto = new PermissionDto("root","/","Catalog",permissionList);
+        Permission permission = dtoMapper.mapPermission(permissionDto);
+        Assert.assertEquals("/",permission.getSecuredObject().getName());
+    }
+
+    @Test
+    public void permissionDtoMapTest(){
+        Catalog catalog = catDao.loadCatalog(1);
+        List<Permission> permissions =permissionDao.getPermissionsOfSecuredObject(catalog);
+        PermissionDto permissionDto = dtoMapper.mapPermission(permissions.get(0));
+        Assert.assertEquals("/",permissionDto.getObjectName());
+    }
+
+    @Test
+    public void clientDtoMapTest(){
+        Client client = clientDao.findBylogin("root");
+        ClientDto clientDto = dtoMapper.mapClient(client);
+        Assert.assertEquals("ROLE_ADMIN",clientDto.getRoles().get(0));
+    }
+
+    @Test
+    public void clientMapTest(){
+        Client client = clientDao.findBylogin("root");
+        ClientDto clientDto = dtoMapper.mapClient(client);
+        client = dtoMapper.mapClient(clientDto);
+        Authority authority = new Authority();
+        authority.setId(2);
+        authority.setName(AuthorityType.ROLE_ADMIN);
+        Assert.assertTrue(client.getAuthorities().stream().map(authority1 -> authority1.equals(authority)).findFirst().get());
+    }
 
 }

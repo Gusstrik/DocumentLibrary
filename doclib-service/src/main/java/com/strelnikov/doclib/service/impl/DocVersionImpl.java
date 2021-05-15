@@ -10,6 +10,7 @@ import com.strelnikov.doclib.repository.DocumentDao;
 import com.strelnikov.doclib.service.DocFileActions;
 import com.strelnikov.doclib.service.DocVersionActions;
 import com.strelnikov.doclib.service.DocumentActions;
+import com.strelnikov.doclib.service.SecurityActions;
 import com.strelnikov.doclib.service.dtomapper.DtoMapper;
 import com.strelnikov.doclib.service.exceptions.UnitNotFoundException;
 import com.strelnikov.doclib.service.exceptions.VersionIsAlreadyExistException;
@@ -33,6 +34,8 @@ public class DocVersionImpl implements DocVersionActions {
     private  DocFileActions fileAct;
     @Autowired
     private DocumentDao docDao;
+    @Autowired
+    private SecurityActions securityActions;
 
 
     private boolean checkIsVersionExist(DocumentVersion documentVersion) {
@@ -63,6 +66,7 @@ public class DocVersionImpl implements DocVersionActions {
         }else {
             if(checkAreFilesExist(documentVersion)) {
                 documentVersion = docVersionDao.insertDocVersion(documentVersion);
+
                 return dtoMapper.mapDocVersion(documentVersion);
             }else{
                 throw new FileNotFoundException();

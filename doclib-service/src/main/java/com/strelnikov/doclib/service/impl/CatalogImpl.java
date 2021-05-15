@@ -1,9 +1,13 @@
 package com.strelnikov.doclib.service.impl;
 
 import com.strelnikov.doclib.dto.CatalogDto;
-import com.strelnikov.doclib.dto.UnitDto;
 import com.strelnikov.doclib.model.conception.UnitType;
+import com.strelnikov.doclib.model.roles.Client;
+import com.strelnikov.doclib.model.roles.PermissionType;
+import com.strelnikov.doclib.model.roles.SecuredObject;
 import com.strelnikov.doclib.repository.DocumentDao;
+import com.strelnikov.doclib.service.SecurityActions;
+import com.strelnikov.doclib.service.dtomapper.DtoClassMapper;
 import com.strelnikov.doclib.service.dtomapper.DtoMapper;
 import com.strelnikov.doclib.service.exceptions.CannotDeleteMainCatalogException;
 import com.strelnikov.doclib.service.exceptions.UnitIsAlreadyExistException;
@@ -26,12 +30,17 @@ public class CatalogImpl implements CatalogActions {
     private final CatalogDao catalogDao;
     private final DocumentDao documentDao;
     private final DtoMapper dtoMapper;
+    private final SecurityActions securityActions;
+    private final DtoClassMapper dtoClassMapper;
 
     public CatalogImpl(@Qualifier("CatalogJpa") CatalogDao catalogDao, @Autowired DtoMapper dtoMapper,
-                       @Qualifier("DocumentJpa") DocumentDao documentDao) {
+                       @Qualifier("DocumentJpa") DocumentDao documentDao, @Autowired SecurityActions securityActions,
+                       @Autowired DtoClassMapper classMapper) {
         this.catalogDao = catalogDao;
         this.dtoMapper = dtoMapper;
         this.documentDao = documentDao;
+        this.securityActions = securityActions;
+        this.dtoClassMapper = classMapper;
     }
 
 
@@ -54,7 +63,10 @@ public class CatalogImpl implements CatalogActions {
         if (checkIfCatalogExist(catalog)) {
             throw new UnitIsAlreadyExistException(catalogDao.loadCatalog(catalog.getCatalogId()), catalog);
         } else {
-            return dtoMapper.mapCatalog(catalogDao.insertCatalog(catalog));
+            catalog = catalogDao.insertCatalog(catalog);
+            securityActions.addObjectToSecureTable(catalog);
+            securityActions.inheritPermissions(catalog,catalogDao.loadCatalog(catalog.getCatalogId()));
+            return dtoMapper.mapCatalog(catalog);
         }
     }
 
@@ -62,6 +74,7 @@ public class CatalogImpl implements CatalogActions {
     public void deleteCatalog(CatalogDto catalogDto) throws CannotDeleteMainCatalogException {
         if (catalogDto.getId() != 1) {
             catalogDao.deleteCatalog(catalogDto.getId());
+            securityActions.removeObjectFromSecureTable(dtoClassMapper.mapClass(catalogDto));
         }
         else {
             throw new CannotDeleteMainCatalogException();
@@ -89,6 +102,21 @@ public class CatalogImpl implements CatalogActions {
         return catalogDto;
     }
 
+    @Override
+    public CatalogDto filterContentList(CatalogDto catalogDto, String login, PermissionType permissionType) {
+        Catalog catalog = dtoMapper.mapCatalog(catalogDto);
+        List<SecuredObject> securedObjectList = new ArrayList<>();
+        for(Unit unit:catalog.getContentList()){
+            securedObjectList.add(unit);
+        }
+        securedObjectList = securityActions.filterList(securedObjectList,login,permissionType);
+        catalog.setContentList(new ArrayList<>());
+        for (SecuredObject securedObject:securedObjectList){
+            catalog.getContentList().add((Unit)securedObject);
+        }
+        return dtoMapper.mapCatalog(catalog);
+    }
+
     private void editCatalog(Catalog catalog) throws UnitIsAlreadyExistException {
         if (checkIfCatalogExist(catalog)) {
             throw new UnitIsAlreadyExistException(catalogDao.loadCatalog(catalog.getCatalogId()), catalog);
@@ -100,8 +128,10 @@ public class CatalogImpl implements CatalogActions {
 
     private void deleteUnit(Unit unit) {
         if (unit.getUnitType().equals(UnitType.CATALOG)) {
+            securityActions.removeObjectFromSecureTable(catalogDao.loadCatalog(unit.getId()));
             catalogDao.deleteCatalog(unit.getId());
         } else {
+            securityActions.removeObjectFromSecureTable(documentDao.loadDocument(unit.getId()));
             documentDao.deleteDocument(unit.getId());
         }
     }
