@@ -7,10 +7,7 @@ import com.strelnikov.doclib.model.documnets.*;
 import com.strelnikov.doclib.model.roles.Authority;
 import com.strelnikov.doclib.model.roles.Client;
 import com.strelnikov.doclib.model.roles.Permission;
-import com.strelnikov.doclib.repository.DocTypeDao;
-import com.strelnikov.doclib.repository.DocVersionDao;
-import com.strelnikov.doclib.repository.DocumentDao;
-import com.strelnikov.doclib.repository.PermissionDao;
+import com.strelnikov.doclib.repository.*;
 import com.strelnikov.doclib.repository.jpa.DocFileJpa;
 import com.strelnikov.doclib.service.dtomapper.DtoMapper;
 import com.strelnikov.doclib.model.catalogs.Catalog;
@@ -41,6 +38,9 @@ public class DtoMapperImpl implements DtoMapper {
 
     @Autowired
     private PermissionDao permissionDao;
+
+    @Autowired
+    private ClientDao clientDao;
 
 
     @Override
@@ -186,14 +186,14 @@ public class DtoMapperImpl implements DtoMapper {
 
     @Override
     public PermissionDto mapPermission(Permission permission) {
-        return new PermissionDto(permission.getClientId(),permission.getSecuredObject().getName(),
+        return new PermissionDto(permission.getClient().getLogin(),permission.getSecuredObject().getName(),
                 permission.getSecuredObject().getClass().getSimpleName(),permission.getPermissionList());
     }
 
     @Override
     public Permission mapPermission(PermissionDto permissionDto) {
         Permission permission = new Permission();
-        permission.setClientId(permissionDto.getClientId());
+        permission.setClient(clientDao.findBylogin(permissionDto.getClientLogin()));
         permission.setPermissionList(permissionDto.getPermissionTypeList());
         permission.setSecuredObject(permissionDao.getSecuredObjectByObjectName(permissionDto.getObjectName(),permissionDto.getObjectType()));
         return permission;

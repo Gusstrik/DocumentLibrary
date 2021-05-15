@@ -38,7 +38,7 @@ public class ClientImplTest {
         List<PermissionType> permissionTypeList = new ArrayList<>();
         permissionTypeList.add(PermissionType.READING);
         List<PermissionDto> permissionDtoList = new ArrayList<>();
-        permissionDtoList.add(new PermissionDto(0,"/","Catalog",permissionTypeList));
+        permissionDtoList.add(new PermissionDto("test","/","Catalog",permissionTypeList));
         List<String> roles = new ArrayList<>();
         roles.add("ROLE_USER");
         ClientDto clientDto = new ClientDto(0,"test","123",roles,permissionDtoList);

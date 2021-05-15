@@ -1,10 +1,7 @@
 package com.strelnikov.doclib.repository.jdbc;
 
 import com.strelnikov.doclib.model.roles.*;
-import com.strelnikov.doclib.repository.CatalogDao;
-import com.strelnikov.doclib.repository.DocFileDao;
-import com.strelnikov.doclib.repository.DocumentDao;
-import com.strelnikov.doclib.repository.PermissionDao;
+import com.strelnikov.doclib.repository.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -27,6 +24,8 @@ public class PermissionJdbc implements PermissionDao {
     private DocumentDao documentDao;
     @Autowired
     private DocFileDao docFileDao;
+    @Autowired
+    private ClientDao clientDao;
 
     private final String GET_CLASS_QUERY = "SELECT id FROM sec_object_classes WHERE name = ?";
 
@@ -242,7 +241,7 @@ public class PermissionJdbc implements PermissionDao {
                 ResultSet rs = statement.executeQuery();
                 while (rs.next()) {
                     Permission permission = new Permission();
-                    permission.setClientId(rs.getInt(client.getId()));
+                    permission.setClient(client);
                     permission.setSecuredObject(getSecuredObjectBySecureId(rs.getInt(1)));
                     permission.setPermissionList(new ArrayList<>());
                     int resultPermission = rs.getInt(2);
@@ -273,7 +272,7 @@ public class PermissionJdbc implements PermissionDao {
                 ResultSet rs = statement.executeQuery();
                 while (rs.next()) {
                     Permission permission = new Permission();
-                    permission.setClientId(rs.getInt(1));
+                    permission.setClient(clientDao.findById(rs.getInt(1)));
                     permission.setSecuredObject(securedObject);
                     permission.setPermissionList(new ArrayList<>());
                     int resultPermission = rs.getInt(2);

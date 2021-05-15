@@ -138,7 +138,7 @@ public class MapperTest {
     public void permissionMapTest(){
         List<PermissionType> permissionList = new ArrayList<>();
         permissionList.add(PermissionType.READING);
-        PermissionDto permissionDto = new PermissionDto(1,"/","Catalog",permissionList);
+        PermissionDto permissionDto = new PermissionDto("root","/","Catalog",permissionList);
         Permission permission = dtoMapper.mapPermission(permissionDto);
         Assert.assertEquals("/",permission.getSecuredObject().getName());
     }

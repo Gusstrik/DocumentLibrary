@@ -1,6 +1,7 @@
 package servicetest;
 
 import com.strelnikov.doclib.dto.CatalogDto;
+import com.strelnikov.doclib.dto.PermissionDto;
 import com.strelnikov.doclib.model.roles.PermissionType;
 import com.strelnikov.doclib.model.roles.Client;
 
@@ -15,6 +16,8 @@ import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import java.util.List;
+
 public class SecurityImplTest {
     private ApplicationContext appContext = new AnnotationConfigApplicationContext(ServiceImplConfiguration.class);
     private SecurityActions securityActions = appContext.getBean(SecurityActions.class);
@@ -26,5 +29,12 @@ public class SecurityImplTest {
     public void checkPermissionTest() throws UnitNotFoundException {
         CatalogDto catalogDto = catalogActions.loadCatalog(1);
         Assert.assertTrue(securityActions.checkPermission(catalogDto, "root", PermissionType.READING));
+    }
+
+    @Test
+    public void getPermissionTest() throws UnitNotFoundException {
+        CatalogDto catalogDto = catalogActions.loadCatalog(1);
+        int actual = securityActions.getObjectPermissions(catalogDto).size();
+        Assert.assertEquals(1,actual);
     }
 }

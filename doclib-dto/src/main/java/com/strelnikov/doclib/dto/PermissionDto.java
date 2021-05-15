@@ -12,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 public class PermissionDto {
 
-    private int clientId;
+    private String clientLogin;
 
     private String objectName;
 

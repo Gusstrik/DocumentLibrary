@@ -10,7 +10,7 @@ import java.util.List;
 
 public class Permission {
 
-    private int clientId;
+    private Client client;
 
     SecuredObject securedObject;
 

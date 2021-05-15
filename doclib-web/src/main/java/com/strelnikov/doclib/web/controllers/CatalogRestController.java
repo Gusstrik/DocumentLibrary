@@ -1,6 +1,7 @@
 package com.strelnikov.doclib.web.controllers;
 
 import com.strelnikov.doclib.dto.CatalogDto;
+import com.strelnikov.doclib.dto.PermissionDto;
 import com.strelnikov.doclib.model.roles.PermissionType;
 import com.strelnikov.doclib.service.CatalogActions;
 import com.strelnikov.doclib.service.SecurityActions;
@@ -13,6 +14,8 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -38,6 +41,21 @@ public class CatalogRestController {
             }
         }catch (UnitNotFoundException e){
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("get/{id}/permissions")
+    public ResponseEntity<List<PermissionDto>> getPermissionList(@PathVariable int id){
+        try {
+            CatalogDto catalogDto = catalogAct.loadCatalog(id);
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            if (securityActions.checkPermission(catalogDto,auth.getName(),PermissionType.READING)) {
+                return ResponseEntity.ok(securityActions.getObjectPermissions(catalogDto));
+            }else{
+                return ResponseEntity.status(403).build();
+            }
+        } catch (UnitNotFoundException e) {
+            return ResponseEntity.status(404).build();
         }
     }
 
