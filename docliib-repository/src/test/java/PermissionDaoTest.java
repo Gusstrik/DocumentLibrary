@@ -72,4 +72,19 @@ public class PermissionDaoTest {
         clientDao.delete(client);
         Assert.assertTrue(actual);
     }
+
+    @Test
+    public void addObjectTest(){
+        Catalog catalog = catalogDao.loadCatalog(1);
+        catalog.setId(0);
+        catalog.setCatalogId(1);
+        catalog.setName("test_catalog");
+        catalog = catalogDao.insertCatalog(catalog);
+        checkPermission.addObjectToSecureTables(catalog);
+        checkPermission.updatePermission(catalog,clientDao.findBylogin("root"),2);
+        boolean actual = checkPermission.checkPermission(catalog,clientDao.findBylogin("root"),PermissionType.WRITING);
+        catalogDao.deleteCatalog(catalog.getId());
+        checkPermission.removeObjectFromSecureTables(catalog);
+        Assert.assertTrue(actual);
+    }
 }

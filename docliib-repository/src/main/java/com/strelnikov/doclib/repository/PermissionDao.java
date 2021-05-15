@@ -26,4 +26,8 @@ public interface PermissionDao {
     void updatePermission(SecuredObject securedObject, Client client, int permission);
 
     void addClientToSecureTables(Client client);
+
+    void addObjectToSecureTables(SecuredObject securedObject);
+
+    void removeObjectFromSecureTables(SecuredObject securedObject);
 }

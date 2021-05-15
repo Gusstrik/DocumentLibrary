@@ -215,6 +215,70 @@ public class PermissionJdbc implements PermissionDao {
         }
     }
 
+    private final String INSERT_SECURE_OBJECT_QUERY = "INSERT INTO sec_object (object_table_id, class_id) " +
+            "VALUES (?,?)";
+
+    private void insertNewSecureObject(SecuredObject securedObject){
+        int classId = getClassId(securedObject.getClass());
+        try (Connection connection = dataSource.getConnection()){
+            PreparedStatement statement = connection.prepareStatement(INSERT_SECURE_OBJECT_QUERY);
+            statement.setInt(1, securedObject.getId());
+            statement.setInt(2,classId);
+            statement.executeUpdate();
+        } catch (SQLException throwables) {
+            log.error(throwables.getMessage(), throwables);
+        }
+    }
+
+    private List<Integer> getClientListId(){
+        List<Integer> idList = new ArrayList<>();
+        try (Connection connection = dataSource.getConnection()){
+            Statement statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery("SELECT id FROM clients");
+            while(rs.next()){
+                idList.add(rs.getInt(1));
+            }
+        } catch (SQLException throwables) {
+            log.error(throwables.getMessage(), throwables);
+        }
+        return idList;
+    }
+
+    private final String ADD_OBJECT_QUERY = "INSERT INTO sec_permission (object_id, client_id,permission) " +
+            "VALUES(?,?,0)";
+
+    @Override
+    public void addObjectToSecureTables(SecuredObject securedObject) {
+        insertNewSecureObject(securedObject);
+        int secureId = getObjectSecureId(securedObject);
+        List<Integer> idList = getClientListId();
+        try(Connection connection = dataSource.getConnection()){
+            for (int clientId : idList){
+                PreparedStatement statement = connection.prepareStatement(ADD_OBJECT_QUERY);
+                statement.setInt(1,secureId);
+                statement.setInt(2,clientId);
+                statement.executeUpdate();
+            }
+        } catch (SQLException throwables) {
+            log.error(throwables.getMessage(), throwables);
+        }
+    }
+
+
+    private final String DELETE_OBJECT_QUERY = "DELETE FROM sec_object WHERE id = ?";
+
+    @Override
+    public void removeObjectFromSecureTables(SecuredObject securedObject) {
+        int secureId =getObjectSecureId(securedObject);
+        try (Connection connection = dataSource.getConnection()){
+            PreparedStatement statement = connection.prepareStatement(DELETE_OBJECT_QUERY);
+            statement.setInt(1,secureId);
+            statement.executeUpdate();
+        } catch (SQLException throwables) {
+            log.error(throwables.getMessage(), throwables);
+        }
+    }
+
 
     @Override
     public  SecuredObject getSecuredObjectByObjectName(String objectName, String type){
