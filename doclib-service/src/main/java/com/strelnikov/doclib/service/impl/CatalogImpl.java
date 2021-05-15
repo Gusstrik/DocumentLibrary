@@ -4,6 +4,7 @@ import com.strelnikov.doclib.dto.CatalogDto;
 import com.strelnikov.doclib.dto.UnitDto;
 import com.strelnikov.doclib.model.conception.UnitType;
 import com.strelnikov.doclib.repository.DocumentDao;
+import com.strelnikov.doclib.service.SecurityActions;
 import com.strelnikov.doclib.service.dtomapper.DtoMapper;
 import com.strelnikov.doclib.service.exceptions.CannotDeleteMainCatalogException;
 import com.strelnikov.doclib.service.exceptions.UnitIsAlreadyExistException;
@@ -26,12 +27,14 @@ public class CatalogImpl implements CatalogActions {
     private final CatalogDao catalogDao;
     private final DocumentDao documentDao;
     private final DtoMapper dtoMapper;
+    private final SecurityActions securityActions;
 
     public CatalogImpl(@Qualifier("CatalogJpa") CatalogDao catalogDao, @Autowired DtoMapper dtoMapper,
-                       @Qualifier("DocumentJpa") DocumentDao documentDao) {
+                       @Qualifier("DocumentJpa") DocumentDao documentDao, @Autowired SecurityActions securityActions) {
         this.catalogDao = catalogDao;
         this.dtoMapper = dtoMapper;
         this.documentDao = documentDao;
+        this.securityActions = securityActions;
     }
 
 
@@ -54,6 +57,9 @@ public class CatalogImpl implements CatalogActions {
         if (checkIfCatalogExist(catalog)) {
             throw new UnitIsAlreadyExistException(catalogDao.loadCatalog(catalog.getCatalogId()), catalog);
         } else {
+            catalog = catalogDao.insertCatalog(catalog);
+            securityActions.addObjectToSecureTable(catalog);
+            securityActions.inheritPermissions(catalog,catalogDao.loadCatalog(catalog.getCatalogId()));
             return dtoMapper.mapCatalog(catalogDao.insertCatalog(catalog));
         }
     }

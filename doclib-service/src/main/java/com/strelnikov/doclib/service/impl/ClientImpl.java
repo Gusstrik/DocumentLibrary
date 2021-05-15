@@ -8,6 +8,7 @@ import com.strelnikov.doclib.model.roles.PermissionType;
 import com.strelnikov.doclib.repository.ClientDao;
 import com.strelnikov.doclib.repository.PermissionDao;
 import com.strelnikov.doclib.service.ClientActions;
+import com.strelnikov.doclib.service.SecurityActions;
 import com.strelnikov.doclib.service.dtomapper.DtoMapper;
 import com.strelnikov.doclib.service.exceptions.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ public class ClientImpl implements ClientActions {
     private ClientDao clientDao;
 
     @Autowired
-    private PermissionDao permissionDao;
+    private SecurityActions securityActions;
 
     @Autowired
     private DtoMapper dtoMapper;
@@ -43,11 +44,10 @@ public class ClientImpl implements ClientActions {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         client.setPassword(passwordEncoder.encode(client.getPassword()));
         client = clientDao.create(client);
-        permissionDao.addClientToSecureTables(client);
+        securityActions.addClientToSecureTable(client);
         for (PermissionDto permissionDto:clientDto.getPermissionDtoList()){
             Permission permission = dtoMapper.mapPermission(permissionDto);
-            permissionDao.updatePermission(permission.getSecuredObject(),client,
-                    PermissionType.convertToInt(permission.getPermissionList()));
+            securityActions.updatePermissions(permission.getSecuredObject(),client,permission.getPermissionList());
         }
         return dtoMapper.mapClient(client);
     }
@@ -57,8 +57,7 @@ public class ClientImpl implements ClientActions {
         client= clientDao.updateClient(client);
         for (PermissionDto permissionDto:clientDto.getPermissionDtoList()){
             Permission permission = dtoMapper.mapPermission(permissionDto);
-            permissionDao.updatePermission(permission.getSecuredObject(),client,
-                    PermissionType.convertToInt(permission.getPermissionList()));
+            securityActions.updatePermissions(permission.getSecuredObject(),client,permission.getPermissionList());
         }
         return dtoMapper.mapClient(client);
     }

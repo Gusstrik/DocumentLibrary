@@ -50,11 +50,11 @@ public class SecurityImplTest {
         catalog.setId(0);
         catalog.setName("test_catalog");
         catalog = catalogDao.insertCatalog(catalog);
-        permissionDao.addObjectToSecureTables(catalog);
-        securityActions.inheritPermissions(dtoMapper.mapCatalog(catalog), catalogActions.loadCatalog(catalog.getCatalogId()));
+        securityActions.addObjectToSecureTable(catalog);
+        securityActions.inheritPermissions(catalog, catalogDao.loadCatalog(catalog.getCatalogId()));
         boolean actual = securityActions.checkPermission(dtoMapper.mapCatalog(catalog),"root",PermissionType.MODERATING);
         catalogDao.deleteCatalog(catalog.getId());
-        permissionDao.removeObjectFromSecureTables(catalog);
+        securityActions.removeObjectFromSecureTable(catalog);
         Assert.assertTrue(actual);
     }
 }
