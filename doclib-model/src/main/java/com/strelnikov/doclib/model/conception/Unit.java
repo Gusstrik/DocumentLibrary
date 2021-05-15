@@ -42,10 +42,10 @@ public abstract class Unit {
 
 
 
-    //private ArrayList<Permission> permissions = new ArrayList();
+    //private ArrayList<PermissionType> permissions = new ArrayList();
 
 //    public void addPermissionsForNewUser(String login, Credentials... credentials) {
-//        permissions.add(new Permission(login, credentials));
+//        permissions.add(new PermissionType(login, credentials));
 //    }
 //
 //    private int getUserIndex(String login) {

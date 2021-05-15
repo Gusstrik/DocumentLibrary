@@ -1,6 +1,7 @@
 package com.strelnikov.doclib.repository;
 
-import com.strelnikov.doclib.model.conception.Permission;
+import com.strelnikov.doclib.model.roles.Permission;
+import com.strelnikov.doclib.model.roles.PermissionType;
 import com.strelnikov.doclib.model.roles.Client;
 
 import java.util.List;
@@ -11,7 +12,9 @@ public interface PermissionDao {
 
     Integer getSecuredObjectId(int objectId, Class clazz);
 
-    boolean checkPermission (int objectId, Class clazz, Client client, Permission permission);
+    boolean checkPermission (int objectId, Class clazz, Client client, PermissionType permissionType);
 
-    List<Permission> getPermissions (int objectId, Class clazz, Client client);
+    List<Permission> getClientPermissions(Client client);
+
+    List<Permission> getPermissionsByObj(int objectId, Class clazz);
 }

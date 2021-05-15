@@ -1,6 +1,6 @@
-package com.strelnikov.doclib.model.conception;
+package com.strelnikov.doclib.model.roles;
 
-public enum Permission {
+public enum PermissionType {
     READING,
     WRITING,
     MODERATING;

@@ -1,5 +1,5 @@
 import com.strelnikov.doclib.model.catalogs.Catalog;
-import com.strelnikov.doclib.model.conception.Permission;
+import com.strelnikov.doclib.model.roles.PermissionType;
 import com.strelnikov.doclib.repository.ClientDao;
 import com.strelnikov.doclib.repository.PermissionDao;
 import com.strelnikov.doclib.repository.configuration.RepositoryConfiguration;
@@ -30,15 +30,21 @@ public class PermissionDaoTest {
     @Test
     public void checkPermissionTest(){
         boolean actual = true;
-        actual = actual && checkPermission.checkPermission(1,Catalog.class,clientDao.findBylogin("root"), Permission.MODERATING);
-        actual = actual && checkPermission.checkPermission(1,Catalog.class,clientDao.findBylogin("root"), Permission.WRITING);
-        actual = actual && checkPermission.checkPermission(1,Catalog.class,clientDao.findBylogin("root"), Permission.READING);
+        actual = actual && checkPermission.checkPermission(1,Catalog.class,clientDao.findBylogin("root"), PermissionType.MODERATING);
+        actual = actual && checkPermission.checkPermission(1,Catalog.class,clientDao.findBylogin("root"), PermissionType.WRITING);
+        actual = actual && checkPermission.checkPermission(1,Catalog.class,clientDao.findBylogin("root"), PermissionType.READING);
         Assert.assertTrue(actual);
     }
 
     @Test
     public void getPermissionTest(){
-        int actual = checkPermission.getPermissions(1,Catalog.class,clientDao.findBylogin("root")).size();
-        Assert.assertEquals(3,actual);
+        int actual = checkPermission.getClientPermissions(clientDao.findBylogin("root")).size();
+        Assert.assertEquals(1,actual);
+    }
+
+    @Test
+    public void getObjPermissionTest(){
+        int actual = checkPermission.getPermissionsByObj(1,Catalog.class).size();
+        Assert.assertEquals(1,actual);
     }
 }

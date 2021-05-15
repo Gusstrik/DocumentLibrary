@@ -1,7 +1,7 @@
 package com.strelnikov.doclib.web.controllers;
 
 import com.strelnikov.doclib.dto.CatalogDto;
-import com.strelnikov.doclib.model.conception.Permission;
+import com.strelnikov.doclib.model.roles.PermissionType;
 import com.strelnikov.doclib.service.CatalogActions;
 import com.strelnikov.doclib.service.SecurityActions;
 import com.strelnikov.doclib.service.exceptions.CannotDeleteMainCatalogException;
@@ -31,7 +31,7 @@ public class CatalogRestController {
         try {
             CatalogDto catalogDto = catalogAct.loadCatalog(id);
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            if (securityActions.checkPermission(id,catalogDto,auth.getName(), Permission.READING)) {
+            if (securityActions.checkPermission(id,catalogDto,auth.getName(), PermissionType.READING)) {
                 return ResponseEntity.ok(catalogDto);
             }else{
                 return ResponseEntity.status(403).build();

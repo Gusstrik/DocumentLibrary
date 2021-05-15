@@ -1,7 +1,7 @@
 package com.strelnikov.doclib.service.impl;
 
 import com.strelnikov.doclib.model.catalogs.Catalog;
-import com.strelnikov.doclib.model.conception.Permission;
+import com.strelnikov.doclib.model.roles.PermissionType;
 import com.strelnikov.doclib.model.documnets.Document;
 import com.strelnikov.doclib.model.documnets.DocumentFile;
 import com.strelnikov.doclib.repository.ClientDao;
@@ -19,7 +19,7 @@ public class SecurityImpl implements SecurityActions {
     private ClientDao client;
 
     @Override
-    public boolean checkPermission(int id, Object object, String login, Permission permission) {
+    public boolean checkPermission(int id, Object object, String login, PermissionType permissionType) {
         Class clazz=null;
         switch (object.getClass().getSimpleName()){
             case "CatalogDto":
@@ -33,7 +33,7 @@ public class SecurityImpl implements SecurityActions {
                 break;
         }
         if (clazz!=null) {
-            return checkPermission.checkPermission(id, clazz, client.findBylogin(login), permission);
+            return checkPermission.checkPermission(id, clazz, client.findBylogin(login), permissionType);
         }else {
             return false;
         }
