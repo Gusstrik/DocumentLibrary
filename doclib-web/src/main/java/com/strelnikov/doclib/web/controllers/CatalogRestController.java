@@ -31,7 +31,7 @@ public class CatalogRestController {
         try {
             CatalogDto catalogDto = catalogAct.loadCatalog(id);
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            if (securityActions.checkPermission(id,catalogDto,auth.getName(), PermissionType.READING)) {
+            if (securityActions.checkPermission(catalogDto,auth.getName(), PermissionType.READING)) {
                 return ResponseEntity.ok(catalogDto);
             }else{
                 return ResponseEntity.status(403).build();

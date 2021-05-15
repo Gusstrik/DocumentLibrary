@@ -1,7 +1,6 @@
 package servicetest;
 
 import com.strelnikov.doclib.dto.CatalogDto;
-import com.strelnikov.doclib.model.catalogs.Catalog;
 import com.strelnikov.doclib.model.roles.PermissionType;
 import com.strelnikov.doclib.model.roles.Client;
 
@@ -16,7 +15,7 @@ import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-public class CheckPermissionTypeTest {
+public class SecurityImplTest {
     private ApplicationContext appContext = new AnnotationConfigApplicationContext(ServiceImplConfiguration.class);
     private SecurityActions securityActions = appContext.getBean(SecurityActions.class);
     private CatalogActions catalogActions = appContext.getBean(CatalogActions.class);
@@ -26,8 +25,6 @@ public class CheckPermissionTypeTest {
     @Test
     public void checkPermissionTest() throws UnitNotFoundException {
         CatalogDto catalogDto = catalogActions.loadCatalog(1);
-
-        Client client = clientDao.findBylogin("root");
-        Assert.assertTrue(securityActions.checkPermission(dtoMapper.mapCatalog(catalogDto), "root", PermissionType.READING));
+        Assert.assertTrue(securityActions.checkPermission(catalogDto, "root", PermissionType.READING));
     }
 }
