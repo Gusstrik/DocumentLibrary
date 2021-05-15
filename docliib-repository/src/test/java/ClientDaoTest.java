@@ -54,4 +54,21 @@ public class ClientDaoTest {
         Client actual = clientDao.findById(client.getId());
         Assert.assertNull(actual);
     }
+
+    @Test
+    public void updateClientTest(){
+        Client client = new Client();
+        client.setLogin("test_user");
+        client.setPassword("1234");
+        Authority authority = new Authority();
+        authority.setId(1);
+        authority.setName(AuthorityType.ROLE_USER);
+        client.getAuthorities().add(authority);
+        client = clientDao.create(client);
+        client.setLogin("changed_login");
+        client = clientDao.updateClient(client);
+        String actual = clientDao.findById(client.getId()).getLogin();
+        clientDao.delete(client);
+        Assert.assertEquals("changed_login",actual);
+    }
 }
