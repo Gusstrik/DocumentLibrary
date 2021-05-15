@@ -2,7 +2,7 @@ package com.strelnikov.doclib.repository.jdbc;
 
 import com.strelnikov.doclib.model.conception.Permission;
 import com.strelnikov.doclib.model.roles.Client;
-import com.strelnikov.doclib.repository.ICheckPermission;
+import com.strelnikov.doclib.repository.PermissionDao;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -12,10 +12,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Repository
 @Slf4j
-public class CheckPermissionJdbc implements ICheckPermission {
+public class CheckPermissionDaoJdbc implements PermissionDao {
 
     @Autowired
     private DataSource dataSource;
@@ -81,5 +83,17 @@ public class CheckPermissionJdbc implements ICheckPermission {
             }
         }
         return permission.check(resultPermission);
+    }
+
+
+    @Override
+    public List<Permission> getPermissions(int objectId, Class clazz, Client client) {
+        List<Permission> permissionList = new ArrayList<>();
+        for (Permission permission:Permission.values()){
+            if (checkPermission(objectId,clazz,client,permission)){
+                permissionList.add(permission);
+            }
+        }
+        return permissionList;
     }
 }

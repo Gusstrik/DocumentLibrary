@@ -5,7 +5,7 @@ import com.strelnikov.doclib.model.conception.Permission;
 import com.strelnikov.doclib.model.documnets.Document;
 import com.strelnikov.doclib.model.documnets.DocumentFile;
 import com.strelnikov.doclib.repository.ClientDao;
-import com.strelnikov.doclib.repository.ICheckPermission;
+import com.strelnikov.doclib.repository.PermissionDao;
 import com.strelnikov.doclib.service.SecurityActions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class SecurityImpl implements SecurityActions {
     @Autowired
-     private ICheckPermission checkPermission;
+     private PermissionDao checkPermission;
 
     @Autowired
     private ClientDao client;
