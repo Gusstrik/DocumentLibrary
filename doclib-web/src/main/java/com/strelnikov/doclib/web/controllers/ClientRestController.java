@@ -39,4 +39,14 @@ public class ClientRestController {
         clientDto = clientActions.saveClient(clientDto);
         return ResponseEntity.ok(clientDto);
     }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity deleteClient(@PathVariable int id){
+        try {
+            clientActions.deleteClient(id);
+            return ResponseEntity.ok().build();
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(404).build();
+        }
+    }
 }
