@@ -1,5 +1,7 @@
 package com.strelnikov.doclib.model.roles;
 
+import java.util.List;
+
 public enum PermissionType {
     READING,
     WRITING,
@@ -22,5 +24,19 @@ public enum PermissionType {
             return true;
         }
         return false;
+    }
+
+    public static int convertToInt(List<PermissionType> permissionTypeList){
+        int result = 0;
+        if (permissionTypeList.contains(PermissionType.READING)){
+            result = result | 1;
+        }
+        if (permissionTypeList.contains(PermissionType.WRITING)){
+            result = result | 2;
+        }
+        if (permissionTypeList.contains(PermissionType.MODERATING)){
+            result = result | 4;
+        }
+        return result;
     }
 }

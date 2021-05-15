@@ -10,6 +10,6 @@ public interface ClientActions {
 
     ClientDto saveClient(ClientDto clientDto);
 
-    void deleteClient(int id);
+    void deleteClient(int id) throws UserNotFoundException;
 
 }

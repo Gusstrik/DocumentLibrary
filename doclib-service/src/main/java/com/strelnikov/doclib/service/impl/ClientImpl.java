@@ -1,9 +1,12 @@
 package com.strelnikov.doclib.service.impl;
 
 import com.strelnikov.doclib.dto.ClientDto;
+import com.strelnikov.doclib.dto.PermissionDto;
 import com.strelnikov.doclib.model.roles.Client;
 import com.strelnikov.doclib.model.roles.Permission;
+import com.strelnikov.doclib.model.roles.PermissionType;
 import com.strelnikov.doclib.repository.ClientDao;
+import com.strelnikov.doclib.repository.PermissionDao;
 import com.strelnikov.doclib.service.ClientActions;
 import com.strelnikov.doclib.service.dtomapper.DtoMapper;
 import com.strelnikov.doclib.service.exceptions.UserNotFoundException;
@@ -20,6 +23,9 @@ public class ClientImpl implements ClientActions {
     private ClientDao clientDao;
 
     @Autowired
+    private PermissionDao permissionDao;
+
+    @Autowired
     private DtoMapper dtoMapper;
 
     @Override
@@ -33,8 +39,13 @@ public class ClientImpl implements ClientActions {
 
     private ClientDto createNewClient(ClientDto clientDto){
         Client client = dtoMapper.mapClient(clientDto);
-        clientDao.create(client);
-        List<Permission> permissionList = new ArrayList<>();
+        client = clientDao.create(client);
+        permissionDao.addClientToSecureTables(client);
+        for (PermissionDto permissionDto:clientDto.getPermissionDtoList()){
+            Permission permission = dtoMapper.mapPermission(permissionDto);
+            permissionDao.updatePermission(permission.getSecuredObject(),client,
+                    PermissionType.convertToInt(permission.getPermissionList()));
+        }
         return dtoMapper.mapClient(client);
     }
 
@@ -49,7 +60,8 @@ public class ClientImpl implements ClientActions {
     }
 
     @Override
-    public void deleteClient(int id) {
-
+    public void deleteClient(int id) throws UserNotFoundException {
+        ClientDto clientDto = loadClient(id);
+        clientDao.delete(dtoMapper.mapClient(clientDto));
     }
 }
