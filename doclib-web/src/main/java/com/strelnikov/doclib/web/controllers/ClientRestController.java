@@ -34,5 +34,9 @@ public class ClientRestController {
         }
     }
 
-
+    @PostMapping("/post")
+    public ResponseEntity<ClientDto> postClient(@RequestBody ClientDto clientDto){
+        clientDto = clientActions.saveClient(clientDto);
+        return ResponseEntity.ok(clientDto);
+    }
 }

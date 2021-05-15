@@ -11,6 +11,7 @@ import com.strelnikov.doclib.service.ClientActions;
 import com.strelnikov.doclib.service.dtomapper.DtoMapper;
 import com.strelnikov.doclib.service.exceptions.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -39,6 +40,8 @@ public class ClientImpl implements ClientActions {
 
     private ClientDto createNewClient(ClientDto clientDto){
         Client client = dtoMapper.mapClient(clientDto);
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        client.setPassword(passwordEncoder.encode(client.getPassword()));
         client = clientDao.create(client);
         permissionDao.addClientToSecureTables(client);
         for (PermissionDto permissionDto:clientDto.getPermissionDtoList()){
