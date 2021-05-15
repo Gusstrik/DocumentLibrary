@@ -26,7 +26,7 @@ public class Client {
     @Column(name = "password")
     private String password;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinTable(name = "client_authority",
             joinColumns = {@JoinColumn(name = "client_id")},
             inverseJoinColumns = {@JoinColumn(name = "authority_id")})

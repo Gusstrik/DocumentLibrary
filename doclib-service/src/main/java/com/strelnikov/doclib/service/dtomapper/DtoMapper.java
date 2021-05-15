@@ -8,6 +8,8 @@ import com.strelnikov.doclib.model.documnets.Document;
 import com.strelnikov.doclib.model.documnets.DocumentFile;
 import com.strelnikov.doclib.model.documnets.DocumentType;
 import com.strelnikov.doclib.model.documnets.DocumentVersion;
+import com.strelnikov.doclib.model.roles.Client;
+import com.strelnikov.doclib.model.roles.Permission;
 
 
 public interface DtoMapper {
@@ -15,7 +17,8 @@ public interface DtoMapper {
     UnitDto mapUnit(Unit unit);
 
     Unit mapUnit(UnitDto unitDto);
-    CatalogDto mapCatalog (Catalog catalog);
+
+    CatalogDto mapCatalog(Catalog catalog);
 
     Catalog mapCatalog(CatalogDto catalogDto);
 
@@ -33,7 +36,15 @@ public interface DtoMapper {
 
     Document mapDocument(DocumentDto documentDto);
 
-    DocumentDto mapDocument (Document document);
+    DocumentDto mapDocument(Document document);
 
     DocumentDto mapDocument(Document document, int version);
+
+    PermissionDto mapPermission(Permission permission);
+
+    Permission mapPermission(PermissionDto permissionDto);
+
+    Client mapClient(ClientDto clientDto);
+
+    ClientDto mapClient(Client client);
 }

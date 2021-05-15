@@ -2,6 +2,7 @@ package com.strelnikov.doclib.model.conception;
 
 import java.util.ArrayList;
 
+import com.strelnikov.doclib.model.roles.SecuredObject;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
@@ -13,7 +14,7 @@ import javax.persistence.*;
 @Setter
 
 @MappedSuperclass
-public abstract class Unit {
+public abstract class Unit implements SecuredObject {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,10 +43,10 @@ public abstract class Unit {
 
 
 
-    //private ArrayList<Permission> permissions = new ArrayList();
+    //private ArrayList<PermissionType> permissions = new ArrayList();
 
 //    public void addPermissionsForNewUser(String login, Credentials... credentials) {
-//        permissions.add(new Permission(login, credentials));
+//        permissions.add(new PermissionType(login, credentials));
 //    }
 //
 //    private int getUserIndex(String login) {

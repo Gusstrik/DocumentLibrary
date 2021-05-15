@@ -4,6 +4,7 @@ import com.strelnikov.doclib.dto.DocVersionDto;
 import com.strelnikov.doclib.dto.DocumentDto;
 import com.strelnikov.doclib.model.conception.Unit;
 import com.strelnikov.doclib.model.conception.UnitType;
+import com.strelnikov.doclib.model.documnets.DocumentFile;
 import com.strelnikov.doclib.repository.CatalogDao;
 
 import com.strelnikov.doclib.repository.DocFileDao;
@@ -14,6 +15,7 @@ import com.strelnikov.doclib.model.documnets.Document;
 import com.strelnikov.doclib.model.documnets.DocumentVersion;
 import com.strelnikov.doclib.service.DocVersionActions;
 import com.strelnikov.doclib.service.DocumentActions;
+import com.strelnikov.doclib.service.SecurityActions;
 import com.strelnikov.doclib.service.dtomapper.DtoMapper;
 import com.strelnikov.doclib.service.exceptions.UnitIsAlreadyExistException;
 import com.strelnikov.doclib.service.exceptions.UnitNotFoundException;
@@ -36,18 +38,22 @@ public class DocumentImpl implements DocumentActions {
     private final DtoMapper dtoMapper;
     private final DocVersionActions docVerActions;
     private final DocFileDao docFileDao;
+    private final SecurityActions securityActions;
 
     public DocumentImpl(@Qualifier("DocumentJpa") DocumentDao documentDao, @Autowired DocVersionActions docVerActions,
-                        @Autowired DtoMapper dtoMapper, @Qualifier("CatalogJpa") CatalogDao catalogDao, @Qualifier("DocFileJpa") DocFileDao docFileDao) {
+                        @Autowired DtoMapper dtoMapper, @Qualifier("CatalogJpa") CatalogDao catalogDao, @Qualifier("DocFileJpa") DocFileDao docFileDao,
+                        @Autowired SecurityActions securityActions) {
         this.documentDao = documentDao;
         this.docVerActions = docVerActions;
         this.dtoMapper = dtoMapper;
         this.catalogDao = catalogDao;
         this.docFileDao = docFileDao;
+        this.securityActions =securityActions;
     }
 
     @Override
     public void deleteDocument(int documentId) {
+        securityActions.removeObjectFromSecureTable(documentDao.loadDocument(documentId));
         documentDao.deleteDocument(documentId);
     }
 
@@ -103,6 +109,11 @@ public class DocumentImpl implements DocumentActions {
             DocumentVersion docVer = document.getDocumentVersion();
             docVer.setParentDocument(document);
             docVer.setId(docVerActions.saveDocVersion(dtoMapper.mapDocVersion(docVer)).getId());
+            securityActions.addObjectToSecureTable(document);
+            securityActions.inheritPermissions(document,catalogDao.loadCatalog(document.getCatalogId()));
+            for (DocumentFile documentFile:docVer.getFilesList()){
+                securityActions.inheritPermissions(documentFile, docVer.getParentDocument());
+            }
             return dtoMapper.mapDocument(document);
         }
     }
@@ -115,6 +126,9 @@ public class DocumentImpl implements DocumentActions {
             DocumentVersion docVer = document.getVersionsList().get(0);
             docVer.setVersion(document.getActualVersion());
             docVerActions.saveDocVersion(dtoMapper.mapDocVersion(docVer));
+            for (DocumentFile documentFile:docVer.getFilesList()){
+                securityActions.inheritPermissions(documentFile, docVer.getParentDocument());
+            }
         }
         if (documentDb.getActualVersion() > document.getActualVersion()) {
             rollback(documentDb.getId(), document.getActualVersion());

@@ -1,25 +1,22 @@
 {
   "id": 0,
-  "name": "doc",
-  "type": 1,
+  "name": "test_doc",
+  "type": 10,
   "actualVersion": 0,
   "catalogId": 1,
-  "versionList": [
-    {
-      "id": 0,
-      "documentId": 0,
-      "version": 0,
-      "description": "test description of new test doc",
-      "importance": "IMPORTANT",
-      "fileList": [
-        {
-          "id": 1,
-          "docVerId": 0,
-          "name": "test_file",
-          "path": "test_file"
-        }
-      ],
-      "moderated": false
-    }
-  ]
+  "version": {
+    "id": 0,
+    "documentId": 0,
+    "version": 0,
+    "description": "This is test doc",
+    "importance": "LOW",
+    "isModerated": false,
+    "fileList": [
+      {
+        "id": 1,
+        "name": "test_file",
+        "path": "test_path"
+      }
+    ]
+  }
 }

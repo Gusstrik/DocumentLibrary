@@ -9,4 +9,8 @@ public interface ClientDao {
     Client create (Client client);
 
     void delete (Client client);
+
+    Client findById(int id);
+
+    Client updateClient (Client client);
 }

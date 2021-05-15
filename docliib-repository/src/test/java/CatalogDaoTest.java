@@ -12,7 +12,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import java.util.ArrayList;
 
 @Slf4j
-public class CatalogDaoJdbcTest {
+public class CatalogDaoTest {
 
     private static final ApplicationContext appContext = new AnnotationConfigApplicationContext(RepositoryConfiguration.class);
 
@@ -89,5 +89,10 @@ public class CatalogDaoJdbcTest {
         Catalog test = catalogDao.loadCatalog(catalog.getId());
         catalogDao.deleteCatalog(catalog.getId());
         Assert.assertEquals("changed_name",test.getName());
+    }
+    @Test
+    public void findByNameTest(){
+        Catalog catalog = catalogDao.findCatalogByName("/");
+        Assert.assertEquals(1,catalog.getId());
     }
 }
