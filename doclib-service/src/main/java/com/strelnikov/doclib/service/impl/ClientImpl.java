@@ -75,4 +75,13 @@ public class ClientImpl implements ClientActions {
         ClientDto clientDto = loadClient(id);
         clientDao.delete(dtoMapper.mapClient(clientDto));
     }
+
+    @Override
+    public ClientDto loadClient(String login) throws UserNotFoundException {
+        Client client = clientDao.findBylogin(login);
+        if (client==null){
+            throw new UserNotFoundException(0);
+        }
+        return dtoMapper.mapClient(client);
+    }
 }

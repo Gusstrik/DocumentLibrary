@@ -12,4 +12,5 @@ public interface ClientActions {
 
     void deleteClient(int id) throws UserNotFoundException;
 
+    ClientDto loadClient (String login) throws UserNotFoundException;
 }
