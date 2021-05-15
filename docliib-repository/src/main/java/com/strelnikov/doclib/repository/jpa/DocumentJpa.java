@@ -80,4 +80,13 @@ public class DocumentJpa implements DocumentDao {
         em.getTransaction().commit();
         em.close();
     }
+
+    @Override
+    public Document findByName(String name){
+        EntityManager em = getEntityManager();
+        Query query = em.createQuery("SELECT doc FROM Document doc WHERE doc.name=:name");
+        query.setParameter("name",name);
+        Document document = (Document)query.getSingleResult();
+        return loadDocument(document.getId());
+    }
 }

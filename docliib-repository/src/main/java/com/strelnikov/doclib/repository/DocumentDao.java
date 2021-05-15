@@ -18,4 +18,5 @@ public interface DocumentDao {
     void deleteDocument(int documentId);
 
 
+    Document findByName(String name);
 }

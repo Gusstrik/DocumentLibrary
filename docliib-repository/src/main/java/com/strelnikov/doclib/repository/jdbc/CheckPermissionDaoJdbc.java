@@ -152,9 +152,9 @@ public class CheckPermissionDaoJdbc implements PermissionDao {
     }
 
     @Override
-    public  SecuredObject getSecuredObjectBySecureId(int id){
-        int objId = getObjectIdBySecureId(id);
-        Class clazz = getObjClassByClassId(id);
+    public  SecuredObject getSecuredObjectBySecureId(int secureId){
+        int objId = getObjectIdBySecureId(secureId);
+        Class clazz = getObjClassByClassId(secureId);
         switch (clazz.getSimpleName()){
             case "Catalog":
                 return FactorySecuredObject.createSecuredObject(catalogDao.loadCatalog(objId));
@@ -162,6 +162,18 @@ public class CheckPermissionDaoJdbc implements PermissionDao {
                 return FactorySecuredObject.createSecuredObject(documentDao.loadDocument(objId));
             case "DocumentFile":
                 return FactorySecuredObject.createSecuredObject(docFileDao.getFile(objId));
+        }
+        return null;
+    }
+    @Override
+    public  SecuredObject getSecuredObjectByObjectName(String objectName, String type){
+        switch (type){
+            case "Catalog":
+                return FactorySecuredObject.createSecuredObject(catalogDao.findCatalogByName(objectName));
+            case "Document":
+                return FactorySecuredObject.createSecuredObject(documentDao.findByName(objectName));
+            case "DocumentFile":
+                return FactorySecuredObject.createSecuredObject(docFileDao.getFile(objectName));
         }
         return null;
     }

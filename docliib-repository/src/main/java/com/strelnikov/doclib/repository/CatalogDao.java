@@ -15,4 +15,5 @@ public interface CatalogDao {
 
     Catalog insertCatalog(Catalog catalog);
 
+    Catalog findCatalogByName(String name);
 }

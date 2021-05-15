@@ -15,6 +15,8 @@ public interface PermissionDao {
 
     Integer getObjectSecureId(SecuredObject securedObject);
 
+    SecuredObject getSecuredObjectByObjectName(String objectName, String type);
+
     List<Permission> getClientPermissions(Client client);
 
     List<Permission> getPermissionsOfSecuredObject(SecuredObject securedObject);
