@@ -2,6 +2,7 @@ package servicetest;
 
 import com.strelnikov.doclib.dto.ClientDto;
 import com.strelnikov.doclib.dto.PermissionDto;
+import com.strelnikov.doclib.model.roles.Client;
 import com.strelnikov.doclib.model.roles.PermissionType;
 import com.strelnikov.doclib.repository.CatalogDao;
 import com.strelnikov.doclib.repository.configuration.RepositoryConfiguration;
@@ -32,7 +33,7 @@ public class ClientImplTest {
     private final SecurityActions securityActions = appContext.getBean(SecurityActions.class);
 
     @Test
-    public void createNewClient() throws UserNotFoundException {
+    public void createNewClientTest() throws UserNotFoundException {
         List<PermissionType> permissionTypeList = new ArrayList<>();
         permissionTypeList.add(PermissionType.READING);
         List<PermissionDto> permissionDtoList = new ArrayList<>();
@@ -44,5 +45,20 @@ public class ClientImplTest {
         boolean actual = securityActions.checkPermission(catalogDao.loadCatalog(1),clientDto.getLogin(),PermissionType.READING);
         clientActions.deleteClient(clientDto.getId());
         Assert.assertTrue(actual);
+    }
+
+    @Test
+    public void updateClientTest() throws UserNotFoundException {
+        ClientDto clientDto = clientActions.loadClient(1);
+        Client client = dtoMapper.mapClient(clientDto);
+        client.setLogin("test");
+        clientDto = dtoMapper.mapClient(client);
+        clientActions.saveClient(clientDto);
+        clientDto = clientActions.loadClient(1);
+        String actual = clientDto.getLogin();
+        client.setLogin("root");
+        clientDto = dtoMapper.mapClient(client);
+        clientActions.saveClient(clientDto);
+        Assert.assertEquals("test",actual);
     }
 }

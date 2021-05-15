@@ -49,14 +49,25 @@ public class ClientImpl implements ClientActions {
         return dtoMapper.mapClient(client);
     }
 
+    private ClientDto updateClient(ClientDto clientDto){
+        Client client = dtoMapper.mapClient(clientDto);
+        client= clientDao.updateClient(client);
+        for (PermissionDto permissionDto:clientDto.getPermissionDtoList()){
+            Permission permission = dtoMapper.mapPermission(permissionDto);
+            permissionDao.updatePermission(permission.getSecuredObject(),client,
+                    PermissionType.convertToInt(permission.getPermissionList()));
+        }
+        return dtoMapper.mapClient(client);
+    }
+
     @Override
     public ClientDto saveClient(ClientDto clientDto) {
         try {
-            ClientDto oldClient = loadClient(clientDto.getId());
+            loadClient(clientDto.getId());
+            return updateClient(clientDto);
         } catch (UserNotFoundException e) {
            return createNewClient(clientDto);
         }
-        return clientDto;
     }
 
     @Override
