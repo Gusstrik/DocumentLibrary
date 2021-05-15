@@ -1,5 +1,6 @@
 import com.strelnikov.doclib.model.catalogs.Catalog;
 import com.strelnikov.doclib.model.roles.PermissionType;
+import com.strelnikov.doclib.repository.CatalogDao;
 import com.strelnikov.doclib.repository.ClientDao;
 import com.strelnikov.doclib.repository.PermissionDao;
 import com.strelnikov.doclib.repository.configuration.RepositoryConfiguration;
@@ -14,6 +15,7 @@ public class PermissionDaoTest {
     private ApplicationContext appContext = new AnnotationConfigApplicationContext(RepositoryConfiguration.class);
     private PermissionDao checkPermission = appContext.getBean(PermissionDao.class);
     private ClientDao clientDao = appContext.getBean(ClientDao.class);
+    private CatalogDao catalogDao = appContext.getBean(CatalogDao.class);
 
     @Test
     public void getClassIdTest(){
@@ -37,14 +39,14 @@ public class PermissionDaoTest {
     }
 
     @Test
-    public void getPermissionTest(){
+    public void getClientPermissionTest(){
         int actual = checkPermission.getClientPermissions(clientDao.findBylogin("root")).size();
         Assert.assertEquals(1,actual);
     }
 
     @Test
     public void getObjPermissionTest(){
-        int actual = checkPermission.getPermissionsByObj(1,Catalog.class).size();
+        int actual = checkPermission.getPermissionsByObj(catalogDao.loadCatalog(1)).size();
         Assert.assertEquals(1,actual);
     }
 }

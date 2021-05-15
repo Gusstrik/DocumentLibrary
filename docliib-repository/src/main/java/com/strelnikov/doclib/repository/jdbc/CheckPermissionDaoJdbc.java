@@ -1,8 +1,9 @@
 package com.strelnikov.doclib.repository.jdbc;
 
-import com.strelnikov.doclib.model.roles.Permission;
-import com.strelnikov.doclib.model.roles.PermissionType;
-import com.strelnikov.doclib.model.roles.Client;
+import com.strelnikov.doclib.model.roles.*;
+import com.strelnikov.doclib.repository.CatalogDao;
+import com.strelnikov.doclib.repository.DocFileDao;
+import com.strelnikov.doclib.repository.DocumentDao;
 import com.strelnikov.doclib.repository.PermissionDao;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,12 @@ public class CheckPermissionDaoJdbc implements PermissionDao {
 
     @Autowired
     private DataSource dataSource;
+    @Autowired
+    private CatalogDao catalogDao;
+    @Autowired
+    private DocumentDao documentDao;
+    @Autowired
+    private DocFileDao docFileDao;
 
     private final String GET_CLASS_QUERY = "SELECT id FROM sec_object_classes WHERE name = ?";
 
@@ -86,24 +93,45 @@ public class CheckPermissionDaoJdbc implements PermissionDao {
         return permissionType.check(resultPermission);
     }
 
-
-    private Class getObjClassById(int id){
-        Class clazz = null;
+    private int getObjClassIdBySecObjId(int id){
+        int classId = 0;
         try (Connection connection = dataSource.getConnection()){
             PreparedStatement statement = connection.prepareStatement("SELECT class_id FROM sec_object WHERE id = ?");
             statement.setInt(1,id);
             ResultSet rs = statement.executeQuery();
-            if(rs.next()){
-               int classId = rs.getInt(1);
-                statement = connection.prepareStatement("SELECT name FROM sec_object_classes WHERE id = ?");
-                statement.setInt(1,classId);
-                rs = statement.executeQuery();
-                if(rs.next()){
-                    clazz=Class.forName(rs.getString(1));
-                }
+            if(rs.next()) {
+                classId = rs.getInt(1);
             }
-        } catch (SQLException | ClassNotFoundException throwables) {
+        } catch (SQLException throwables) {
             log.error(throwables.getMessage(), throwables);
+        }
+        return classId;
+    }
+
+    private Class getObjClassById(int id){
+        Class clazz = null;
+        String className=null;
+        int classId = getObjClassIdBySecObjId(id);
+        try (Connection connection = dataSource.getConnection()){
+            PreparedStatement statement = connection.prepareStatement("SELECT name FROM sec_object_classes WHERE id = ?");
+            statement.setInt(1,classId);
+            ResultSet rs = statement.executeQuery();
+            if(rs.next()){
+               className=(rs.getString(1));
+            }
+        } catch (SQLException throwables) {
+            log.error(throwables.getMessage(), throwables);
+        }
+        try {
+            clazz = Class.forName("com.strelnikov.doclib.model.documnets."+className);
+            return clazz;
+        } catch (ClassNotFoundException e) {
+            try {
+                clazz = Class.forName("com.strelnikov.doclib.model.catalogs."+className);
+                return clazz;
+            } catch (ClassNotFoundException classNotFoundException) {
+                log.error(classNotFoundException.getMessage(), classNotFoundException);
+            }
         }
         return clazz;
     }
@@ -123,23 +151,34 @@ public class CheckPermissionDaoJdbc implements PermissionDao {
         return objId;
     }
 
+    private  SecuredObject getObjById(int id){
+        int objId = getObjIdById(id);
+        Class clazz = getObjClassById(id);
+        switch (clazz.getSimpleName()){
+            case "Catalog":
+                return FactorySecuredObject.createSecuredObject(catalogDao.loadCatalog(objId));
+            case "Document":
+                return FactorySecuredObject.createSecuredObject(documentDao.loadDocument(objId));
+            case "DocumentFile":
+                return FactorySecuredObject.createSecuredObject(docFileDao.getFile(objId));
+        }
+        return null;
+    }
+
 
     private final String GET_LIST_BY_CLIENT_PERMISSION_QUERY = "SELECT object_id, permission FROM sec_permission WHERE client_id=? ";
 
     @Override
     public List<Permission> getClientPermissions(Client client) {
         List<Permission> permissionList = new ArrayList<>();
-
             try (Connection connection = dataSource.getConnection()) {
                 PreparedStatement statement = connection.prepareStatement(GET_LIST_BY_CLIENT_PERMISSION_QUERY);
                 statement.setInt(1, client.getId());
                 ResultSet rs = statement.executeQuery();
                 while (rs.next()) {
-                    int objectId = rs.getInt(1);
                     Permission permission = new Permission();
                     permission.setClientId(rs.getInt(client.getId()));
-                    permission.setObjectId(getObjIdById(objectId));
-                    permission.setClazz(getObjClassById(objectId));
+                    permission.setSecuredObject(getObjById(rs.getInt(1)));
                     permission.setPermissionList(new ArrayList<>());
                     int resultPermission = rs.getInt(2);
                     for (PermissionType type : PermissionType.values()) {
@@ -159,8 +198,8 @@ public class CheckPermissionDaoJdbc implements PermissionDao {
     private final String GET_LIST_BY_OBJ_PERMISSION_QUERY = "SELECT client_id, permission FROM sec_permission WHERE object_id=? ";
 
     @Override
-    public List<Permission> getPermissionsByObj(int objectId, Class clazz) {
-        Integer id = getSecuredObjectId(objectId, clazz);
+    public List<Permission> getPermissionsByObj(SecuredObject securedObject) {
+        Integer id = getSecuredObjectId(securedObject.getId(), securedObject.getClass());
         List<Permission> permissionList = new ArrayList<>();
         if (id != null) {
             try (Connection connection = dataSource.getConnection()) {
@@ -170,8 +209,7 @@ public class CheckPermissionDaoJdbc implements PermissionDao {
                 while (rs.next()) {
                     Permission permission = new Permission();
                     permission.setClientId(rs.getInt(1));
-                    permission.setObjectId(objectId);
-                    permission.setClazz(clazz);
+                    permission.setSecuredObject(securedObject);
                     permission.setPermissionList(new ArrayList<>());
                     int resultPermission = rs.getInt(2);
                     for (PermissionType type : PermissionType.values()) {

@@ -8,6 +8,7 @@ import com.strelnikov.doclib.model.documnets.Document;
 import com.strelnikov.doclib.model.documnets.DocumentFile;
 import com.strelnikov.doclib.model.documnets.DocumentType;
 import com.strelnikov.doclib.model.documnets.DocumentVersion;
+import com.strelnikov.doclib.model.roles.Permission;
 
 
 public interface DtoMapper {
@@ -36,4 +37,8 @@ public interface DtoMapper {
     DocumentDto mapDocument (Document document);
 
     DocumentDto mapDocument(Document document, int version);
+
+    PermissionDto mapPermission(Permission permission);
+
+    Permission mapPermission (PermissionDto permissionDto);
 }

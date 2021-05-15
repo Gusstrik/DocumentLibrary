@@ -4,9 +4,11 @@ import com.strelnikov.doclib.dto.*;
 import com.strelnikov.doclib.model.conception.Unit;
 import com.strelnikov.doclib.model.conception.UnitType;
 import com.strelnikov.doclib.model.documnets.*;
+import com.strelnikov.doclib.model.roles.Permission;
 import com.strelnikov.doclib.repository.DocTypeDao;
 import com.strelnikov.doclib.repository.DocVersionDao;
 import com.strelnikov.doclib.repository.DocumentDao;
+import com.strelnikov.doclib.repository.PermissionDao;
 import com.strelnikov.doclib.repository.jpa.DocFileJpa;
 import com.strelnikov.doclib.service.dtomapper.DtoMapper;
 import com.strelnikov.doclib.model.catalogs.Catalog;
@@ -33,6 +35,9 @@ public class DtoMapperImpl implements DtoMapper {
     @Autowired
     @Qualifier("DocTypeJpa")
     private DocTypeDao docTypeDao;
+
+    @Autowired
+    private PermissionDao permissionDao;
 
 
     @Override
@@ -174,6 +179,16 @@ public class DtoMapperImpl implements DtoMapper {
         DocVersionDto docVersionDto = mapDocVersion(document.getDocumentVersion(version));
         return new DocumentDto(document.getId(), document.getName(), document.getDocumentType().getId(),
                 document.getActualVersion(), document.getCatalogId(), docVersionDto);
+    }
+
+    @Override
+    public PermissionDto mapPermission(Permission permission) {
+        return null;
+    }
+
+    @Override
+    public Permission mapPermission(PermissionDto permissionDto) {
+        return null;
     }
 }
 

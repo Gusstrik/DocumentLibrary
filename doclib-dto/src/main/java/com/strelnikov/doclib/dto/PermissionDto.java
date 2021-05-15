@@ -14,7 +14,9 @@ public class PermissionDto {
 
     private int clientId;
 
-    private int ObjectId;
+    private String objectName;
+
+    private String objectType;
 
     private List<PermissionType> permissionTypeList;
 

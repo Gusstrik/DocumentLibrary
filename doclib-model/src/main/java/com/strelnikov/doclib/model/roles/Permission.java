@@ -12,9 +12,7 @@ public class Permission {
 
     private int clientId;
 
-    private int objectId;
-
-    private Class clazz;
+    SecuredObject securedObject;
 
     private List<PermissionType> permissionList;
 }

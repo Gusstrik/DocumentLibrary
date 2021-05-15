@@ -1,5 +1,6 @@
 package com.strelnikov.doclib.model.documnets;
 
+import com.strelnikov.doclib.model.roles.SecuredObject;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,7 +13,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "doc_files")
-public class DocumentFile {
+public class DocumentFile implements SecuredObject {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,5 +35,10 @@ public class DocumentFile {
     public DocumentFile(String fileName, String filePath) {
         this.fileName = fileName;
         this.filePath = filePath;
+    }
+
+    @Override
+    public String getName() {
+        return getFileName();
     }
 }
