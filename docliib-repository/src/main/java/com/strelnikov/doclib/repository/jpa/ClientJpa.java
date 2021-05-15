@@ -50,4 +50,11 @@ public class ClientJpa implements ClientDao {
         em.getTransaction().commit();
         em.close();
     }
+
+    @Override
+    public Client findById(int id) {
+       EntityManager em = getEntityManager();
+       Client client = em.find(Client.class,id);
+       return client;
+    }
 }
