@@ -4,6 +4,8 @@ import com.strelnikov.doclib.dto.*;
 import com.strelnikov.doclib.model.conception.Unit;
 import com.strelnikov.doclib.model.conception.UnitType;
 import com.strelnikov.doclib.model.documnets.*;
+import com.strelnikov.doclib.model.roles.Authority;
+import com.strelnikov.doclib.model.roles.Client;
 import com.strelnikov.doclib.model.roles.Permission;
 import com.strelnikov.doclib.repository.DocTypeDao;
 import com.strelnikov.doclib.repository.DocVersionDao;
@@ -195,6 +197,29 @@ public class DtoMapperImpl implements DtoMapper {
         permission.setPermissionList(permissionDto.getPermissionTypeList());
         permission.setSecuredObject(permissionDao.getSecuredObjectByObjectName(permissionDto.getObjectName(),permissionDto.getObjectType()));
         return permission;
+    }
+
+    @Override
+    public Client mapClient(ClientDto clientDto) {
+        Client client = new Client();
+        client.setLogin(clientDto.getLogin());
+        client.setPassword(clientDto.getPassword());
+        client.setId(clientDto.getId());
+        for (String role:clientDto.getRoles()){
+            client.getAuthorities().add(new Authority(role));
+        }
+        return client;
+    }
+
+    @Override
+    public ClientDto mapClient(Client client) {
+        List<PermissionDto> permissionDtoList = new ArrayList<>();
+        for (Permission permission:permissionDao.getClientPermissions(client)){
+            permissionDtoList.add(mapPermission(permission));
+        }
+        return new ClientDto(client.getId(),client.getLogin(),client.getPassword(),
+                client.getAuthorities().stream().map(authority -> authority.getName().toString()).toList(),
+                permissionDtoList);
     }
 }
 

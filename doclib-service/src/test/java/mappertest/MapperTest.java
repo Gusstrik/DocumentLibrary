@@ -4,13 +4,14 @@ import com.strelnikov.doclib.dto.*;
 import com.strelnikov.doclib.model.catalogs.Catalog;
 import com.strelnikov.doclib.model.conception.Unit;
 import com.strelnikov.doclib.model.documnets.*;
-import com.strelnikov.doclib.model.roles.Permission;
-import com.strelnikov.doclib.model.roles.PermissionType;
+import com.strelnikov.doclib.model.roles.*;
 import com.strelnikov.doclib.repository.*;
 import com.strelnikov.doclib.repository.configuration.RepositoryConfiguration;
 import com.strelnikov.doclib.repository.jdbc.DatabaseCreatorJdbc;
 import com.strelnikov.doclib.service.dtomapper.DtoMapper;
 import com.strelnikov.doclib.service.dtomapper.configuration.DtoMapperConfiguration;
+import org.checkerframework.checker.units.qual.A;
+import org.checkerframework.checker.units.qual.C;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -36,6 +37,7 @@ public class MapperTest {
     private DocumentDao docDao = appContext.getBean("DocumentJpa",DocumentDao.class);
     private CatalogDao catDao = appContext.getBean("CatalogJpa",CatalogDao.class);
     private PermissionDao permissionDao = appContext.getBean(PermissionDao.class);
+    private ClientDao clientDao = appContext.getBean(ClientDao.class);
 
     @BeforeClass
     public static void initDataBase(){
@@ -147,6 +149,24 @@ public class MapperTest {
         List<Permission> permissions =permissionDao.getPermissionsOfSecuredObject(catalog);
         PermissionDto permissionDto = dtoMapper.mapPermission(permissions.get(0));
         Assert.assertEquals("/",permissionDto.getObjectName());
+    }
+
+    @Test
+    public void clientDtoMapTest(){
+        Client client = clientDao.findBylogin("root");
+        ClientDto clientDto = dtoMapper.mapClient(client);
+        Assert.assertEquals("ROLE_ADMIN",clientDto.getRoles().get(0));
+    }
+
+    @Test
+    public void clientMapTest(){
+        Client client = clientDao.findBylogin("root");
+        ClientDto clientDto = dtoMapper.mapClient(client);
+        client = dtoMapper.mapClient(clientDto);
+        Authority authority = new Authority();
+        authority.setId(2);
+        authority.setName(AuthorityType.ROLE_ADMIN);
+        Assert.assertTrue(client.getAuthorities().stream().map(authority1 -> authority1.equals(authority)).findFirst().get());
     }
 
 }

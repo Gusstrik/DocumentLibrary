@@ -17,6 +17,8 @@ public class ClientDto {
 
     private String password;
 
+    private List<String> roles;
+
     private List<PermissionDto> permissionDtoList;
 
 }
