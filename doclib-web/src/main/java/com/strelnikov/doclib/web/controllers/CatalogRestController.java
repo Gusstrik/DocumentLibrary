@@ -60,26 +60,36 @@ public class CatalogRestController {
     }
 
     @PostMapping("post")
-    public ResponseEntity<Object> postCatalog(@RequestBody CatalogDto catalogDto){
+    public ResponseEntity<CatalogDto> postCatalog(@RequestBody CatalogDto catalogDto){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         try{
-            catalogDto = catalogAct.saveCatalog(catalogDto);
-            return ResponseEntity.ok(catalogDto);
+            if(securityActions.checkPermission(catalogAct.loadCatalog(catalogDto.getParentId()),auth.getName(),PermissionType.WRITING)){
+                catalogDto = catalogAct.saveCatalog(catalogDto);
+                return ResponseEntity.ok(catalogDto);
+            }
+            return ResponseEntity.status(403).build();
         }catch (UnitIsAlreadyExistException e) {
-            return ResponseEntity.badRequest().body("Catalog is already exist");
+            return ResponseEntity.badRequest().build();
+        } catch (UnitNotFoundException e) {
+            return ResponseEntity.notFound().build();
         }
     }
 
     @DeleteMapping("delete/{id}")
-    public ResponseEntity<Object> deleteCatalog(@PathVariable int id){
+    public ResponseEntity<CatalogDto> deleteCatalog(@PathVariable int id){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         try {
             CatalogDto catalogDto = catalogAct.loadCatalog(id);
-            catalogAct.deleteCatalog(catalogDto);
-            catalogDto = catalogAct.loadCatalog(catalogDto.getParentId());
-            return ResponseEntity.ok(catalogDto);
+            if(securityActions.checkPermission(catalogDto,auth.getName(),PermissionType.WRITING)){
+                catalogAct.deleteCatalog(catalogDto);
+                catalogDto = catalogAct.loadCatalog(catalogDto.getParentId());
+                return ResponseEntity.ok(catalogDto);
+            }
+            return ResponseEntity.status(403).build();
         } catch (UnitNotFoundException e) {
-            return ResponseEntity.badRequest().body("There is no catalog with id = " + id);
+            return ResponseEntity.badRequest().build();
         }catch (CannotDeleteMainCatalogException e){
-            return ResponseEntity.badRequest().body("Can't delete main catalog");
+            return ResponseEntity.badRequest().build();
         }
     }
 }
