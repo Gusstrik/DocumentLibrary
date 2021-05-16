@@ -1,6 +1,5 @@
 package com.strelnikov.doclib.repository.configuration;
 
-
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;

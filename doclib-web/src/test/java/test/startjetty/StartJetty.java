@@ -29,7 +29,6 @@ public class StartJetty {
     public static Server init(String webDir) throws Exception {
         Server server = new Server(12135);
         WebAppContext wcon = new WebAppContext();
-        wcon.setLogger(log);
         wcon.setContextPath("/doclib-app");
         wcon.setDescriptor(webDir + "/web.xml");
         wcon.setResourceBase(webDir);
