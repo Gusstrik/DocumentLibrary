@@ -1,4 +1,4 @@
-package com.strelnikov.doclib.web.security.config;
+package com.strelnikov.doclib.web.security;
 
 import com.strelnikov.doclib.model.roles.Client;
 import com.strelnikov.doclib.repository.ClientDao;

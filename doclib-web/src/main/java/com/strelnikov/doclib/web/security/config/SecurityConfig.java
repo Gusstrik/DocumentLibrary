@@ -1,6 +1,7 @@
 package com.strelnikov.doclib.web.security.config;
 
 import com.strelnikov.doclib.repository.configuration.RepositoryConfiguration;
+import com.strelnikov.doclib.web.security.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;

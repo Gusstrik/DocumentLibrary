@@ -13,10 +13,8 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import javax.servlet.ServletContext;
 
 @Configuration
-@EnableWebMvc
-@Import(ServiceImplConfiguration.class)
+@Import({ServiceImplConfiguration.class,SwaggerConfig.class})
 @ComponentScan(basePackages = "com.strelnikov.doclib.web.controllers")
 public class MvcConfig {
-
 
 }

@@ -28,25 +28,10 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>16</maven.compiler.source>
         <maven.compiler.target>16</maven.compiler.target>
-        <lombok.version>1.18.20</lombok.version>
-        <dbcp.version>2.8.0</dbcp.version>
         <postgresql.version>42.2.19</postgresql.version>
-        <liquibase.version>4.3.4</liquibase.version>
         <mybatis.version>3.5.6</mybatis.version>
-        <slf4j.version>1.7.24</slf4j.version>
-        <logback.version>1.2.3</logback.version>
-        <junit.version>4.13.2</junit.version>
-        <javaxservlet.version>4.0.1</javaxservlet.version>
-        <jetty.version>10.0.2</jetty.version>
-        <jakson.version>2.12.3</jakson.version>
-        <spring.version>5.3.6</spring.version>
-        <spring-jpa.version>2.5.0</spring-jpa.version>
-        <hibernate.version>6.0.0.Alpha7</hibernate.version>
-        <thymeleaf.version>3.0.12.RELEASE</thymeleaf.version>
         <commons-fileupload.version>1.4</commons-fileupload.version>
-        <spring-security.version>5.4.6</spring-security.version>
-        <echache.version>3.9.3</echache.version>
-        <spring-context.version>5.3.7</spring-context.version>
+        <swagger.version>3.0.0</swagger.version>
         <spring-boot.version>2.4.5</spring-boot.version>
     </properties>
 
@@ -74,7 +59,16 @@
                 <artifactId>commons-fileupload</artifactId>
                 <version>${commons-fileupload.version}</version>
             </dependency>
-
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-swagger-ui</artifactId>
+                <version>${swagger.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-boot-starter</artifactId>
+                <version>${swagger.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
