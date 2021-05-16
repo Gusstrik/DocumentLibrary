@@ -24,6 +24,8 @@ import org.springframework.web.servlet.DispatcherServlet;
 import javax.servlet.RequestDispatcher;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 @RestController
@@ -42,13 +44,18 @@ public class DocFileRestController {
 
     @PostMapping("post")
     public ResponseEntity<DocFileDto> uploadFile(@RequestPart("file") MultipartFile file) {
-        String filePath = "doclib-web/src/main/resources/uploaded_files/" + file.getOriginalFilename();
+        String filePath = "doclib-web\\src\\main\\resources\\uploaded_files" + file.getOriginalFilename();
         try {
-            file.transferTo(new File(filePath).getAbsoluteFile());
-            DocFileDto docFileDto = new DocFileDto(0, file.getOriginalFilename(), filePath);
+            Path savedFile = Paths.get(filePath);
+            file.transferTo(savedFile.toAbsolutePath());
+            DocFileDto docFileDto = new DocFileDto(0, file.getOriginalFilename(), savedFile.toAbsolutePath().toString());
             docFileDto = fileAct.createNewFile(docFileDto);
             return ResponseEntity.ok(docFileDto);
-        } catch (IOException | FileIsAlreadyExistException e) {
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).build();
+        } catch (FileIsAlreadyExistException e) {
+
             return ResponseEntity.badRequest().build();
         }
     }

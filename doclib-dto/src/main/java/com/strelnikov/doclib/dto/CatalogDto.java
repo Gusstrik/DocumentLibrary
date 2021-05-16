@@ -7,11 +7,12 @@ import java.util.List;
 
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class CatalogDto {
 
-    private int id = 0;
-    @NonNull
+    private int id;
 
+    @NonNull
     private String name;
 
     private int parentId;
@@ -19,5 +20,4 @@ public class CatalogDto {
     @NonNull
     private List<UnitDto> contentList;
 
-    public CatalogDto(){}
 }

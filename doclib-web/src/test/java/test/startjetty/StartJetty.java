@@ -10,7 +10,7 @@ public class StartJetty {
 
     public static void main(String[] args) throws Exception {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        System.out.println(encoder.encode("root"));
+        System.out.println(encoder.encode("user"));
         Server server = init("doclib-web/src/test/webapp");
         server.start();
         server.join();
