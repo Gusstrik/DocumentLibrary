@@ -25,9 +25,6 @@ import java.util.List;
 
 public class TypeTest {
 
-    private static final ApplicationContext appContext = new AnnotationConfigApplicationContext(ServiceImplConfiguration.class);
-    private static final DatabaseCreatorJdbc creator = appContext.getBean(DatabaseCreatorJdbc.class);
-
     private static Server server;
 
     @BeforeClass

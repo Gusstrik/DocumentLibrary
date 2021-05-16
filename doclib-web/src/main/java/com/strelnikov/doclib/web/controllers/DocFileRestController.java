@@ -29,7 +29,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 @RestController
-@RequestMapping("/file")
+@RequestMapping("rest/file")
 @Secured({"ROLE_USER", "ROLE_ADMIN"})
 public class DocFileRestController {
 
@@ -42,7 +42,7 @@ public class DocFileRestController {
     @Autowired
     private DocumentActions documentActions;
 
-    @PostMapping("post")
+    @PostMapping(value = "post", consumes = "multipart/data-form")
     public ResponseEntity<DocFileDto> uploadFile(@RequestPart("file") MultipartFile file) {
         String filePath = "doclib-web\\src\\main\\resources\\uploaded_files" + file.getOriginalFilename();
         try {
