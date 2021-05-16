@@ -2,11 +2,10 @@ package com.strelnikov.doclib.service.impl;
 
 import com.strelnikov.doclib.dto.CatalogDto;
 import com.strelnikov.doclib.model.conception.UnitType;
-import com.strelnikov.doclib.model.roles.Client;
 import com.strelnikov.doclib.model.roles.PermissionType;
 import com.strelnikov.doclib.model.roles.SecuredObject;
 import com.strelnikov.doclib.repository.DocumentDao;
-import com.strelnikov.doclib.service.SecurityActions;
+import com.strelnikov.doclib.service.SecurityService;
 import com.strelnikov.doclib.service.dtomapper.DtoClassMapper;
 import com.strelnikov.doclib.service.dtomapper.DtoMapper;
 import com.strelnikov.doclib.service.exceptions.CannotDeleteMainCatalogException;
@@ -14,7 +13,7 @@ import com.strelnikov.doclib.service.exceptions.UnitIsAlreadyExistException;
 import com.strelnikov.doclib.repository.CatalogDao;
 import com.strelnikov.doclib.model.catalogs.Catalog;
 import com.strelnikov.doclib.model.conception.Unit;
-import com.strelnikov.doclib.service.CatalogActions;
+import com.strelnikov.doclib.service.CatalogService;
 
 import com.strelnikov.doclib.service.exceptions.UnitNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,21 +24,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class CatalogImpl implements CatalogActions {
+public class CatalogServiceImpl implements CatalogService {
 
     private final CatalogDao catalogDao;
     private final DocumentDao documentDao;
     private final DtoMapper dtoMapper;
-    private final SecurityActions securityActions;
+    private final SecurityService securityService;
     private final DtoClassMapper dtoClassMapper;
 
-    public CatalogImpl(@Qualifier("CatalogJpa") CatalogDao catalogDao, @Autowired DtoMapper dtoMapper,
-                       @Qualifier("DocumentJpa") DocumentDao documentDao, @Autowired SecurityActions securityActions,
-                       @Autowired DtoClassMapper classMapper) {
+    public CatalogServiceImpl(@Qualifier("CatalogJpa") CatalogDao catalogDao, @Autowired DtoMapper dtoMapper,
+                              @Qualifier("DocumentJpa") DocumentDao documentDao, @Autowired SecurityService securityService,
+                              @Autowired DtoClassMapper classMapper) {
         this.catalogDao = catalogDao;
         this.dtoMapper = dtoMapper;
         this.documentDao = documentDao;
-        this.securityActions = securityActions;
+        this.securityService = securityService;
         this.dtoClassMapper = classMapper;
     }
 
@@ -64,8 +63,8 @@ public class CatalogImpl implements CatalogActions {
             throw new UnitIsAlreadyExistException(catalogDao.loadCatalog(catalog.getCatalogId()), catalog);
         } else {
             catalog = catalogDao.insertCatalog(catalog);
-            securityActions.addObjectToSecureTable(catalog);
-            securityActions.inheritPermissions(catalog,catalogDao.loadCatalog(catalog.getCatalogId()));
+            securityService.addObjectToSecureTable(catalog);
+            securityService.inheritPermissions(catalog,catalogDao.loadCatalog(catalog.getCatalogId()));
             return dtoMapper.mapCatalog(catalog);
         }
     }
@@ -74,7 +73,7 @@ public class CatalogImpl implements CatalogActions {
     public void deleteCatalog(CatalogDto catalogDto) throws CannotDeleteMainCatalogException {
         if (catalogDto.getId() != 1) {
             catalogDao.deleteCatalog(catalogDto.getId());
-            securityActions.removeObjectFromSecureTable(dtoClassMapper.mapClass(catalogDto));
+            securityService.removeObjectFromSecureTable(dtoClassMapper.mapClass(catalogDto));
         }
         else {
             throw new CannotDeleteMainCatalogException();
@@ -109,7 +108,7 @@ public class CatalogImpl implements CatalogActions {
         for(Unit unit:catalog.getContentList()){
             securedObjectList.add(unit);
         }
-        securedObjectList = securityActions.filterList(securedObjectList,login,permissionType);
+        securedObjectList = securityService.filterList(securedObjectList,login,permissionType);
         catalog.setContentList(new ArrayList<>());
         for (SecuredObject securedObject:securedObjectList){
             catalog.getContentList().add((Unit)securedObject);
@@ -128,10 +127,10 @@ public class CatalogImpl implements CatalogActions {
 
     private void deleteUnit(Unit unit) {
         if (unit.getUnitType().equals(UnitType.CATALOG)) {
-            securityActions.removeObjectFromSecureTable(catalogDao.loadCatalog(unit.getId()));
+            securityService.removeObjectFromSecureTable(catalogDao.loadCatalog(unit.getId()));
             catalogDao.deleteCatalog(unit.getId());
         } else {
-            securityActions.removeObjectFromSecureTable(documentDao.loadDocument(unit.getId()));
+            securityService.removeObjectFromSecureTable(documentDao.loadDocument(unit.getId()));
             documentDao.deleteDocument(unit.getId());
         }
     }

@@ -6,11 +6,9 @@ import com.strelnikov.doclib.model.documnets.DocumentVersion;
 import com.strelnikov.doclib.repository.DocVersionDao;
 import com.strelnikov.doclib.repository.configuration.RepositoryConfiguration;
 import com.strelnikov.doclib.repository.jdbc.DatabaseCreatorJdbc;
-import com.strelnikov.doclib.service.DocTypeActions;
-import com.strelnikov.doclib.service.DocVersionActions;
-import com.strelnikov.doclib.service.DocumentActions;
+import com.strelnikov.doclib.service.DocVersionService;
+import com.strelnikov.doclib.service.DocumentService;
 import com.strelnikov.doclib.service.dtomapper.DtoMapper;
-import com.strelnikov.doclib.service.exceptions.UnitNotFoundException;
 import com.strelnikov.doclib.service.exceptions.VersionIsAlreadyExistException;
 import com.strelnikov.doclib.service.impl.configuration.ServiceImplConfiguration;
 import org.junit.*;
@@ -18,14 +16,13 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.io.FileNotFoundException;
-import java.util.List;
 
-public class DocVersionImplTest {
+public class DocVersionServiceImplTest {
     private static final ApplicationContext appContext = new AnnotationConfigApplicationContext(ServiceImplConfiguration.class, RepositoryConfiguration.class);
 
     private static final DatabaseCreatorJdbc creator = appContext.getBean(DatabaseCreatorJdbc.class);
-    private final DocumentActions documentActions = appContext.getBean(DocumentActions.class);
-    private final DocVersionActions docVerActions = appContext.getBean(DocVersionActions.class);
+    private final DocumentService documentService = appContext.getBean(DocumentService.class);
+    private final DocVersionService docVerActions = appContext.getBean(DocVersionService.class);
     private final DtoMapper dtoMapper = appContext.getBean(DtoMapper.class);
     private final DocVersionDao docVerDao = appContext.getBean("DocVersionJpa",DocVersionDao.class);
 

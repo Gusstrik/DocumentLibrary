@@ -1,7 +1,7 @@
 package com.strelnikov.doclib.web.controllers;
 
 import com.strelnikov.doclib.dto.DocTypeDto;
-import com.strelnikov.doclib.service.DocTypeActions;
+import com.strelnikov.doclib.service.DocTypeService;
 import com.strelnikov.doclib.service.exceptions.TypeIsAlreadyExistException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +16,7 @@ import java.util.List;
 public class DocTypeRestController {
 
     @Autowired
-    DocTypeActions docTypeAct;
+    DocTypeService docTypeAct;
 
     @GetMapping(value = "/get",produces = "application/json")
     @Secured({"ROLE_USER", "ROLE_ADMIN"})

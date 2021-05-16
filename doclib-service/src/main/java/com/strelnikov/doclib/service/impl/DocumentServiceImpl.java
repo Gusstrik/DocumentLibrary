@@ -1,6 +1,5 @@
 package com.strelnikov.doclib.service.impl;
 
-import com.strelnikov.doclib.dto.DocVersionDto;
 import com.strelnikov.doclib.dto.DocumentDto;
 import com.strelnikov.doclib.model.conception.Unit;
 import com.strelnikov.doclib.model.conception.UnitType;
@@ -13,9 +12,9 @@ import com.strelnikov.doclib.model.catalogs.Catalog;
 import com.strelnikov.doclib.model.documnets.Document;
 
 import com.strelnikov.doclib.model.documnets.DocumentVersion;
-import com.strelnikov.doclib.service.DocVersionActions;
-import com.strelnikov.doclib.service.DocumentActions;
-import com.strelnikov.doclib.service.SecurityActions;
+import com.strelnikov.doclib.service.DocVersionService;
+import com.strelnikov.doclib.service.DocumentService;
+import com.strelnikov.doclib.service.SecurityService;
 import com.strelnikov.doclib.service.dtomapper.DtoMapper;
 import com.strelnikov.doclib.service.exceptions.UnitIsAlreadyExistException;
 import com.strelnikov.doclib.service.exceptions.UnitNotFoundException;
@@ -25,35 +24,32 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import javax.print.Doc;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
-public class DocumentImpl implements DocumentActions {
+public class DocumentServiceImpl implements DocumentService {
 
     private final DocumentDao documentDao;
     private final CatalogDao catalogDao;
     private final DtoMapper dtoMapper;
-    private final DocVersionActions docVerActions;
+    private final DocVersionService docVerActions;
     private final DocFileDao docFileDao;
-    private final SecurityActions securityActions;
+    private final SecurityService securityService;
 
-    public DocumentImpl(@Qualifier("DocumentJpa") DocumentDao documentDao, @Autowired DocVersionActions docVerActions,
-                        @Autowired DtoMapper dtoMapper, @Qualifier("CatalogJpa") CatalogDao catalogDao, @Qualifier("DocFileJpa") DocFileDao docFileDao,
-                        @Autowired SecurityActions securityActions) {
+    public DocumentServiceImpl(@Qualifier("DocumentJpa") DocumentDao documentDao, @Autowired DocVersionService docVerActions,
+                               @Autowired DtoMapper dtoMapper, @Qualifier("CatalogJpa") CatalogDao catalogDao, @Qualifier("DocFileJpa") DocFileDao docFileDao,
+                               @Autowired SecurityService securityService) {
         this.documentDao = documentDao;
         this.docVerActions = docVerActions;
         this.dtoMapper = dtoMapper;
         this.catalogDao = catalogDao;
         this.docFileDao = docFileDao;
-        this.securityActions =securityActions;
+        this.securityService = securityService;
     }
 
     @Override
     public void deleteDocument(int documentId) {
-        securityActions.removeObjectFromSecureTable(documentDao.loadDocument(documentId));
+        securityService.removeObjectFromSecureTable(documentDao.loadDocument(documentId));
         documentDao.deleteDocument(documentId);
     }
 
@@ -109,10 +105,10 @@ public class DocumentImpl implements DocumentActions {
             DocumentVersion docVer = document.getDocumentVersion();
             docVer.setParentDocument(document);
             docVer.setId(docVerActions.saveDocVersion(dtoMapper.mapDocVersion(docVer)).getId());
-            securityActions.addObjectToSecureTable(document);
-            securityActions.inheritPermissions(document,catalogDao.loadCatalog(document.getCatalogId()));
+            securityService.addObjectToSecureTable(document);
+            securityService.inheritPermissions(document,catalogDao.loadCatalog(document.getCatalogId()));
             for (DocumentFile documentFile:docVer.getFilesList()){
-                securityActions.inheritPermissions(documentFile, docVer.getParentDocument());
+                securityService.inheritPermissions(documentFile, docVer.getParentDocument());
             }
             return dtoMapper.mapDocument(document);
         }
@@ -127,7 +123,7 @@ public class DocumentImpl implements DocumentActions {
             docVer.setVersion(document.getActualVersion());
             docVerActions.saveDocVersion(dtoMapper.mapDocVersion(docVer));
             for (DocumentFile documentFile:docVer.getFilesList()){
-                securityActions.inheritPermissions(documentFile, docVer.getParentDocument());
+                securityService.inheritPermissions(documentFile, docVer.getParentDocument());
             }
         }
         if (documentDb.getActualVersion() > document.getActualVersion()) {

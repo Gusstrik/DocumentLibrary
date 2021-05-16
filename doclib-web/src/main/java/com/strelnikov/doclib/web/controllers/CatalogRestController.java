@@ -3,8 +3,8 @@ package com.strelnikov.doclib.web.controllers;
 import com.strelnikov.doclib.dto.CatalogDto;
 import com.strelnikov.doclib.dto.PermissionDto;
 import com.strelnikov.doclib.model.roles.PermissionType;
-import com.strelnikov.doclib.service.CatalogActions;
-import com.strelnikov.doclib.service.SecurityActions;
+import com.strelnikov.doclib.service.CatalogService;
+import com.strelnikov.doclib.service.SecurityService;
 import com.strelnikov.doclib.service.exceptions.CannotDeleteMainCatalogException;
 import com.strelnikov.doclib.service.exceptions.UnitIsAlreadyExistException;
 import com.strelnikov.doclib.service.exceptions.UnitNotFoundException;
@@ -23,12 +23,12 @@ import java.util.List;
 @Secured({"ROLE_USER", "ROLE_ADMIN"})
 public class CatalogRestController {
 
-    private final  CatalogActions catalogAct;
-    private final SecurityActions securityActions;
+    private final CatalogService catalogAct;
+    private final SecurityService securityService;
 
-    public CatalogRestController(@Autowired CatalogActions catalogAct, @Autowired SecurityActions securityActions){
+    public CatalogRestController(@Autowired CatalogService catalogAct, @Autowired SecurityService securityService){
         this.catalogAct =catalogAct;
-        this.securityActions =securityActions;
+        this.securityService = securityService;
     }
 
 
@@ -37,7 +37,7 @@ public class CatalogRestController {
         try {
             CatalogDto catalogDto = catalogAct.loadCatalog(id);
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            if (securityActions.checkPermission(catalogDto,auth.getName(), PermissionType.READING)) {
+            if (securityService.checkPermission(catalogDto,auth.getName(), PermissionType.READING)) {
                 catalogDto = catalogAct.filterContentList(catalogDto,auth.getName(),PermissionType.READING);
                 return ResponseEntity.ok(catalogDto);
             }else{
@@ -53,8 +53,8 @@ public class CatalogRestController {
         try {
             CatalogDto catalogDto = catalogAct.loadCatalog(id);
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            if (securityActions.checkPermission(catalogDto,auth.getName(),PermissionType.READING)) {
-                return ResponseEntity.ok(securityActions.getObjectPermissions(catalogDto));
+            if (securityService.checkPermission(catalogDto,auth.getName(),PermissionType.READING)) {
+                return ResponseEntity.ok(securityService.getObjectPermissions(catalogDto));
             }else{
                 return ResponseEntity.status(403).build();
             }
@@ -68,8 +68,8 @@ public class CatalogRestController {
     public ResponseEntity<List<PermissionDto>> postPermissionList(@RequestBody List<PermissionDto> permissionDtoList, @PathVariable int id){
         try {
             CatalogDto catalogDto = catalogAct.loadCatalog(id);
-            securityActions.updatePermissions(permissionDtoList);
-            return ResponseEntity.ok(securityActions.getObjectPermissions(catalogDto));
+            securityService.updatePermissions(permissionDtoList);
+            return ResponseEntity.ok(securityService.getObjectPermissions(catalogDto));
         } catch (UnitNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
@@ -79,7 +79,7 @@ public class CatalogRestController {
     public ResponseEntity<CatalogDto> postCatalog(@RequestBody CatalogDto catalogDto){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         try{
-            if(securityActions.checkPermission(catalogAct.loadCatalog(catalogDto.getParentId()),auth.getName(),PermissionType.WRITING)){
+            if(securityService.checkPermission(catalogAct.loadCatalog(catalogDto.getParentId()),auth.getName(),PermissionType.WRITING)){
                 catalogDto = catalogAct.saveCatalog(catalogDto);
                 return ResponseEntity.ok(catalogDto);
             }
@@ -96,7 +96,7 @@ public class CatalogRestController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         try {
             CatalogDto catalogDto = catalogAct.loadCatalog(id);
-            if(securityActions.checkPermission(catalogDto,auth.getName(),PermissionType.WRITING)){
+            if(securityService.checkPermission(catalogDto,auth.getName(),PermissionType.WRITING)){
                 catalogAct.deleteCatalog(catalogDto);
                 catalogDto = catalogAct.loadCatalog(catalogDto.getParentId());
                 return ResponseEntity.ok(catalogDto);

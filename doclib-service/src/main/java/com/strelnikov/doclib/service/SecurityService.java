@@ -7,7 +7,7 @@ import com.strelnikov.doclib.model.roles.SecuredObject;
 
 import java.util.List;
 
-public interface SecurityActions {
+public interface SecurityService {
 
     boolean checkPermission (Object object, String login, PermissionType permissionType);
 

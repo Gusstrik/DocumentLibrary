@@ -1,12 +1,11 @@
 package com.strelnikov.doclib.web.controllers;
 
-import com.strelnikov.doclib.dto.CatalogDto;
 import com.strelnikov.doclib.dto.DocumentDto;
 import com.strelnikov.doclib.dto.PermissionDto;
 import com.strelnikov.doclib.model.roles.PermissionType;
-import com.strelnikov.doclib.service.CatalogActions;
-import com.strelnikov.doclib.service.DocumentActions;
-import com.strelnikov.doclib.service.SecurityActions;
+import com.strelnikov.doclib.service.CatalogService;
+import com.strelnikov.doclib.service.DocumentService;
+import com.strelnikov.doclib.service.SecurityService;
 import com.strelnikov.doclib.service.exceptions.UnitIsAlreadyExistException;
 import com.strelnikov.doclib.service.exceptions.UnitNotFoundException;
 import com.strelnikov.doclib.service.exceptions.VersionIsAlreadyExistException;
@@ -26,21 +25,23 @@ import java.util.List;
 @Secured({"ROLE_USER", "ROLE_ADMIN"})
 public class DocumentRestController {
 
-    @Autowired
-    DocumentActions docAct;
+    private final DocumentService docAct;
+    private final SecurityService securityService;
+    private final CatalogService catalogService;
 
-    @Autowired
-    SecurityActions securityActions;
-
-    @Autowired
-    CatalogActions catalogActions;
+    public DocumentRestController(@Autowired DocumentService docAct, @Autowired SecurityService securityService,
+                                  @Autowired CatalogService catalogService){
+        this.docAct=docAct;
+        this.securityService = securityService;
+        this.catalogService = catalogService;
+    }
 
     @GetMapping("get/{id}")
     public ResponseEntity<DocumentDto> getDocument(@PathVariable int id){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         try{
             DocumentDto docDto = docAct.loadDocument(id);
-            if (securityActions.checkPermission(docDto,auth.getName(),PermissionType.READING)) {
+            if (securityService.checkPermission(docDto,auth.getName(),PermissionType.READING)) {
                 return ResponseEntity.ok(docDto);
             }
             return ResponseEntity.status(403).build();
@@ -53,7 +54,7 @@ public class DocumentRestController {
     public ResponseEntity<DocumentDto> postDocument(@RequestBody DocumentDto documentDto) throws VersionNotExistException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         try {
-            if(securityActions.checkPermission(catalogActions.loadCatalog(documentDto.getCatalogId()),auth.getName(), PermissionType.WRITING)){
+            if(securityService.checkPermission(catalogService.loadCatalog(documentDto.getCatalogId()),auth.getName(), PermissionType.WRITING)){
                 documentDto = docAct.saveDocument(documentDto);
                 return ResponseEntity.ok(documentDto);
             }
@@ -74,7 +75,7 @@ public class DocumentRestController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         try {
             DocumentDto documentDto = docAct.loadDocument(id);
-            if (securityActions.checkPermission(documentDto,auth.getName(),PermissionType.WRITING)) {
+            if (securityService.checkPermission(documentDto,auth.getName(),PermissionType.WRITING)) {
                 docAct.deleteDocument(id);
                 return ResponseEntity.ok().build();
             }
@@ -89,8 +90,8 @@ public class DocumentRestController {
         try {
             DocumentDto documentDto = docAct.loadDocument(id);
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            if (securityActions.checkPermission(documentDto,auth.getName(),PermissionType.READING)) {
-                return ResponseEntity.ok(securityActions.getObjectPermissions(documentDto));
+            if (securityService.checkPermission(documentDto,auth.getName(),PermissionType.READING)) {
+                return ResponseEntity.ok(securityService.getObjectPermissions(documentDto));
             }else{
                 return ResponseEntity.status(403).build();
             }
@@ -104,8 +105,8 @@ public class DocumentRestController {
     public ResponseEntity<List<PermissionDto>> postPermissionList(@RequestBody List<PermissionDto> permissionDtoList, @PathVariable int id){
         try {
             DocumentDto documentDto = docAct.loadDocument(id);
-            securityActions.updatePermissions(permissionDtoList);
-            return ResponseEntity.ok(securityActions.getObjectPermissions(documentDto));
+            securityService.updatePermissions(permissionDtoList);
+            return ResponseEntity.ok(securityService.getObjectPermissions(documentDto));
         } catch (UnitNotFoundException e) {
             return ResponseEntity.notFound().build();
         }

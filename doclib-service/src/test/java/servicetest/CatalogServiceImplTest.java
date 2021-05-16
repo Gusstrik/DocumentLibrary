@@ -8,7 +8,7 @@ import com.strelnikov.doclib.service.exceptions.UnitIsAlreadyExistException;
 import com.strelnikov.doclib.repository.jdbc.DatabaseCreatorJdbc;
 import com.strelnikov.doclib.model.catalogs.Catalog;
 import com.strelnikov.doclib.repository.configuration.RepositoryConfiguration;
-import com.strelnikov.doclib.service.CatalogActions;
+import com.strelnikov.doclib.service.CatalogService;
 import com.strelnikov.doclib.service.exceptions.UnitNotFoundException;
 import com.strelnikov.doclib.service.impl.configuration.ServiceImplConfiguration;
 import lombok.extern.slf4j.Slf4j;
@@ -20,13 +20,13 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 @Slf4j
-public class CatalogImplTest {
+public class CatalogServiceImplTest {
 
     private static final ApplicationContext appContext = new AnnotationConfigApplicationContext(ServiceImplConfiguration.class,
             RepositoryConfiguration.class, DtoMapperConfiguration.class);
 
     private static final DatabaseCreatorJdbc creator = appContext.getBean(DatabaseCreatorJdbc.class);
-    private final CatalogActions catalogAction = appContext.getBean(CatalogActions.class);
+    private final CatalogService catalogAction = appContext.getBean(CatalogService.class);
     private final DtoMapper dtoMapper = appContext.getBean(DtoMapper.class);
 
     @BeforeClass

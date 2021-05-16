@@ -18,6 +18,19 @@ INSERT INTO doc_files (id, name,path)
 VALUES (1,'test_file','test_path')
 on conflict do nothing;
 
+INSERT INTO sec_object
+VALUES(2,1,3)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO sec_permission
+VALUES(3,2,1,0)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO sec_permission
+VALUES(4,2,2,0)
+ON CONFLICT DO NOTHING;
+
+
 INSERT INTO files_versions
 VALUES (1,1)
 on conflict do nothing;

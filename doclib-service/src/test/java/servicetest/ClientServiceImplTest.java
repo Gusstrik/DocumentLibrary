@@ -4,12 +4,11 @@ import com.strelnikov.doclib.dto.ClientDto;
 import com.strelnikov.doclib.dto.PermissionDto;
 import com.strelnikov.doclib.model.roles.Client;
 import com.strelnikov.doclib.model.roles.PermissionType;
-import com.strelnikov.doclib.repository.CatalogDao;
 import com.strelnikov.doclib.repository.configuration.RepositoryConfiguration;
 import com.strelnikov.doclib.repository.jdbc.DatabaseCreatorJdbc;
-import com.strelnikov.doclib.service.CatalogActions;
-import com.strelnikov.doclib.service.ClientActions;
-import com.strelnikov.doclib.service.SecurityActions;
+import com.strelnikov.doclib.service.CatalogService;
+import com.strelnikov.doclib.service.ClientService;
+import com.strelnikov.doclib.service.SecurityService;
 import com.strelnikov.doclib.service.dtomapper.DtoMapper;
 import com.strelnikov.doclib.service.dtomapper.configuration.DtoMapperConfiguration;
 import com.strelnikov.doclib.service.exceptions.UnitNotFoundException;
@@ -23,15 +22,15 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClientImplTest {
+public class ClientServiceImplTest {
     private static final ApplicationContext appContext = new AnnotationConfigApplicationContext(ServiceImplConfiguration.class,
             RepositoryConfiguration.class, DtoMapperConfiguration.class);
 
     private static final DatabaseCreatorJdbc creator = appContext.getBean(DatabaseCreatorJdbc.class);
-    private final ClientActions clientActions = appContext.getBean(ClientActions.class);
+    private final ClientService clientService = appContext.getBean(ClientService.class);
     private final DtoMapper dtoMapper = appContext.getBean(DtoMapper.class);
-    private final CatalogActions catalogActions = appContext.getBean(CatalogActions.class);
-    private final SecurityActions securityActions = appContext.getBean(SecurityActions.class);
+    private final CatalogService catalogService = appContext.getBean(CatalogService.class);
+    private final SecurityService securityService = appContext.getBean(SecurityService.class);
 
     @Test
     public void createNewClientTest() throws UserNotFoundException, UnitNotFoundException {
@@ -42,24 +41,24 @@ public class ClientImplTest {
         List<String> roles = new ArrayList<>();
         roles.add("ROLE_USER");
         ClientDto clientDto = new ClientDto(0,"test","123",roles,permissionDtoList);
-        clientDto = clientActions.saveClient(clientDto);
-        boolean actual = securityActions.checkPermission(catalogActions.loadCatalog(1), clientDto.getLogin(), PermissionType.READING);
-        clientActions.deleteClient(clientDto.getId());
+        clientDto = clientService.saveClient(clientDto);
+        boolean actual = securityService.checkPermission(catalogService.loadCatalog(1), clientDto.getLogin(), PermissionType.READING);
+        clientService.deleteClient(clientDto.getId());
         Assert.assertTrue(actual);
     }
 
     @Test
     public void updateClientTest() throws UserNotFoundException {
-        ClientDto clientDto = clientActions.loadClient(1);
+        ClientDto clientDto = clientService.loadClient(1);
         Client client = dtoMapper.mapClient(clientDto);
         client.setLogin("test");
         clientDto = dtoMapper.mapClient(client);
-        clientActions.saveClient(clientDto);
-        clientDto = clientActions.loadClient(1);
+        clientService.saveClient(clientDto);
+        clientDto = clientService.loadClient(1);
         String actual = clientDto.getLogin();
         client.setLogin("root");
         clientDto = dtoMapper.mapClient(client);
-        clientActions.saveClient(clientDto);
+        clientService.saveClient(clientDto);
         Assert.assertEquals("test",actual);
     }
 }

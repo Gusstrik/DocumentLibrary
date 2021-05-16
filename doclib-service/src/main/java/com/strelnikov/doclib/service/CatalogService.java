@@ -10,7 +10,7 @@ import com.strelnikov.doclib.service.exceptions.CannotDeleteMainCatalogException
 import com.strelnikov.doclib.service.exceptions.UnitIsAlreadyExistException;
 import com.strelnikov.doclib.service.exceptions.UnitNotFoundException;
 
-public interface CatalogActions {
+public interface CatalogService {
 
     void deleteCatalog(CatalogDto catalogDto) throws CannotDeleteMainCatalogException;
 
