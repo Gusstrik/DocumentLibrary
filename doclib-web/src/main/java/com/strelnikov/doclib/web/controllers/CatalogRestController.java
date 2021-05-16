@@ -23,13 +23,16 @@ import java.util.List;
 @Secured({"ROLE_USER", "ROLE_ADMIN"})
 public class CatalogRestController {
 
-    @Autowired
-    private CatalogActions catalogAct;
+    private final  CatalogActions catalogAct;
+    private final SecurityActions securityActions;
 
-    @Autowired
-    private SecurityActions securityActions;
+    public CatalogRestController(@Autowired CatalogActions catalogAct, @Autowired SecurityActions securityActions){
+        this.catalogAct =catalogAct;
+        this.securityActions =securityActions;
+    }
 
-    @GetMapping("get/{id}")
+
+    @GetMapping(value = "get/{id}", produces = "application/json")
     public ResponseEntity<CatalogDto> getCatalog(@PathVariable int id){
         try {
             CatalogDto catalogDto = catalogAct.loadCatalog(id);
@@ -45,7 +48,7 @@ public class CatalogRestController {
         }
     }
 
-    @GetMapping("get/{id}/permissions/get")
+    @GetMapping(value = "get/{id}/permissions/get", produces = "application/json")
     public ResponseEntity<List<PermissionDto>> getPermissionList(@PathVariable int id){
         try {
             CatalogDto catalogDto = catalogAct.loadCatalog(id);
@@ -60,7 +63,7 @@ public class CatalogRestController {
         }
     }
 
-    @PostMapping("get/{id}/permissions/post")
+    @PostMapping(value = "get/{id}/permissions/post", produces = "application/json", consumes = "application/json")
     @Secured({"ROLE_ADMIN"})
     public ResponseEntity<List<PermissionDto>> postPermissionList(@RequestBody List<PermissionDto> permissionDtoList, @PathVariable int id){
         try {
@@ -72,7 +75,7 @@ public class CatalogRestController {
         }
     }
 
-    @PostMapping("post")
+    @PostMapping(value = "post", produces = "application/json", consumes = "application/json")
     public ResponseEntity<CatalogDto> postCatalog(@RequestBody CatalogDto catalogDto){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         try{
@@ -88,7 +91,7 @@ public class CatalogRestController {
         }
     }
 
-    @DeleteMapping("delete/{id}")
+    @DeleteMapping(value = "delete/{id}",produces = "application/json")
     public ResponseEntity<CatalogDto> deleteCatalog(@PathVariable int id){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         try {
@@ -99,9 +102,7 @@ public class CatalogRestController {
                 return ResponseEntity.ok(catalogDto);
             }
             return ResponseEntity.status(403).build();
-        } catch (UnitNotFoundException e) {
-            return ResponseEntity.badRequest().build();
-        }catch (CannotDeleteMainCatalogException e){
+        } catch (UnitNotFoundException | CannotDeleteMainCatalogException e) {
             return ResponseEntity.badRequest().build();
         }
     }
