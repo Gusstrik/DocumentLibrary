@@ -18,14 +18,14 @@ public class DocTypeRestController {
     @Autowired
     DocTypeActions docTypeAct;
 
-    @GetMapping("/get")
+    @GetMapping(value = "/get",produces = "application/json")
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     public ResponseEntity<List<DocTypeDto>> getTypeList(){
         docTypeAct.refreshListDocumentType();
         return ResponseEntity.ok(DocTypeDto.typesList);
     }
 
-    @PostMapping("/post")
+    @PostMapping(value = "/post",consumes = "application/json",produces = "application/json")
     @Secured({"ROLE_ADMIN"})
     public ResponseEntity<DocTypeDto> postType(@RequestBody DocTypeDto docTypeDto){
         try {
@@ -36,7 +36,7 @@ public class DocTypeRestController {
         }
     }
 
-    @DeleteMapping("delete/{id}")
+    @DeleteMapping(value = "delete/{id}", produces = "application/json")
     @Secured({"ROLE_ADMIN"})
     public ResponseEntity<List<DocTypeDto>> deleteType (@PathVariable int id){
         docTypeAct.deleteDocumentType(id);

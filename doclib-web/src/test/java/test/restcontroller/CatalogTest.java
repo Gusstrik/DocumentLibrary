@@ -19,7 +19,7 @@ public class CatalogTest {
     private static Server server;
 
     @BeforeClass
-    public static void initDb() throws Exception {
+    public static void init() throws Exception {
         server = new Server(8080);
         WebAppContext wcon = new WebAppContext();
         wcon.setContextPath("/");
@@ -52,7 +52,7 @@ public class CatalogTest {
 
     @Test
     public void createNewCatalogTest() throws IOException {
-        byte[] requestBody = Files.readAllBytes(Paths.get("src/test/resources/JSON/CatalogTests/testCatalog.json"));
+        byte[] requestBody = Files.readAllBytes(Paths.get("src/test/resources/JSON/testCatalog.json"));
         HttpHeaders headers = new HttpHeaders();
         headers.setBasicAuth("root", "root");
         headers.add("Content-Type", "application/json");
@@ -75,7 +75,7 @@ public class CatalogTest {
 
     @Test
     public void updateCatalogTest() throws IOException {
-        byte[] requestBody = Files.readAllBytes(Paths.get("src/test/resources/JSON/CatalogTests/testCatalog.json"));
+        byte[] requestBody = Files.readAllBytes(Paths.get("src/test/resources/JSON/testCatalog.json"));
         HttpHeaders headers = new HttpHeaders();
         headers.setBasicAuth("root", "root");
         headers.add("Content-Type", "application/json");
