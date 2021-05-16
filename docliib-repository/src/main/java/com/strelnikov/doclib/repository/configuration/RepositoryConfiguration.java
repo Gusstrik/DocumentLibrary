@@ -45,15 +45,15 @@ public class RepositoryConfiguration {
         entityManager.setJpaProperties(additionalProperties());
         return entityManager;
     }
-
-    @Bean
-    public PlatformTransactionManager transactionManager(){
-        JpaTransactionManager transactionManager =new JpaTransactionManager();
-        transactionManager.setEntityManagerFactory(entityManagerFactory().getObject());
-        return transactionManager;
-    }
-
-
+//
+//    @Bean
+//    public PlatformTransactionManager transactionManager(){
+//        JpaTransactionManager transactionManager =new JpaTransactionManager();
+//        transactionManager.setEntityManagerFactory(entityManagerFactory().getObject());
+//        return transactionManager;
+//    }
+//
+//
     Properties additionalProperties(){
         Properties properties = new Properties();
         properties.setProperty("hibernate.hbm2ddl.auto","validate");

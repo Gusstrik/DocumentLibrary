@@ -13,6 +13,7 @@ import javax.transaction.Transactional;
 import java.util.stream.Collectors;
 
 public class UserDetailsServiceImpl implements UserDetailsService {
+
     @Autowired
     ClientDao clientDao;
 

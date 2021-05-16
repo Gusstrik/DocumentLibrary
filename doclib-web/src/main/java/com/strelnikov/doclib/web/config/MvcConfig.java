@@ -17,15 +17,15 @@ import javax.servlet.ServletContext;
 @Import(ServiceImplConfiguration.class)
 @ComponentScan(basePackages = "com.strelnikov.doclib.web.controllers")
 public class MvcConfig {
-    @Autowired
-    private ServletContext servletContext;
-
-    @Bean(name = "multipartResolver")
-    public CommonsMultipartResolver multipartResolver(){
-        CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
-        multipartResolver.setMaxUploadSize(100000);
-        return multipartResolver;
-    }
+//    @Autowired
+//    private ServletContext servletContext;
+//
+//    @Bean(name = "multipartResolver")
+//    public CommonsMultipartResolver multipartResolver(){
+//        CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
+//        multipartResolver.setMaxUploadSize(100000);
+//        return multipartResolver;
+//    }
 
 
 }

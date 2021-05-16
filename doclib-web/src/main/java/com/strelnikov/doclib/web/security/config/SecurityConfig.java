@@ -1,7 +1,9 @@
 package com.strelnikov.doclib.web.security.config;
 
+import com.strelnikov.doclib.repository.configuration.RepositoryConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -14,6 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
+@Import(RepositoryConfiguration.class)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
@@ -46,5 +49,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic()
                 .and()
                 .csrf().disable();
-    };
+    }
 }

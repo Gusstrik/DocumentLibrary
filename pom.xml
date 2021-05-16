@@ -21,6 +21,7 @@
         <module>doclib-web</module>
         <module>doclib-model</module>
         <module>doclib-dto</module>
+        <module>doclib-spring-boot-app</module>
     </modules>
 
     <properties>
