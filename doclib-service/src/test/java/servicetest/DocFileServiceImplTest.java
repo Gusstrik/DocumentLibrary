@@ -1,17 +1,12 @@
 package servicetest;
 
 import com.strelnikov.doclib.dto.DocFileDto;
-import com.strelnikov.doclib.dto.DocVersionDto;
 import com.strelnikov.doclib.model.documnets.DocumentFile;
 import com.strelnikov.doclib.model.documnets.DocumentVersion;
-import com.strelnikov.doclib.model.documnets.Importance;
 import com.strelnikov.doclib.repository.DocFileDao;
 import com.strelnikov.doclib.repository.jdbc.DatabaseCreatorJdbc;
-import com.strelnikov.doclib.model.documnets.Document;
-import com.strelnikov.doclib.repository.configuration.RepositoryConfiguration;
-import com.strelnikov.doclib.service.DocVersionActions;
-import com.strelnikov.doclib.service.DocumentActions;
-import com.strelnikov.doclib.service.DocFileActions;
+import com.strelnikov.doclib.service.DocVersionService;
+import com.strelnikov.doclib.service.DocFileService;
 import com.strelnikov.doclib.service.dtomapper.DtoMapper;
 import com.strelnikov.doclib.service.exceptions.FileIsAlreadyExistException;
 import com.strelnikov.doclib.service.exceptions.UnitNotFoundException;
@@ -21,16 +16,13 @@ import org.junit.*;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class DocFileImplTest {
+public class DocFileServiceImplTest {
     private static final ApplicationContext appContext = new AnnotationConfigApplicationContext(ServiceImplConfiguration.class);
 
     private static final DatabaseCreatorJdbc creator = appContext.getBean(DatabaseCreatorJdbc.class);
     private final DocFileDao docFileDao = appContext.getBean("DocFileJpa",DocFileDao.class);
-    private final DocFileActions fileActions = appContext.getBean(DocFileActions.class);
-    private final DocVersionActions versionActions = appContext.getBean(DocVersionActions.class);
+    private final DocFileService fileActions = appContext.getBean(DocFileService.class);
+    private final DocVersionService versionActions = appContext.getBean(DocVersionService.class);
     private final DtoMapper dtoMapper =appContext.getBean(DtoMapper.class);
     private int expected;
     private  static DocumentVersion docVersion;

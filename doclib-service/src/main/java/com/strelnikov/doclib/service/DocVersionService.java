@@ -7,7 +7,7 @@ import com.strelnikov.doclib.service.exceptions.VersionIsAlreadyExistException;
 import java.io.FileNotFoundException;
 import java.util.List;
 
-public interface DocVersionActions {
+public interface DocVersionService {
 
     DocVersionDto saveDocVersion(DocVersionDto docVersionDto) throws VersionIsAlreadyExistException, FileNotFoundException;
 

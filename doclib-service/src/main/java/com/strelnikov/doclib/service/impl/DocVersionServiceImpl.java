@@ -1,16 +1,13 @@
 package com.strelnikov.doclib.service.impl;
 
-import com.strelnikov.doclib.dto.DocFileDto;
 import com.strelnikov.doclib.dto.DocVersionDto;
 import com.strelnikov.doclib.model.documnets.Document;
 import com.strelnikov.doclib.model.documnets.DocumentFile;
 import com.strelnikov.doclib.model.documnets.DocumentVersion;
 import com.strelnikov.doclib.repository.DocVersionDao;
 import com.strelnikov.doclib.repository.DocumentDao;
-import com.strelnikov.doclib.service.DocFileActions;
-import com.strelnikov.doclib.service.DocVersionActions;
-import com.strelnikov.doclib.service.DocumentActions;
-import com.strelnikov.doclib.service.SecurityActions;
+import com.strelnikov.doclib.service.DocFileService;
+import com.strelnikov.doclib.service.DocVersionService;
 import com.strelnikov.doclib.service.dtomapper.DtoMapper;
 import com.strelnikov.doclib.service.exceptions.UnitNotFoundException;
 import com.strelnikov.doclib.service.exceptions.VersionIsAlreadyExistException;
@@ -23,19 +20,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class DocVersionImpl implements DocVersionActions {
+public class DocVersionServiceImpl implements DocVersionService {
 
-    @Autowired
-    @Qualifier("DocVersionJpa")
-    private  DocVersionDao docVersionDao;
-    @Autowired
-    private  DtoMapper dtoMapper;
-    @Autowired
-    private  DocFileActions fileAct;
-    @Autowired
-    private DocumentDao docDao;
-    @Autowired
-    private SecurityActions securityActions;
+    private final   DocVersionDao docVersionDao;
+    private final   DtoMapper dtoMapper;
+    private final DocFileService fileAct;
+    private final DocumentDao docDao;
+
+    public DocVersionServiceImpl(@Qualifier("DocVersionJpa")DocVersionDao docVersionDao, @Autowired DtoMapper dtoMapper,
+                                 @Autowired DocFileService fileAct, @Autowired DocumentDao docDao){
+        this.dtoMapper=dtoMapper;
+        this.docDao=docDao;
+        this.fileAct =fileAct;
+        this.docVersionDao = docVersionDao;
+    }
 
 
     private boolean checkIsVersionExist(DocumentVersion documentVersion) {

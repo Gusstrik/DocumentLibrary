@@ -1,6 +1,5 @@
 package com.strelnikov.doclib.model.roles;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

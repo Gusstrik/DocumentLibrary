@@ -4,7 +4,7 @@ package com.strelnikov.doclib.service;
 import com.strelnikov.doclib.dto.ClientDto;
 import com.strelnikov.doclib.service.exceptions.UserNotFoundException;
 
-public interface ClientActions {
+public interface ClientService {
 
     ClientDto loadClient (int id) throws UserNotFoundException;
 

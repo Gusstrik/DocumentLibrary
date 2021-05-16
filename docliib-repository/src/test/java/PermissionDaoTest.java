@@ -49,7 +49,7 @@ public class PermissionDaoTest {
     @Test
     public void getObjPermissionTest(){
         int actual = checkPermission.getPermissionsOfSecuredObject(catalogDao.loadCatalog(1)).size();
-        Assert.assertEquals(1,actual);
+        Assert.assertEquals(2,actual);
     }
 
     @Test

@@ -38,10 +38,8 @@ CREATE TABLE IF NOT EXISTS doc_files
 (
     id          serial,
     name        varchar(20)  not null,
-    document_id int          not null,
     path        varchar(300) not null,
-    PRIMARY KEY (id),
-    FOREIGN KEY (document_id) references documents_versions (id) on update cascade on delete cascade
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS files_versions
@@ -58,6 +56,7 @@ CREATE TABLE IF NOT EXISTS clients
     id serial,
     login varchar,
     password varchar,
+    PRIMARY KEY (id)
 );
 
 INSERT INTO catalogs(id, name, catalog_id)
@@ -85,8 +84,17 @@ INSERT INTO authority (id, name) VALUES
 (1, 'ROLE_USER'),
 (2, 'ROLE_ADMIN') ON CONFLICT DO NOTHING ;
 
+INSERT INTO clients VALUES (1,'root', '$2a$10$McsGXLvYFziE0VXSbDsp7.ITYb61GxuMVRZKT3m7kjieto5yaI5GG')
+ON CONFLICT DO NOTHING ;
+
+INSERT INTO clients VALUES (2,'user', '$$2a$10$WCE1xwJawWw.y2rkR0F1HutQi9cfS5zeCMt4CBiyWtqGmqHhZD9FK')
+ON CONFLICT DO NOTHING ;
+
 INSERT INTO client_authority(client_id, authority_id)
 VALUES (1,2) ON CONFLICT DO NOTHING;
+
+INSERT INTO client_authority(client_id, authority_id)
+VALUES (2,1) ON CONFLICT DO NOTHING;
 
 CREATE TABLE IF NOT EXISTS sec_object_classes
 (
@@ -133,6 +141,10 @@ ON CONFLICT DO NOTHING;
 
 INSERT INTO sec_permission
 VALUES (1, 1, 1, 7)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO sec_permission
+VALUES (2, 1, 2, 1)
 ON CONFLICT DO NOTHING;
 
 

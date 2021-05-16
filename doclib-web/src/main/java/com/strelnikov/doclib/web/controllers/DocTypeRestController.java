@@ -1,7 +1,7 @@
 package com.strelnikov.doclib.web.controllers;
 
 import com.strelnikov.doclib.dto.DocTypeDto;
-import com.strelnikov.doclib.service.DocTypeActions;
+import com.strelnikov.doclib.service.DocTypeService;
 import com.strelnikov.doclib.service.exceptions.TypeIsAlreadyExistException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,16 +16,16 @@ import java.util.List;
 public class DocTypeRestController {
 
     @Autowired
-    DocTypeActions docTypeAct;
+    DocTypeService docTypeAct;
 
-    @GetMapping("/get")
+    @GetMapping(value = "/get",produces = "application/json")
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     public ResponseEntity<List<DocTypeDto>> getTypeList(){
         docTypeAct.refreshListDocumentType();
         return ResponseEntity.ok(DocTypeDto.typesList);
     }
 
-    @PostMapping("/post")
+    @PostMapping(value = "/post",consumes = "application/json",produces = "application/json")
     @Secured({"ROLE_ADMIN"})
     public ResponseEntity<DocTypeDto> postType(@RequestBody DocTypeDto docTypeDto){
         try {
@@ -36,7 +36,7 @@ public class DocTypeRestController {
         }
     }
 
-    @DeleteMapping("delete/{id}")
+    @DeleteMapping(value = "delete/{id}", produces = "application/json")
     @Secured({"ROLE_ADMIN"})
     public ResponseEntity<List<DocTypeDto>> deleteType (@PathVariable int id){
         docTypeAct.deleteDocumentType(id);

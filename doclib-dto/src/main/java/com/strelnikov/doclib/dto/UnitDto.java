@@ -2,10 +2,12 @@ package com.strelnikov.doclib.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class UnitDto {
 
     private int id;
@@ -16,5 +18,5 @@ public class UnitDto {
     private String unitType;
 
     private int parentId;
-    public UnitDto(){}
+
 }

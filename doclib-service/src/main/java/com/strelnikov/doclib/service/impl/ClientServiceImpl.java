@@ -4,31 +4,27 @@ import com.strelnikov.doclib.dto.ClientDto;
 import com.strelnikov.doclib.dto.PermissionDto;
 import com.strelnikov.doclib.model.roles.Client;
 import com.strelnikov.doclib.model.roles.Permission;
-import com.strelnikov.doclib.model.roles.PermissionType;
 import com.strelnikov.doclib.repository.ClientDao;
-import com.strelnikov.doclib.repository.PermissionDao;
-import com.strelnikov.doclib.service.ClientActions;
-import com.strelnikov.doclib.service.SecurityActions;
+import com.strelnikov.doclib.service.ClientService;
+import com.strelnikov.doclib.service.SecurityService;
 import com.strelnikov.doclib.service.dtomapper.DtoMapper;
 import com.strelnikov.doclib.service.exceptions.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Service
-public class ClientImpl implements ClientActions {
+public class ClientServiceImpl implements ClientService {
 
-    @Autowired
-    private ClientDao clientDao;
+    private final ClientDao clientDao;
+    private final SecurityService securityService;
+    private final DtoMapper dtoMapper;
 
-    @Autowired
-    private SecurityActions securityActions;
-
-    @Autowired
-    private DtoMapper dtoMapper;
+    public ClientServiceImpl(@Autowired ClientDao clientDao, @Autowired SecurityService securityService, @Autowired DtoMapper dtoMapper){
+        this.clientDao=clientDao;
+        this.securityService = securityService;
+        this.dtoMapper=dtoMapper;
+    }
 
     @Override
     public ClientDto loadClient(int id) throws UserNotFoundException {
@@ -44,10 +40,10 @@ public class ClientImpl implements ClientActions {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         client.setPassword(passwordEncoder.encode(client.getPassword()));
         client = clientDao.create(client);
-        securityActions.addClientToSecureTable(client);
+        securityService.addClientToSecureTable(client);
         for (PermissionDto permissionDto:clientDto.getPermissionDtoList()){
             Permission permission = dtoMapper.mapPermission(permissionDto);
-            securityActions.updatePermissions(permission.getSecuredObject(),client,permission.getPermissionList());
+            securityService.updatePermissions(permission.getSecuredObject(),client,permission.getPermissionList());
         }
         return dtoMapper.mapClient(client);
     }
@@ -57,7 +53,7 @@ public class ClientImpl implements ClientActions {
         client= clientDao.updateClient(client);
         for (PermissionDto permissionDto:clientDto.getPermissionDtoList()){
             Permission permission = dtoMapper.mapPermission(permissionDto);
-            securityActions.updatePermissions(permission.getSecuredObject(),client,permission.getPermissionList());
+            securityService.updatePermissions(permission.getSecuredObject(),client,permission.getPermissionList());
         }
         return dtoMapper.mapClient(client);
     }

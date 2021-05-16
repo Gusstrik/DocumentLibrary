@@ -46,7 +46,7 @@ public class DocFileJpa implements DocFileDao {
     @Override
     public List<DocumentFile> getFilesList(DocumentVersion documentVersion) {
         EntityManager em = getEntityManager();
-        Query query = em.createQuery("SELECT docFile FROM DocumentFile docFile WHERE docFile.docVersion.id=:id");
+        Query query = em.createQuery("SELECT docFile FROM DocumentFile docFile JOIN docFile.docVersion docVer WHERE docVer.id=:id");
         query.setParameter("id",documentVersion.getId());
         List<DocumentFile> result = query.getResultList();
         em.close();

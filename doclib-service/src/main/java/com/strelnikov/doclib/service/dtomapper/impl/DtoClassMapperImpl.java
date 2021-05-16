@@ -13,8 +13,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class DtoClassMapperImpl implements DtoClassMapper {
 
-    @Autowired
-    private DtoMapper dtoMapper;
+    private final DtoMapper dtoMapper;
+
+    public DtoClassMapperImpl(@Autowired DtoMapper dtoMapper){
+        this.dtoMapper = dtoMapper;
+    }
 
     @Override
     public SecuredObject mapClass(Object object) {

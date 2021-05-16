@@ -23,24 +23,18 @@ import java.util.List;
 @Component
 public class DtoMapperImpl implements DtoMapper {
 
-    @Autowired
-    @Qualifier("DocVersionJpa")
-    private DocVersionDao docVerDao;
+    private final DocumentDao docDao;
+    private final DocTypeDao docTypeDao;
+    private final PermissionDao permissionDao;
+    private final ClientDao clientDao;
 
-    @Autowired
-    @Qualifier("DocumentJpa")
-    private DocumentDao docDao;
-
-    @Autowired
-    @Qualifier("DocTypeJpa")
-    private DocTypeDao docTypeDao;
-
-    @Autowired
-    private PermissionDao permissionDao;
-
-    @Autowired
-    private ClientDao clientDao;
-
+    public DtoMapperImpl(@Qualifier("DocumentJpa") DocumentDao docDao, @Qualifier("DocTypeJpa") DocTypeDao docTypeDao,
+                         @Autowired PermissionDao permissionDao, @Autowired ClientDao clientDao){
+        this.permissionDao=permissionDao;
+        this.clientDao=clientDao;
+        this.docTypeDao=docTypeDao;
+        this.docDao=docDao;
+    }
 
     @Override
     public UnitDto mapUnit(Unit unit) {

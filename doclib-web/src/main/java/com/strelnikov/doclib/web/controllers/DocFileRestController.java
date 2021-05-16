@@ -1,16 +1,12 @@
 package com.strelnikov.doclib.web.controllers;
 
-import com.strelnikov.doclib.dto.CatalogDto;
 import com.strelnikov.doclib.dto.DocFileDto;
-import com.strelnikov.doclib.dto.DocumentDto;
 import com.strelnikov.doclib.dto.PermissionDto;
 import com.strelnikov.doclib.model.roles.PermissionType;
-import com.strelnikov.doclib.service.DocFileActions;
-import com.strelnikov.doclib.service.DocumentActions;
-import com.strelnikov.doclib.service.SecurityActions;
+import com.strelnikov.doclib.service.DocFileService;
+import com.strelnikov.doclib.service.SecurityService;
 import com.strelnikov.doclib.service.exceptions.FileIsAlreadyExistException;
 import com.strelnikov.doclib.service.exceptions.UnitNotFoundException;
-import org.eclipse.jetty.server.Dispatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.ResponseEntity;
@@ -19,36 +15,40 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.DispatcherServlet;
 
-import javax.servlet.RequestDispatcher;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 @RestController
-@RequestMapping("/file")
+@RequestMapping("rest/file")
 @Secured({"ROLE_USER", "ROLE_ADMIN"})
 public class DocFileRestController {
 
-    @Autowired
-    private DocFileActions fileAct;
+    private final SecurityService securityService;
+    private final DocFileService fileAct;
 
-    @Autowired
-    private SecurityActions securityActions;
+    public DocFileRestController(@Autowired SecurityService securityService, @Autowired DocFileService fileAct){
+        this.fileAct=fileAct;
+        this.securityService = securityService;
+    }
 
-    @Autowired
-    private DocumentActions documentActions;
-
-    @PostMapping("post")
+    @PostMapping(value = "post", consumes = "multipart/data-form")
     public ResponseEntity<DocFileDto> uploadFile(@RequestPart("file") MultipartFile file) {
-        String filePath = "doclib-web/src/main/resources/uploaded_files/" + file.getOriginalFilename();
+        String filePath = "doclib-web\\src\\main\\resources\\uploaded_files" + file.getOriginalFilename();
         try {
-            file.transferTo(new File(filePath).getAbsoluteFile());
-            DocFileDto docFileDto = new DocFileDto(0, file.getOriginalFilename(), filePath);
+            Path savedFile = Paths.get(filePath);
+            file.transferTo(savedFile.toAbsolutePath());
+            DocFileDto docFileDto = new DocFileDto(0, file.getOriginalFilename(), savedFile.toAbsolutePath().toString());
             docFileDto = fileAct.createNewFile(docFileDto);
             return ResponseEntity.ok(docFileDto);
-        } catch (IOException | FileIsAlreadyExistException e) {
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).build();
+        } catch (FileIsAlreadyExistException e) {
+
             return ResponseEntity.badRequest().build();
         }
     }
@@ -70,7 +70,7 @@ public class DocFileRestController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         try {
             DocFileDto docFileDto = fileAct.loadFile(name);
-            if (securityActions.checkPermission(docFileDto, auth.getName(), PermissionType.READING)) {
+            if (securityService.checkPermission(docFileDto, auth.getName(), PermissionType.READING)) {
                 File responseFile = new File(docFileDto.getPath());
                 return ResponseEntity.ok(new FileSystemResource(responseFile));
             }
@@ -85,8 +85,8 @@ public class DocFileRestController {
         try {
             DocFileDto fileDto = fileAct.loadFile(name);
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            if (securityActions.checkPermission(fileDto,auth.getName(),PermissionType.READING)) {
-                return ResponseEntity.ok(securityActions.getObjectPermissions(fileDto));
+            if (securityService.checkPermission(fileDto,auth.getName(),PermissionType.READING)) {
+                return ResponseEntity.ok(securityService.getObjectPermissions(fileDto));
             }else{
                 return ResponseEntity.status(403).build();
             }
@@ -100,8 +100,8 @@ public class DocFileRestController {
     public ResponseEntity<List<PermissionDto>> postPermissionList(@RequestBody List<PermissionDto> permissionDtoList, @PathVariable String name){
         try {
             DocFileDto fileDto = fileAct.loadFile(name);
-            securityActions.updatePermissions(permissionDtoList);
-            return ResponseEntity.ok(securityActions.getObjectPermissions(fileDto));
+            securityService.updatePermissions(permissionDtoList);
+            return ResponseEntity.ok(securityService.getObjectPermissions(fileDto));
         } catch (UnitNotFoundException e) {
             return ResponseEntity.notFound().build();
         }

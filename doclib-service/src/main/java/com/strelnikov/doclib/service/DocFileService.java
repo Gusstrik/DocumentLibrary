@@ -6,7 +6,7 @@ import com.strelnikov.doclib.model.documnets.DocumentFile;
 import com.strelnikov.doclib.service.exceptions.FileIsAlreadyExistException;
 import com.strelnikov.doclib.service.exceptions.UnitNotFoundException;
 
-public interface DocFileActions {
+public interface DocFileService {
 
     boolean isFileExist(DocumentFile docFile);
 

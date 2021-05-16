@@ -2,7 +2,7 @@ package com.strelnikov.doclib.web.controllers;
 
 import com.strelnikov.doclib.dto.ClientDto;
 import com.strelnikov.doclib.model.roles.AuthorityType;
-import com.strelnikov.doclib.service.ClientActions;
+import com.strelnikov.doclib.service.ClientService;
 import com.strelnikov.doclib.service.exceptions.UserNotFoundException;
 import com.strelnikov.doclib.web.security.AuthorityCheck;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +17,11 @@ import org.springframework.web.bind.annotation.*;
 @Secured({"ROLE_ADMIN"})
 public class ClientRestController {
 
-    @Autowired
-    private ClientActions clientActions;
+    private final ClientService clientService;
+
+    public  ClientRestController(@Autowired ClientService clientService){
+        this.clientService = clientService;
+    }
 
     @GetMapping("/get/{login}")
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
@@ -30,7 +33,7 @@ public class ClientRestController {
             }
         }
         try {
-            return ResponseEntity.ok(clientActions.loadClient(login));
+            return ResponseEntity.ok(clientService.loadClient(login));
         } catch (UserNotFoundException e) {
             return ResponseEntity.status(404).build();
         }
@@ -38,14 +41,14 @@ public class ClientRestController {
 
     @PostMapping("/post")
     public ResponseEntity<ClientDto> postClient(@RequestBody ClientDto clientDto){
-        clientDto = clientActions.saveClient(clientDto);
+        clientDto = clientService.saveClient(clientDto);
         return ResponseEntity.ok(clientDto);
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity deleteClient(@PathVariable int id){
         try {
-            clientActions.deleteClient(id);
+            clientService.deleteClient(id);
             return ResponseEntity.ok().build();
         } catch (UserNotFoundException e) {
             return ResponseEntity.status(404).build();

@@ -7,7 +7,7 @@ import com.strelnikov.doclib.model.roles.PermissionType;
 import com.strelnikov.doclib.model.roles.SecuredObject;
 import com.strelnikov.doclib.repository.ClientDao;
 import com.strelnikov.doclib.repository.PermissionDao;
-import com.strelnikov.doclib.service.SecurityActions;
+import com.strelnikov.doclib.service.SecurityService;
 import com.strelnikov.doclib.service.dtomapper.DtoClassMapper;
 import com.strelnikov.doclib.service.dtomapper.DtoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,26 +17,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class SecurityImpl implements SecurityActions {
-    @Autowired
-     private PermissionDao permissionDao;
+public class SecurityServiceImpl implements SecurityService {
 
-    @Autowired
-    private DtoClassMapper dtoClassMapper;
+    private final PermissionDao permissionDao;
+    private final DtoClassMapper dtoClassMapper;
+    private final ClientDao clientDao;
+    private final DtoMapper dtoMapper;
 
-    @Autowired
-    private ClientDao client;
+    public SecurityServiceImpl(@Autowired PermissionDao permissionDao, @Autowired DtoClassMapper dtoClassMapper,
+                               @Autowired ClientDao clientDao, @Autowired DtoMapper dtoMapper){
+        this.clientDao = clientDao;
+        this.dtoMapper = dtoMapper;
+        this.dtoClassMapper = dtoClassMapper;
+        this.permissionDao =permissionDao;
+    }
 
-    @Autowired
-    private DtoMapper dtoMapper;
-
-    @Autowired
-    private ClientDao clientDao;
 
     @Override
     public boolean checkPermission(Object object, String login, PermissionType permissionType) {
         SecuredObject securedObject = dtoClassMapper.mapClass(object);
-        return permissionDao.checkPermission(securedObject, client.findBylogin(login), permissionType);
+        return permissionDao.checkPermission(securedObject, clientDao.findBylogin(login), permissionType);
 
     }
 

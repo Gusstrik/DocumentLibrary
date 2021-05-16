@@ -9,7 +9,7 @@ import com.strelnikov.doclib.service.exceptions.VersionNotExistException;
 
 import java.io.FileNotFoundException;
 
-public interface DocumentActions {
+public interface DocumentService {
 
     void deleteDocument(int documentId);
 
