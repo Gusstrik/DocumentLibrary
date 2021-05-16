@@ -1,4 +1,4 @@
-package com.strelnikov.doclib.web.security.config;
+package com.strelnikov.doclib.web.security;
 
 import com.strelnikov.doclib.model.roles.Client;
 import com.strelnikov.doclib.repository.ClientDao;
@@ -13,6 +13,7 @@ import javax.transaction.Transactional;
 import java.util.stream.Collectors;
 
 public class UserDetailsServiceImpl implements UserDetailsService {
+
     @Autowired
     ClientDao clientDao;
 

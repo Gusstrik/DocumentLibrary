@@ -8,13 +8,12 @@ import com.strelnikov.doclib.model.roles.Authority;
 import com.strelnikov.doclib.model.roles.Client;
 import com.strelnikov.doclib.model.roles.Permission;
 import com.strelnikov.doclib.repository.*;
-import com.strelnikov.doclib.repository.jpa.DocFileJpa;
 import com.strelnikov.doclib.service.dtomapper.DtoMapper;
 import com.strelnikov.doclib.model.catalogs.Catalog;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.core.parameters.P;
+
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;

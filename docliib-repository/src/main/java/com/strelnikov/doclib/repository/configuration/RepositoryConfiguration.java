@@ -1,6 +1,5 @@
 package com.strelnikov.doclib.repository.configuration;
 
-
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -46,14 +45,6 @@ public class RepositoryConfiguration {
         entityManager.setJpaProperties(additionalProperties());
         return entityManager;
     }
-
-    @Bean
-    public PlatformTransactionManager transactionManager(){
-        JpaTransactionManager transactionManager =new JpaTransactionManager();
-        transactionManager.setEntityManagerFactory(entityManagerFactory().getObject());
-        return transactionManager;
-    }
-
 
     Properties additionalProperties(){
         Properties properties = new Properties();

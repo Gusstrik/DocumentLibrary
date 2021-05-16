@@ -8,56 +8,41 @@
     <artifactId>doclib</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.4.5</version>
+    </parent>
+
     <modules>
         <module>doclib-service</module>
         <module>docliib-repository</module>
         <module>doclib-web</module>
         <module>doclib-model</module>
         <module>doclib-dto</module>
+        <module>doclib-spring-boot-app</module>
     </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>16</maven.compiler.source>
         <maven.compiler.target>16</maven.compiler.target>
-        <lombok.version>1.18.20</lombok.version>
-        <dbcp.version>2.8.0</dbcp.version>
         <postgresql.version>42.2.19</postgresql.version>
-        <liquibase.version>4.3.4</liquibase.version>
         <mybatis.version>3.5.6</mybatis.version>
-        <slf4j.version>1.7.24</slf4j.version>
-        <logback.version>1.2.3</logback.version>
-        <junit.version>4.13.2</junit.version>
-        <javaxservlet.version>4.0.1</javaxservlet.version>
-        <jetty.version>10.0.2</jetty.version>
-        <jakson.version>2.12.3</jakson.version>
-        <spring.version>5.3.6</spring.version>
-        <spring-jpa.version>2.5.0</spring-jpa.version>
-        <hibernate.version>6.0.0.Alpha7</hibernate.version>
-        <thymeleaf.version>3.0.12.RELEASE</thymeleaf.version>
         <commons-fileupload.version>1.4</commons-fileupload.version>
-        <spring-security.version>5.4.6</spring-security.version>
-        <echache.version>3.9.3</echache.version>
-        <spring-context.version>5.3.7</spring-context.version>
+        <swagger.version>3.0.0</swagger.version>
+        <spring-boot.version>2.4.5</spring-boot.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.projectlombok</groupId>
-                <artifactId>lombok</artifactId>
-                <version>${lombok.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-dbcp2</artifactId>
-                <version>${dbcp.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.postgresql</groupId>
-                <artifactId>postgresql</artifactId>
-                <version>${postgresql.version}</version>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.mybatis</groupId>
@@ -65,82 +50,9 @@
                 <version>${mybatis.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-                <version>${slf4j.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>ch.qos.logback</groupId>
-                <artifactId>logback-classic</artifactId>
-                <version>${logback.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>${junit.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>javax.servlet</groupId>
-                <artifactId>javax.servlet-api</artifactId>
-                <version>${javaxservlet.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-server</artifactId>
-                <version>${jetty.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-webapp</artifactId>
-                <version>${jetty.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-annotations</artifactId>
-                <version>${jetty.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-databind</artifactId>
-                <version>${jakson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-core</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-context</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-web</artifactId>
-                <version>${spring.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.data</groupId>
-                <artifactId>spring-data-jpa</artifactId>
-                <version>${spring-jpa.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.hibernate.orm</groupId>
-                <artifactId>hibernate-core</artifactId>
-                <version>${hibernate.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-webmvc</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.thymeleaf</groupId>
-                <artifactId>thymeleaf-spring5</artifactId>
-                <version>${thymeleaf.version}</version>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>${postgresql.version}</version>
             </dependency>
             <dependency>
                 <groupId>commons-fileupload</groupId>
@@ -148,34 +60,14 @@
                 <version>${commons-fileupload.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.springframework.security</groupId>
-                <artifactId>spring-security-web</artifactId>
-                <version>${spring-security.version}</version>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-swagger-ui</artifactId>
+                <version>${swagger.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.springframework.security</groupId>
-                <artifactId>spring-security-config</artifactId>
-                <version>${spring-security.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.security</groupId>
-                <artifactId>spring-security-taglibs</artifactId>
-                <version>${spring-security.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.security</groupId>
-                <artifactId>spring-security-acl</artifactId>
-                <version>${spring-security.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.ehcache</groupId>
-                <artifactId>ehcache</artifactId>
-                <version>${echache.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-context-support</artifactId>
-                <version>${spring-context.version}</version>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-boot-starter</artifactId>
+                <version>${swagger.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -187,7 +79,6 @@
             <url>https://maven.pkg.github.com/Gusstrik/DocumentLibrary</url>
         </repository>
     </distributionManagement>
-
 
 
 </project>

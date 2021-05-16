@@ -1,11 +1,10 @@
 package com.strelnikov.doclib.web.controllers;
 
 import com.strelnikov.doclib.dto.ClientDto;
-import com.strelnikov.doclib.model.roles.Authority;
 import com.strelnikov.doclib.model.roles.AuthorityType;
 import com.strelnikov.doclib.service.ClientActions;
 import com.strelnikov.doclib.service.exceptions.UserNotFoundException;
-import com.strelnikov.doclib.web.security.config.AuthorityCheck;
+import com.strelnikov.doclib.web.security.AuthorityCheck;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;

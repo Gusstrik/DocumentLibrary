@@ -3,7 +3,6 @@ import com.strelnikov.doclib.model.roles.AuthorityType;
 import com.strelnikov.doclib.model.roles.Client;
 import com.strelnikov.doclib.repository.ClientDao;
 import com.strelnikov.doclib.repository.configuration.RepositoryConfiguration;
-import org.checkerframework.checker.units.qual.A;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;

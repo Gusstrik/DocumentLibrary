@@ -10,8 +10,6 @@ import com.strelnikov.doclib.repository.configuration.RepositoryConfiguration;
 import com.strelnikov.doclib.repository.jdbc.DatabaseCreatorJdbc;
 import com.strelnikov.doclib.service.dtomapper.DtoMapper;
 import com.strelnikov.doclib.service.dtomapper.configuration.DtoMapperConfiguration;
-import org.checkerframework.checker.units.qual.A;
-import org.checkerframework.checker.units.qual.C;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -21,7 +19,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import javax.print.Doc;
+
 import java.util.ArrayList;
 import java.util.List;
 
